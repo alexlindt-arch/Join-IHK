@@ -314,7 +314,6 @@ function buildDetailActions(task) {
 }
 
 
-
 /**
  * Adds the current photo of the matching board contact to an assignee object.
  * @param {Object} assignee - Assignee object with id.

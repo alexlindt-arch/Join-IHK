@@ -1,4 +1,4 @@
 /* Account dialog styles, split into three files (loaded in this order, so later rules win) */
-@import url("profile_dialog.css?v=20261001l");
-@import url("profile_confirm.css?v=20261001l");
-@import url("profile_responsive.css?v=20261001l");
+@import url("profile_dialog.css?v=20261001m");
+@import url("profile_confirm.css?v=20261001m");
+@import url("profile_responsive.css?v=20261001m");
