@@ -57,11 +57,11 @@ async function saveProfile(event) {
     event.preventDefault();
     if (!profileEditMode) return startProfileEdit();
     const user = getCurrentUser();
-    const values = readProfileForm();
+    const values = user?.isGuest ? {} : readProfileForm();
     if (!user || !values) return;
     setProfileSaving(true);
     try {
-        await storeProfile(user, values);
+        await (user.isGuest ? storeGuestProfile(user) : storeProfile(user, values));
     } catch (error) {
         setProfileError('Saving failed. Please try again.');
     } finally {

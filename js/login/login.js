@@ -3,13 +3,30 @@ const USERS_URL = `${FIREBASE_BASE}/users.json`;
 
 
 /**
- * Logs in as a guest user and redirects to the summary page.
- * @returns {void}
+ * Logs in as a guest user (with the photo of the guest account) and redirects to the summary page.
+ * @async
+ * @returns {Promise<void>}
  */
-function guestLogin() {
-    const guestUser = { id: 'guest', name: 'Guest', email: '', isGuest: true };
+async function guestLogin() {
+    const photo = await loadGuestAccountPhoto();
+    const guestUser = { id: 'guest', name: 'Guest', email: '', isGuest: true, photo };
     sessionStorage.setItem('currentUser', JSON.stringify(guestUser));
     window.location.href = './html/summary.html';
+}
+
+
+/**
+ * Loads the profile photo of the shared guest account, so it shows in the header right away.
+ * @async
+ * @returns {Promise<string>} Photo as base64 data URL, or an empty string.
+ */
+async function loadGuestAccountPhoto() {
+    try {
+        const response = await fetch(`${FIREBASE_BASE}/users/guest/photo.json`);
+        return (await response.json()) || '';
+    } catch (error) {
+        return '';
+    }
 }
 
 

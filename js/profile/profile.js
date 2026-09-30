@@ -22,12 +22,12 @@ window.addEventListener('load', showHeaderPhoto);
 
 
 /**
- * Hides "Account" for guests, because guests have no account to edit.
+ * Hides "Account" when nobody is logged in; guests keep it to set their profile photo.
  * @returns {void}
  */
 function initProfileMenu() {
     const user = getCurrentUser();
-    if (!user || user.isGuest) {
+    if (!user) {
         document.querySelectorAll('.avatar-menu-btn--profile').forEach(btn => btn.remove());
     }
 }
@@ -40,7 +40,7 @@ function initProfileMenu() {
 function showHeaderPhoto() {
     const user = getCurrentUser();
     const avatar = document.getElementById('user-avatar');
-    if (!avatar || !user || user.isGuest) return;
+    if (!avatar || !user) return;
     avatar.innerHTML = user.photo
         ? `<img class="user-avatar-photo" src="${imgEscape(user.photo)}" alt="">`
         : getInitials(user.name);
@@ -55,10 +55,11 @@ function showHeaderPhoto() {
 async function openProfileDialog() {
     document.getElementById('avatar-menu')?.classList.add('d-none');
     const user = getCurrentUser();
-    if (!user || user.isGuest) return;
+    if (!user) return;
     const dialog = getProfileDialog();
-    await loadProfileContact(user);
+    if (!user.isGuest) await loadProfileContact(user);
     fillProfileForm(user);
+    if (user.isGuest) await fillGuestPhoto(user);
     setProfileMode(false);
     lockPageScroll(true);
     dialog.showModal();
@@ -151,6 +152,7 @@ function setProfileMode(edit) {
     document.getElementById('profile-save').textContent = edit ? 'Save ✓' : 'Edit';
     dialog.querySelectorAll('.account-field-input').forEach(input => { input.readOnly = !edit; });
     document.getElementById('profile-camera').classList.toggle('d-none', !edit);
+    applyGuestRestrictions();
     clearProfileErrors();
     renderProfileAvatar();
 }
