@@ -66,6 +66,6 @@ Wichtige Dateien
 - [js/profile/profile.js](js/profile/profile.js) — My profile
 - [assets/templates/](assets/templates/) — HTML-Templates
 
-Mitwirkende
------------
-Basis: Join-Gruppenprojekt von Rudolf Schultz, Alexander Lindt und Ben Bronner (Developer Akademie).
+Autor
+-----
+Alexander Lindt – IHK-Prüfungsprojekt „Dateiupload in Join“.
