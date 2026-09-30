@@ -3,6 +3,8 @@
 Kanban-Board „Join“ (HTML/CSS/Vanilla JS + Firebase Realtime Database) mit dem IHK-Prüfungsfeature
 **Dateiupload in Join** (Design: Figma „Join Version IHK“).
 
+**Livetest:** https://alexander-lindt.developerakademie.net/Join-IHK/ – ohne Konto über „Guest Log in“ testen.
+
 Installation
 ------------
 Das Projekt braucht keinen Build-Schritt. Zum Testen einen lokalen Webserver starten:
