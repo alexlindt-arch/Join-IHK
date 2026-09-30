@@ -16,8 +16,8 @@ const JOIN_DB_URL = 'https://join-ihk-lindt-default-rtdb.europe-west1.firebaseda
  */
 const EMAILJS_CONFIG = {
     serviceId: '',
-    templateId: '',
-    publicKey: ''
+    templateId: 'template_1llu43l',
+    publicKey: 'eIKXGDKzVSl-e1H3V'
 };
 
 

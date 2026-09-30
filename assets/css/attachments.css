@@ -1,5 +1,6 @@
 /* ---------- File picker ---------- */
 .attachment-field {
+    gap: 8px;
     min-width: 0;
 }
 
@@ -12,12 +13,16 @@
 
 .attachment-label {
     margin: 0;
+    color: #2A3647;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 120%;
 }
 
 .attachment-hint {
-    margin: 4px 0 0;
-    color: #A8A8A8;
-    font-size: 14px;
+    margin: 8px 0 0;
+    color: #848484;
+    font-size: 16px;
     line-height: 120%;
 }
 
@@ -53,30 +58,32 @@
 
 .attachment-dropzone {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
-    min-height: 48px;
-    padding: 8px 16px;
-    border: unset;
-    outline: 1px dashed #A8A8A8;
-    outline-offset: -1px;
+    height: 48px;
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px dashed #686868;
     border-radius: 10px;
-    background: #EEEEEE;
-    color: #42526E;
-    font-family: inherit;
+    background: rgba(231, 231, 231, 0.5);
+    color: #686868;
+    font-family: 'Open Sans', sans-serif;
     font-size: 16px;
+    font-weight: 400;
+    line-height: 120%;
     cursor: pointer;
-    transition: background-color 100ms, outline-color 100ms;
+    transition: background-color 100ms, border-color 100ms;
 }
 
 .attachment-dropzone:hover,
 .attachment-dropzone:focus-visible,
 .attachment-dropzone--active {
-    outline: 2px dashed var(--secondaryColor);
-    outline-offset: -2px;
-    background: #E3F4FB;
+    border-color: var(--secondaryColor);
+    background: rgba(41, 171, 226, 0.08);
+    outline: none;
 }
 
 .attachment-dropzone--busy {
@@ -85,8 +92,14 @@
 }
 
 .attachment-plus {
-    font-size: 24px;
-    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    padding: 3px;
+    box-sizing: border-box;
+    border-radius: 10px;
 }
 
 

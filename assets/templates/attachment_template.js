@@ -28,7 +28,7 @@ function attachmentPickerTemplate(pickerId) {
                 aria-describedby="attachment-hint-${pickerId}"
                 onclick="openAttachmentDialog('${pickerId}')" ondragover="handleAttachmentDragOver(event)"
                 ondragleave="handleAttachmentDragLeave(event)" ondrop="handleAttachmentDrop(event, '${pickerId}')">
-                Drag a file or browse <span class="attachment-plus" aria-hidden="true">+</span>
+                Drag a file or browse <span class="attachment-plus" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 0V15" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round"/><path d="M15 7.64L0 7.64" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round"/></svg></span>
             </button>
             <ul class="attachment-list d-none" id="attachment-list-${pickerId}" aria-label="Selected images"></ul>
         </section>`;
