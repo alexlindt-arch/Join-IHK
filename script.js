@@ -48,18 +48,6 @@ function getCurrentUser() {
 
 
 /**
- * Builds the creator entry for a task that a logged-in team member creates in Join.
- * Internal creators are team members; external creators are stakeholders (email requests).
- * @returns {{name: string, email: string, type: 'internal'}} Creator object.
- */
-function buildInternalCreator() {
-    const user = getCurrentUser();
-    const name = user?.isGuest ? 'Guest' : user?.name || 'Unknown';
-    return { name, email: user?.email || '', type: 'internal' };
-}
-
-
-/**
  * Returns whether the current session belongs to a guest user.
  * @returns {boolean}
  */

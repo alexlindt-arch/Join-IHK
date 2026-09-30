@@ -47,114 +47,6 @@
     cursor: pointer;
 }
 
-/* ---------- Triage ---------- */
-.board-col--triage .board-col-header span {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.triage-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 6px;
-    border-radius: 11px;
-    background: var(--category-orange);
-    color: var(--white);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.category-feature-request {
-    background-color: var(--category-orange);
-}
-
-.task-card-requester,
-.detail-requester {
-    color: var(--light-gray-4);
-    font-size: 12px;
-}
-
-.detail-requester {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin: 0 0 16px;
-    font-size: 14px;
-}
-
-.creator-badge {
-    padding: 2px 8px;
-    border-radius: 8px;
-    color: var(--white);
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.creator-badge--internal {
-    background: var(--primaryColor);
-}
-
-.creator-badge--external {
-    background: var(--category-orange);
-}
-
-.detail-btn--accept {
-    color: var(--secondaryColor);
-    font-weight: 700;
-    white-space: nowrap;
-}
-
-.detail-accept-label span {
-    white-space: nowrap;
-}
-
-/* Mobile: "Accept to / To do" in two lines next to the check mark, so it fits beside Delete and Edit */
-@media (max-width: 600px) {
-    .detail-actions .detail-btn--accept {
-        gap: 8px;
-        text-align: left;
-        line-height: 1.2;
-        white-space: normal;
-    }
-
-    /* "Accept to To do" only breaks into two lines when it does not fit in one */
-    .detail-actions .detail-btn--accept {
-        flex: 0 1 auto;
-    }
-
-    .detail-accept-label span {
-        display: inline;
-    }
-}
-
-/* Small phones: compact buttons spread over the full width, so all three fit in one row */
-@media (max-width: 425px) {
-    .detail-actions:has(.detail-btn--accept) {
-        justify-content: space-between;
-        gap: 4px;
-    }
-
-    .detail-actions:has(.detail-btn--accept) .detail-btn {
-        gap: 4px;
-        padding: 8px 4px;
-    }
-
-    .detail-actions:has(.detail-btn--accept) .detail-divider-v {
-        display: none;
-    }
-}
-
-@media (min-width: 1025px) {
-    .board-columns {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: 16px;
-    }
-}
 
 .avatar-upload {
     display: flex;
@@ -172,38 +64,6 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.category-bug-report {
-    background-color: var(--priority-urgent);
-}
-
-/* Triage counter: a round orange pill next to the title (more specific than .board-col-header span) */
-.board-col--triage .board-col-header > span {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.board-col-header .triage-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 30px;
-    height: 28px;
-    padding: 0 7px;
-    border-radius: 999px;
-    background: var(--category-orange);
-    color: #000000;
-    font-size: 21px;
-    font-weight: 800;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-    box-sizing: border-box;
-}
-
-.board-col-header .triage-badge.d-none {
-    display: none;
 }
 
 /* Contact dialog avatar: 80px circle with centered initials */
@@ -287,22 +147,6 @@
     line-height: 120%;
 }
 
-.detail-ai-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.detail-ai-text {
-    background: linear-gradient(90deg, #9327FF 0%, #2EA1DC 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    font-size: 16px;
-    line-height: 120%;
-    white-space: nowrap;
-}
-
 #board-detail-box .detail-close-btn {
     display: flex;
     flex-shrink: 0;
@@ -350,86 +194,6 @@
     font-size: 20px;
     font-weight: 400;
     line-height: 120%;
-}
-
-/* Creator row: "Creator:" + Extern/Intern badge, name and E-mail link */
-.detail-creator {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px 24px;
-}
-
-.detail-creator-label,
-.detail-creator-person {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: 0;
-}
-
-.detail-creator-person {
-    flex: 1;
-    justify-content: space-between;
-}
-
-#board-detail-box .detail-creator-title {
-    color: #2A3647;
-}
-
-.detail-creator-name {
-    min-width: 0;
-    color: #000000;
-    font-family: 'Open Sans', 'Inter', sans-serif;
-    font-size: 19px;
-    line-height: 120%;
-    overflow-wrap: anywhere;
-}
-
-#board-detail-box .creator-badge {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 4px;
-    height: 22px;
-    padding: 0 4px;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 120%;
-}
-
-#board-detail-box .creator-badge--external {
-    background: #EBFC88;
-    color: #0B3681;
-}
-
-#board-detail-box .creator-badge--internal {
-    background: #D6EEFF;
-    color: #0B3681;
-}
-
-.detail-creator-mail {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 4px;
-    padding: 0 3px;
-    border-radius: 4px;
-    color: #42526E;
-    font-size: 16px;
-    line-height: 120%;
-    text-decoration: none;
-}
-
-.detail-creator-mail svg {
-    color: #177DA8;
-}
-
-.detail-creator-mail:hover {
-    background: #EEF7FB;
-    color: #177DA8;
 }
 
 #board-detail-box .detail-row {
@@ -509,7 +273,7 @@
     border-top: none;
 }
 
-/* Mobile design: smaller type, creator badge above "Creator:" */
+/* Mobile design: smaller type */
 @media (max-width: 600px) {
     .board-modal:has(> #board-detail-box:not(.d-none)) {
         max-width: 396px;
@@ -537,8 +301,7 @@
     #board-detail-box .detail-desc,
     #board-detail-box .detail-row,
     #board-detail-box .detail-prio,
-    #board-detail-box .detail-assignee-name,
-    .detail-creator-name {
+    #board-detail-box .detail-assignee-name {
         font-size: 16px;
     }
 
@@ -548,37 +311,11 @@
         font-weight: 700;
     }
 
-    .detail-creator {
-        flex-wrap: nowrap;
-        align-items: flex-end;
-        gap: 28px;
-    }
-
-    .detail-creator-label {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
-    }
 }
 
-/* ---------- Board layout with the Triage column ---------- */
+/* ---------- Board layout ---------- */
 .task-card {
     -webkit-touch-callout: none;
-}
-
-/* Desktop: five columns; when they do not fit, the board scrolls sideways instead of squeezing the cards */
-@media (min-width: 1025px) {
-    .board-columns {
-        grid-template-columns: repeat(5, minmax(190px, 1fr));
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        padding: 4px 4px 16px;
-        scrollbar-width: thin;
-    }
-
-    .board-col {
-        min-width: 0;
-    }
 }
 
 /* Tablet and mobile: columns below each other, the cards of a column side by side and swipeable */
@@ -627,11 +364,9 @@
     }
 }
 
-/* Mobile task detail actions: right-aligned; "Accept to To do" stays in one line and
-   moves into its own row when the three buttons do not fit next to each other */
+/* Mobile task detail actions: right-aligned */
 @media (max-width: 600px) {
-    #board-detail-box .detail-actions,
-    #board-detail-box .detail-actions:has(.detail-btn--accept) {
+    #board-detail-box .detail-actions {
         flex-wrap: wrap;
         justify-content: flex-end;
         gap: 4px;
@@ -640,19 +375,6 @@
     #board-detail-box .detail-actions .detail-btn {
         gap: 4px;
         padding: 8px 6px;
-    }
-
-    #board-detail-box .detail-actions .detail-btn--accept {
-        flex: 0 0 auto;
-    }
-
-    #board-detail-box .detail-accept-label span {
-        display: inline;
-        white-space: nowrap;
-    }
-
-    #board-detail-box .detail-actions:has(.detail-btn--accept) .detail-divider-v {
-        display: none;
     }
 }
 
@@ -663,17 +385,6 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-}
-
-.task-card-requester {
-    display: flex;
-    gap: 4px;
-    min-width: 0;
-    white-space: nowrap;
-}
-
-.detail-creator-person .detail-creator-name {
-    flex: 0 1 auto;
 }
 
 .detail-assignee .detail-assignee-name {

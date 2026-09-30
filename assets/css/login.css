@@ -473,16 +473,6 @@
 #reg_name img {
     margin-top: -6px;
 }
-/* No second intro when coming from the welcome page: jump straight to the end state */
-.no-intro .login-page,
-.no-intro .login-logo-animated,
-.no-intro .login-logo-animated img,
-.no-intro .login-fullscreen {
-    animation-duration: 0s !important;
-    animation-delay: 0s !important;
-}
-
-/* Logo ends at exactly the same place as on the welcome page (see welcome.css) */
 @media (max-width: 1024px) {
     .login-logo-animated {
         top: 32px;

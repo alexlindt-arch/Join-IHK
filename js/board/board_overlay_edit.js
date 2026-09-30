@@ -314,8 +314,8 @@ function buildTaskUpdates(title, task) {
  */
 async function saveTaskUpdates(id, updates) {
   const task = allTasks.find(t => t.id == id);
-  if (task && isRemoteTask(task)) {
-    await updateTaskRemote(getRemoteTaskId(task), updates);
+  if (task && !checkIsGuest()) {
+    await updateTaskRemote(task.id, updates);
   } else {
     saveGuestTasks(allTasks);
     closeOverlay();

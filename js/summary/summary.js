@@ -43,31 +43,12 @@ async function loadTasks() {
  * @returns {Promise<Object[]>} Merged and sorted guest task list.
  */
 async function loadGuestTasks() {
-    const mailTickets = await loadMailTickets();
     try {
         const fileTasks = await safeFetchFileTasks('../demo-task.json');
         const local = JSON.parse(sessionStorage.getItem('guestTasks')) || [];
-        return mergeTasksById(fileTasks || [], local || []).concat(mailTickets);
+        return mergeTasksById(fileTasks || [], local || []);
     } catch (e) {
-        try { return (JSON.parse(sessionStorage.getItem('guestTasks')) || []).concat(mailTickets); } catch (e) { return mailTickets; }
-    }
-}
-
-
-/**
- * Loads the tickets n8n created from emails, so the guest summary counts them as well.
- * @async
- * @returns {Promise<Object[]>} Email tickets from Firebase (empty if unreachable).
- */
-async function loadMailTickets() {
-    try {
-        const response = await fetch(SUMMARY_TASKS_URL);
-        const data = await response.json();
-        if (!data) return [];
-        return Object.values(data).filter(t => t && t.creator && t.creator.type === 'external');
-    } catch (error) {
-        console.error('Error loading email tickets:', error);
-        return [];
+        try { return JSON.parse(sessionStorage.getItem('guestTasks')) || []; } catch (e) { return []; }
     }
 }
 
@@ -89,7 +70,7 @@ function mergeTasksById(fileTasks, localTasks) {
 /**
  * Counts how many tasks currently have the given board status.
  * @param {Object[]} tasks - All tasks.
- * @param {string} status - One of 'triage' | 'todo' | 'inProgress' | 'awaitFeedback' | 'done'.
+ * @param {string} status - One of 'todo' | 'inProgress' | 'awaitFeedback' | 'done'.
  * @returns {number} Number of matching tasks.
  */
 function countTasks(tasks, status) {
@@ -109,7 +90,6 @@ function renderStats(tasks) {
     setNumber('stat-feedback', countTasks(tasks, 'awaitFeedback'));
     setNumber('stat-total', tasks.length);
     setNumber('stat-urgent', tasks.filter(task => task.priority === 'urgent').length);
-    setNumber('stat-requests', countTasks(tasks, 'triage'));
     renderDeadline(tasks);
 }
 

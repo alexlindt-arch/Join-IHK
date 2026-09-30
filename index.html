@@ -4,74 +4,12 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="0; url=./login.html" />
     <link rel="icon" type="image/png" href="./assets/icons/favicon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon/favicon.svg" />
-    <link rel="shortcut icon" href="./assets/icons/favicon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicon/apple-touch-icon.png" />
-    <link rel="manifest" href="./assets/icons/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="./assets/css/fonts.css?v=20260924v" />
-    <link rel="stylesheet" href="./assets/css/welcome.css?v=20260924v" />
-    <title>Join – Welcome</title>
+    <title>Join</title>
+    <script>location.replace('./login.html' + location.hash);</script>
 </head>
 
-<body class="welcome-page">
-    <div class="welcome-logo-animated">
-        <img src="./assets/img/logo_white.svg" alt="Join">
-    </div>
-
-    <main class="welcome-main">
-        <p class="welcome-signup">
-            <span>Not a Join user?</span>
-            <a href="./login.html?intro=off#signup" class="welcome-signup-link">Sign up</a>
-        </p>
-
-        <section class="welcome-card" aria-labelledby="welcome-title">
-            <div class="welcome-intro">
-                <div class="welcome-heading">
-                    <h1 id="welcome-title" class="welcome-title">Welcome</h1>
-                    <span class="welcome-divider" aria-hidden="true"></span>
-                </div>
-                <p class="welcome-text">Pick the option that suits your role: create a request as a stakeholder
-                    or log in if you’re part of the team.</p>
-            </div>
-
-            <div class="welcome-options">
-                <div class="welcome-option">
-                    <div class="welcome-option-label">
-                        <svg class="welcome-icon" width="24" height="24" viewBox="398 559 24 24" aria-hidden="true">
-                            <path
-                                d="M402.6 580.5C402.022 580.5 401.528 580.294 401.117 579.882C400.706 579.469 400.5 578.974 400.5 578.395V566.816C400.5 566.237 400.706 565.741 401.117 565.329C401.528 564.917 402.022 564.711 402.6 564.711H406.8V562.605C406.8 562.026 407.006 561.531 407.417 561.118C407.828 560.706 408.322 560.5 408.9 560.5H413.1C413.677 560.5 414.172 560.706 414.583 561.118C414.994 561.531 415.2 562.026 415.2 562.605V564.711H419.4C419.977 564.711 420.472 564.917 420.883 565.329C421.294 565.741 421.5 566.237 421.5 566.816V578.395C421.5 578.974 421.294 579.469 420.883 579.882C420.472 580.294 419.977 580.5 419.4 580.5H402.6ZM402.6 578.395H419.4V566.816H402.6V578.395ZM408.9 564.711H413.1V562.605H408.9V564.711Z"
-                                fill="#177DA8" />
-                        </svg>
-                        <span>Are you a stakeholder?</span>
-                    </div>
-                    <a href="./html/request.html" class="welcome-btn welcome-btn--primary">Create request</a>
-                </div>
-
-                <div class="welcome-option">
-                    <div class="welcome-option-label">
-                        <svg class="welcome-icon" width="25" height="20" viewBox="739 561 25 20" aria-hidden="true">
-                            <path
-                                d="M739 576.909C739 576.265 739.166 575.673 739.497 575.134C739.829 574.594 740.269 574.182 740.818 573.898C741.992 573.311 743.186 572.87 744.398 572.577C745.61 572.283 746.841 572.136 748.091 572.136C749.341 572.136 750.572 572.283 751.784 572.577C752.996 572.87 754.189 573.311 755.364 573.898C755.913 574.182 756.353 574.594 756.685 575.134C757.016 575.673 757.182 576.265 757.182 576.909V577.818C757.182 578.443 756.959 578.978 756.514 579.423C756.069 579.868 755.534 580.091 754.909 580.091H741.273C740.648 580.091 740.113 579.868 739.668 579.423C739.223 578.978 739 578.443 739 577.818V576.909ZM761.727 580.091H758.83C759.038 579.75 759.194 579.386 759.298 578.997C759.402 578.609 759.455 578.216 759.455 577.818V576.682C759.455 575.849 759.223 575.048 758.759 574.281C758.295 573.514 757.636 572.856 756.784 572.307C757.75 572.421 758.659 572.615 759.511 572.889C760.364 573.164 761.159 573.5 761.898 573.898C762.58 574.277 763.1 574.698 763.46 575.162C763.82 575.626 764 576.133 764 576.682V577.818C764 578.443 763.777 578.978 763.332 579.423C762.887 579.868 762.352 580.091 761.727 580.091ZM748.091 571C746.841 571 745.771 570.555 744.881 569.665C743.991 568.775 743.545 567.705 743.545 566.455C743.545 565.205 743.991 564.135 744.881 563.244C745.771 562.354 746.841 561.909 748.091 561.909C749.341 561.909 750.411 562.354 751.301 563.244C752.191 564.135 752.636 565.205 752.636 566.455C752.636 567.705 752.191 568.775 751.301 569.665C750.411 570.555 749.341 571 748.091 571ZM759.455 566.455C759.455 567.705 759.009 568.775 758.119 569.665C757.229 570.555 756.159 571 754.909 571C754.701 571 754.436 570.976 754.114 570.929C753.792 570.882 753.527 570.83 753.318 570.773C753.83 570.167 754.223 569.494 754.497 568.756C754.772 568.017 754.909 567.25 754.909 566.455C754.909 565.659 754.772 564.892 754.497 564.153C754.223 563.415 753.83 562.743 753.318 562.136C753.583 562.042 753.848 561.98 754.114 561.952C754.379 561.923 754.644 561.909 754.909 561.909C756.159 561.909 757.229 562.354 758.119 563.244C759.009 564.135 759.455 565.205 759.455 566.455ZM741.273 577.818H754.909V576.909C754.909 576.701 754.857 576.511 754.753 576.341C754.649 576.171 754.511 576.038 754.341 575.943C753.318 575.432 752.286 575.048 751.244 574.793C750.203 574.537 749.152 574.409 748.091 574.409C747.03 574.409 745.979 574.537 744.938 574.793C743.896 575.048 742.864 575.432 741.841 575.943C741.67 576.038 741.533 576.171 741.429 576.341C741.325 576.511 741.273 576.701 741.273 576.909V577.818ZM748.091 568.727C748.716 568.727 749.251 568.505 749.696 568.06C750.141 567.615 750.364 567.08 750.364 566.455C750.364 565.83 750.141 565.295 749.696 564.85C749.251 564.404 748.716 564.182 748.091 564.182C747.466 564.182 746.931 564.404 746.486 564.85C746.041 565.295 745.818 565.83 745.818 566.455C745.818 567.08 746.041 567.615 746.486 568.06C746.931 568.505 747.466 568.727 748.091 568.727Z"
-                                fill="#1A8DBE" />
-                        </svg>
-                        <span>Are you a team member?</span>
-                    </div>
-                    <a href="./login.html?intro=off" class="welcome-btn welcome-btn--secondary">Member login</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="welcome-footer">
-        <a href="./html/privacy_policy.html" class="welcome-footer-link">Privacy Policy</a>
-        <a href="./html/legal_notice.html" class="welcome-footer-link">Legal notice</a>
-    </footer>
-    <script>
-        // Always start at the top, also when the browser would restore an old scroll position
-        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        window.scrollTo(0, 0);
-    </script>
-</body>
+<body></body>
 
 </html>

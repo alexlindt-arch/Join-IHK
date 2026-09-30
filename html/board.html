@@ -9,21 +9,21 @@
     <link rel="shortcut icon" href="../assets/icons/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/icons/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="../style.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/board.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/board_add_task.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/board_responsive.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/add_task.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/vendor/flatpickr/flatpickr.min.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/features.css?v=20260924v">
-    <link rel="stylesheet" href="../assets/css/profile.css?v=20260924v">
+    <link rel="stylesheet" href="../style.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_add_task.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_responsive.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/add_task.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/vendor/flatpickr/flatpickr.min.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/features.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/profile.css?v=20260930a">
     <title>Board</title>
 </head>
 
 <body onload="initTasks();">
     <div class="header-background">
         <header class="header">
-            <span class="header-titel">Kanban Projekt Management Tool</span>
+            <span class="header-titel">Kanban Project Management Tool</span>
             <img src="../assets/img/logo_big.svg" class="header-logo-mobil" alt="Join">
 
             <div class="header-account">
@@ -132,21 +132,6 @@
         </div>
 
         <div class="board-columns">
-            <div class="board-col board-col--triage">
-                <div class="board-col-header">
-                    <span>Triage <span class="triage-badge d-none" id="triage-count"></span></span>
-                    <button class="col-add-btn" aria-label="Add task to Triage" onclick="openAddTaskModal('triage')">
-                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                            <path d="M7.5 1V14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" />
-                            <path d="M1 7.5H14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="board-cards" id="triage" ondrop="moveTo('triage')"
-                    ondragover="allowDrop(event); highlight('triage')" ondragleave="removeHighlight('triage')">
-                </div>
-            </div>
-
             <div class="board-col">
                 <div class="board-col-header">
                     <span>To do</span>
@@ -197,24 +182,24 @@
     <!-- Add Task Modal is injected by assets/templates/board_template.js -->
 
     <div id="notification" class="notification d-none"></div>
-    <script src="../js/config.js?v=20260924v"></script>
-    <script src="../js/image_utils.js?v=20260924v"></script>
-    <script src="../assets/templates/board_template.js?v=20260924v"></script>
-    <script src="../assets/templates/board_template_edit.js?v=20260924v"></script>
-    <script src="../assets/templates/board_template_modal.js?v=20260924v"></script>
-    <script src="../assets/vendor/flatpickr/flatpickr.min.js?v=20260924v"></script>
-    <script src="../js/board/datepicker_init.js?v=20260924v"></script>
-    <script src="../js/board/board_drag.js?v=20260924v"></script>
-    <script src="../js/board/board_add_task.js?v=20260924v"></script>
-    <script src="../js/board/board_progressbar.js?v=20260924v"></script>
-    <script src="../js/board/board_overlay.js?v=20260924v"></script>
-    <script src="../js/board/board_overlay_edit.js?v=20260924v"></script>
-    <script src="../js/board/board_add_task_form.js?v=20260924v"></script>
-    <script src="../js/board/board_open_modal.js?v=20260924v"></script>
-    <script src="../js/board/board_save_task.js?v=20260924v"></script>
-    <script src="../js/board/board.js?v=20260924v"></script>
-    <script src="../script.js?v=20260924v"></script>
-    <script src="../js/profile/profile.js?v=20260924v"></script>
+    <script src="../js/config.js?v=20260930a"></script>
+    <script src="../js/image_utils.js?v=20260930a"></script>
+    <script src="../assets/templates/board_template.js?v=20260930a"></script>
+    <script src="../assets/templates/board_template_edit.js?v=20260930a"></script>
+    <script src="../assets/templates/board_template_modal.js?v=20260930a"></script>
+    <script src="../assets/vendor/flatpickr/flatpickr.min.js?v=20260930a"></script>
+    <script src="../js/board/datepicker_init.js?v=20260930a"></script>
+    <script src="../js/board/board_drag.js?v=20260930a"></script>
+    <script src="../js/board/board_add_task.js?v=20260930a"></script>
+    <script src="../js/board/board_progressbar.js?v=20260930a"></script>
+    <script src="../js/board/board_overlay.js?v=20260930a"></script>
+    <script src="../js/board/board_overlay_edit.js?v=20260930a"></script>
+    <script src="../js/board/board_add_task_form.js?v=20260930a"></script>
+    <script src="../js/board/board_open_modal.js?v=20260930a"></script>
+    <script src="../js/board/board_save_task.js?v=20260930a"></script>
+    <script src="../js/board/board.js?v=20260930a"></script>
+    <script src="../script.js?v=20260930a"></script>
+    <script src="../js/profile/profile.js?v=20260930a"></script>
 </body>
 
 </html>

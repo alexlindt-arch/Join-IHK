@@ -1,11 +1,8 @@
-# Secrets – never commit credentials, API keys or the n8n encryption key
+# Secrets – never commit credentials or API keys
 .env
 .env.*
 *.pem
 *.key
-n8n/credentials*.json
-n8n/.n8n/
-N8N_ENCRYPTION_KEY*
 
 # Local copies and tooling
 /Join-groupe/

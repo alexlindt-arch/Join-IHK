@@ -31,12 +31,7 @@
         "title": "Build CSS"
       }
     ],
-    "title": "Landing Page & Recipe Recommender",
-    "creator": {
-      "name": "Anton Mayer",
-      "email": "antonm@gmail.com",
-      "type": "internal"
-    }
+    "title": "Landing Page & Recipe Recommender"
   },
   {
     "assignedTo": [
@@ -59,12 +54,7 @@
     "id": 2,
     "priority": "medium",
     "status": "awaitFeedback",
-    "title": "Reusable HTML Base Templates",
-    "creator": {
-      "name": "Anja Schulz",
-      "email": "schulz@hotmail.com",
-      "type": "internal"
-    }
+    "title": "Reusable HTML Base Templates"
   },
   {
     "assignedTo": [
@@ -97,12 +87,7 @@
         "title": "ID Change"
       }
     ],
-    "title": "CSS Architecture & Naming",
-    "creator": {
-      "name": "Benedikt Ziegler",
-      "email": "benedikt@gmail.com",
-      "type": "internal"
-    }
+    "title": "CSS Architecture & Naming"
   },
   {
     "assignedTo": [
@@ -125,12 +110,7 @@
     "id": 4,
     "priority": "urgent",
     "status": "todo",
-    "title": "Daily Recipe & Portion Calculator",
-    "creator": {
-      "name": "Eva Fischer",
-      "email": "eva@gmail.com",
-      "type": "internal"
-    }
+    "title": "Daily Recipe & Portion Calculator"
   },
   {
     "assignedTo": [
@@ -165,11 +145,6 @@
         "title": "Test"
       }
     ],
-    "title": "Integration Testing & QA",
-    "creator": {
-      "name": "David Eisenberg",
-      "email": "david@gmail.com",
-      "type": "internal"
-    }
+    "title": "Integration Testing & QA"
   }
 ]

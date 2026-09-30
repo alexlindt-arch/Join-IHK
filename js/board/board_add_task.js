@@ -6,7 +6,7 @@ let modalSelectedCategory = '';
 let modalAssignedIds = [];
 let modalSubtasks = [];
 let modalContacts = [];
-let modalDefaultStatus = 'triage';
+let modalDefaultStatus = 'todo';
 
 
 /** Normalized contact list from guest or remote source. 

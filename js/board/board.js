@@ -7,10 +7,6 @@ let editAssignedIds = [];
 let editSubtasks = [];
 let boardContacts = [];
 
-/** Guests see real email tickets under id = offset + Firebase key, so they never clash with demo task ids. */
-const GUEST_MAIL_ID_OFFSET = 100000;
-
-
 /**
  * Reads guest tasks from sessionStorage.
  * @returns {Array} Parsed task array or empty array on error.
@@ -26,28 +22,7 @@ function getGuestTasks() {
  * @returns {void}
  */
 function saveGuestTasks(tasks) {
-    sessionStorage.setItem('guestTasks', JSON.stringify(tasks.filter(t => !t.remoteId)));
-}
-
-
-/**
- * Tells whether a task has to be saved in Firebase: always for members,
- * and for guests when it is a real email ticket.
- * @param {Object} task - Task to check.
- * @returns {boolean}
- */
-function isRemoteTask(task) {
-    return !checkIsGuest() || Boolean(task && task.remoteId);
-}
-
-
-/**
- * Returns the Firebase key of a task.
- * @param {Object} task - Task object.
- * @returns {string|number}
- */
-function getRemoteTaskId(task) {
-    return task.remoteId || task.id;
+    sessionStorage.setItem('guestTasks', JSON.stringify(tasks));
 }
 
 
@@ -103,32 +78,12 @@ async function loadRemoteTasks() {
  * @returns {Promise<Array>} Merged task array.
  */
 async function loadGuestTasks() {
-    const mailTickets = await loadMailTicketsForGuest();
     try {
         const fileTasks = await fetchDemoTasks();
-        return mergeWithSessionTasks(fileTasks).concat(mailTickets);
+        return mergeWithSessionTasks(fileTasks);
     } catch (e) {
         console.error('Error loading guest tasks:', e);
-        return getGuestTasks().concat(mailTickets);
-    }
-}
-
-
-/**
- * Loads the tickets that n8n created from emails, so guests see them on the board too.
- * @returns {Promise<Array>} Email tickets with a guest id and their Firebase key in remoteId.
- */
-async function loadMailTicketsForGuest() {
-    try {
-        const response = await fetch(`${BOARD_BASE_URL}/tasks.json`);
-        const data = await response.json();
-        if (!data) return [];
-        return Object.entries(data)
-            .filter(([, t]) => t && t.creator && t.creator.type === 'external')
-            .map(([key, t]) => ({ ...t, id: GUEST_MAIL_ID_OFFSET + Number(key), remoteId: key }));
-    } catch (error) {
-        console.error('Error loading email tickets:', error);
-        return [];
+        return getGuestTasks();
     }
 }
 
@@ -174,38 +129,6 @@ function displayTasks(tasks) {
     tasks.forEach(task => renderTaskCard(task));
     showEmptyPlaceholders();
     addDragHighlightBoxes();
-    updateTriageCount(tasks);
-}
-
-
-/**
- * Shows the number of open feature requests next to the triage column title.
- * @param {Array} tasks - Currently displayed tasks.
- * @returns {void}
- */
-function updateTriageCount(tasks) {
-    const badge = document.getElementById('triage-count');
-    if (!badge) return;
-    const count = tasks.filter(t => t.status === 'triage').length;
-    badge.textContent = count;
-    badge.classList.toggle('d-none', count === 0);
-}
-
-
-/**
- * Moves a triage task into the To do column.
- * @async
- * @param {number|string} id - Task id.
- * @returns {Promise<void>}
- */
-async function acceptTriageTask(id) {
-    const task = allTasks.find(t => t.id == id);
-    if (!task) return;
-    task.status = 'todo';
-    await updateTaskStatus(task);
-    closeOverlay();
-    displayTasks(allTasks);
-    notify('Task moved to To do.');
 }
 
 
@@ -273,7 +196,6 @@ function showEmptyPlaceholders() {
  */
 function getEmptyColumnTexts() {
     return Object.entries({
-        triage: 'No tasks in triage',
         todo: 'No tasks To do',
         inProgress: 'No tasks progress',
         awaitFeedback: 'No tasks feedback',

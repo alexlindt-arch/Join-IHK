@@ -2,7 +2,7 @@ let touchDragClone = null;
 let touchDragOffsetX = 0;
 let touchDragOffsetY = 0;
 
-const COLUMN_IDS = ['triage', 'todo', 'inProgress', 'awaitFeedback', 'done'];
+const COLUMN_IDS = ['todo', 'inProgress', 'awaitFeedback', 'done'];
 
 
 /**
@@ -69,8 +69,8 @@ async function moveTo(status) {
  * @returns {Promise<void>}
  */
 async function updateTaskStatus(task) {
-  if (isRemoteTask(task)) {
-    await updateTaskStatusRemote(getRemoteTaskId(task), task.status);
+  if (!checkIsGuest()) {
+    await updateTaskStatusRemote(task.id, task.status);
   } else {
     saveGuestTasks(allTasks);
   }
@@ -86,32 +86,15 @@ async function updateTaskStatus(task) {
  */
 async function updateTaskStatusRemote(taskId, status) {
   try {
-    const response = await fetch(`${BOARD_BASE_URL}/tasks/${taskId}.json`, {
+    await fetch(`${BOARD_BASE_URL}/tasks/${taskId}.json`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status })
     });
-    if (response.ok) notifyStatusChange(taskId);
   } catch (e) {
     console.error('Error updating task status:', e);
     showNotification('Error updating task status!', true);
   }
-}
-
-
-/**
- * Tells the n8n status notifier that a task changed its column, so the creator gets an email.
- * Fire-and-forget: a failing webhook must never block the board.
- * @param {number|string} taskId - Id of the moved task.
- * @returns {void}
- */
-function notifyStatusChange(taskId) {
-  if (typeof JOIN_STATUS_WEBHOOK_URL === 'undefined' || !JOIN_STATUS_WEBHOOK_URL) return;
-  fetch(JOIN_STATUS_WEBHOOK_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ taskId: String(taskId) })
-  }).catch(error => console.warn('Status notification not sent:', error));
 }
 
 

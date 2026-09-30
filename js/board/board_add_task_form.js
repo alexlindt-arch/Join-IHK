@@ -133,7 +133,6 @@ function collectModalTask() {
         assignedTo: collectModalAssignedTo(),
         subtasks: modalSubtasks,
         status: modalDefaultStatus,
-        creator: buildInternalCreator(),
         createdAt: new Date().toISOString()
     };
 }
