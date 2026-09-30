@@ -11,6 +11,7 @@ async function guestLogin() {
     try {
         const guestUser = await startGuestSession();
         sessionStorage.setItem('currentUser', JSON.stringify(guestUser));
+        sessionStorage.setItem('showGuestNotice', '1');
         window.location.href = './html/summary.html';
     } catch (error) {
         showNotification('Guest login failed. Please try again.', true);
