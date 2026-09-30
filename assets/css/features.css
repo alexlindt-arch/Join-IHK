@@ -84,31 +84,32 @@
     box-sizing: border-box;
 }
 
-/* Camera button at the lower right edge of the circle: half on it, half outside (like DABubble) */
+/* Camera button (Figma "Add Photo"): 46px white circle at 65% / 70% of the avatar, 30px camera icon */
 .profile-placeholder .avatar-upload-hint {
-    top: calc(85% - 18px);
+    top: 70%;
     right: auto;
     bottom: auto;
-    left: calc(85% - 18px);
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--white);
-    background: var(--primaryColor);
-    color: var(--white);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    left: 65%;
+    width: 46px;
+    height: 46px;
+    border: unset;
+    border-radius: 32px;
+    background: #FFFFFF;
+    color: #2A3647;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
     transform: none;
-    transition: background-color 100ms, transform 100ms;
+    transition: color 100ms, box-shadow 100ms;
 }
 
 .profile-placeholder .avatar-upload-hint svg {
-    width: 18px;
-    height: 18px;
+    width: 30px;
+    height: 30px;
 }
 
 .profile-placeholder:hover .avatar-upload-hint {
-    background: var(--secondaryColor);
-    transform: scale(1.08);
+    color: var(--secondaryColor);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
 /* ---------- Task detail (Figma: desktop 525px, mobile 396px) ---------- */
