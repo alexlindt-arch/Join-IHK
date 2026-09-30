@@ -197,6 +197,12 @@
     text-decoration: underline;
 }
 
+/* The space of "Remove photo" is always kept, so the avatar never moves when a photo is added */
+.account-avatar-remove.d-none {
+    display: inline-block !important;
+    visibility: hidden;
+}
+
 /* ---------- Fields ---------- */
 
 .account-dialog-fields {
