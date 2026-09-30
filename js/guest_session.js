@@ -164,14 +164,24 @@ function watchGuestSession() {
 
 
 /**
+ * Resets all changes of the logged-in guest right away (session end or logout).
+ * @async
+ * @returns {Promise<void>}
+ */
+async function resetOwnGuestSession() {
+    const sessionId = getGuestSessionId();
+    const session = sessionId ? await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`) : null;
+    if (session) await resetGuestSession(sessionId, session);
+}
+
+
+/**
  * Resets the data of the logged-in guest, logs the guest out and tells the reason on the login page.
  * @async
  * @returns {Promise<void>}
  */
 async function endGuestSession() {
-    const sessionId = getGuestSessionId();
-    const session = sessionId ? await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`) : null;
-    if (session) await resetGuestSession(sessionId, session);
+    await resetOwnGuestSession();
     sessionStorage.removeItem('currentUser');
     const loginPath = location.pathname.includes('/html/') ? '../login.html' : './login.html';
     location.href = `${loginPath}?guestEnded=1`;

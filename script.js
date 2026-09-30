@@ -69,9 +69,12 @@ function checkIsGuest() {
 
 /**
  * Removes the current user session and redirects to the login page.
- * @returns {void}
+ * For guests all guest changes are reset first (see js/guest_session.js).
+ * @async
+ * @returns {Promise<void>}
  */
-function logout() {
+async function logout() {
+    if (checkIsGuest() && typeof resetOwnGuestSession === 'function') await resetOwnGuestSession();
     sessionStorage.removeItem('currentUser');
     window.location.href = '../login.html';
 }
