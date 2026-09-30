@@ -59,7 +59,7 @@ async function openProfileDialog() {
     const dialog = getProfileDialog();
     if (!user.isGuest) await loadProfileContact(user);
     fillProfileForm(user);
-    if (user.isGuest) await fillGuestPhoto(user);
+    if (user.isGuest) await fillGuestAccount(user);
     setProfileMode(false);
     lockPageScroll(true);
     dialog.showModal();

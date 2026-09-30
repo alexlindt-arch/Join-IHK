@@ -27,6 +27,7 @@ function calcMaxId(tasks) {
  */
 async function saveModalTaskRemote(task) {
   task.id = await getNextModalTaskId();
+  await recordGuestCreate('tasks', task.id);
   const response = await fetch(`${ADDTASK_BASE_URL}/tasks/${task.id}.json`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },

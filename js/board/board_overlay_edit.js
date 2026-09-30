@@ -352,6 +352,7 @@ function buildPatchOptions(data) {
  */
 async function updateTaskRemote(id, updates) {
   try {
+    await recordGuestChange('tasks', id);
     const response = await fetch(`${BOARD_BASE_URL}/tasks/${id}.json`, buildPatchOptions(updates));
     if (!response.ok) throw new Error(`Saving failed with status ${response.status}`);
     closeOverlay();

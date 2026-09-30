@@ -53,6 +53,7 @@ function isAssignedToTask(task, contactId) {
  */
 async function saveTaskAssignees(task, contactId) {
     const assignedTo = task.assignedTo.filter(assignee => String(assignee.id) !== String(contactId));
+    await recordGuestChange('tasks', task.id);
     await fetch(`${JOIN_DB_URL}/tasks/${task.id}.json`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },

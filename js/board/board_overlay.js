@@ -134,6 +134,7 @@ async function deleteTask(id) {
  */
 async function deleteTaskRemote(id) {
   try {
+    await recordGuestChange('tasks', id);
     await fetch(`${BOARD_BASE_URL}/tasks/${id}.json`, { method: 'DELETE' });
     closeOverlay();
     displayTasks(allTasks);
@@ -180,6 +181,7 @@ async function saveSubtaskState(taskId, subtasks) {
  */
 async function updateSubtasksRemote(taskId, subtasks) {
   try {
+    await recordGuestChange('tasks', taskId);
     await fetch(`${BOARD_BASE_URL}/tasks/${taskId}.json`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

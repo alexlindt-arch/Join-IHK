@@ -71,6 +71,7 @@ async function moveTo(status) {
  */
 async function updateTaskStatusRemote(taskId, status) {
   try {
+    await recordGuestChange('tasks', taskId);
     await fetch(`${BOARD_BASE_URL}/tasks/${taskId}.json`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },

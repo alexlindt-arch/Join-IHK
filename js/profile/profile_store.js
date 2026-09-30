@@ -21,7 +21,8 @@ const PROFILE_RULES = {
  * @returns {string} Error text.
  */
 function getProfileFieldError(key, value) {
-    const config = PROFILE_RULES[key];
+    const rules = typeof isGuestProfile === 'function' && isGuestProfile() ? GUEST_PROFILE_RULES : PROFILE_RULES;
+    const config = rules[key];
     if (!value) return config.required ? 'This field is required.' : '';
     return config.rule.test(value) ? '' : config.text;
 }
@@ -57,11 +58,11 @@ async function saveProfile(event) {
     event.preventDefault();
     if (!profileEditMode) return startProfileEdit();
     const user = getCurrentUser();
-    const values = user?.isGuest ? {} : readProfileForm();
+    const values = readProfileForm();
     if (!user || !values) return;
     setProfileSaving(true);
     try {
-        await (user.isGuest ? storeGuestProfile(user) : storeProfile(user, values));
+        await (user.isGuest ? storeGuestProfile(user, values) : storeProfile(user, values));
     } catch (error) {
         setProfileError('Saving failed. Please try again.');
     } finally {

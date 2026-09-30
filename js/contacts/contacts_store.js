@@ -46,6 +46,7 @@ async function saveContactToDB(newContact) {
     newContact.avatar = getInitials(newContact.name);
     newContact.color = getRandomColor();
     try {
+        await recordGuestCreate('contacts', newContact.id);
         await sendContactRequest(newContact.id, 'PUT', newContact);
         await reloadContacts();
         return true;
@@ -71,6 +72,7 @@ async function updateContact(event, id) {
     const updated = { ...readContactForm(event.target), color: contact.color };
     updated.avatar = getInitials(updated.name);
     try {
+        await recordGuestChange('contacts', contact.id);
         await sendContactRequest(contact.id, 'PATCH', updated);
         await syncOwnAccount(contact, updated);
         await reloadContacts();
@@ -104,6 +106,7 @@ function finalizeUpdate(id) {
 async function deleteContact(id) {
     if (!id) return;
     try {
+        await recordGuestChange('contacts', id);
         await sendContactRequest(id, 'DELETE');
         await removeContactFromTasks(id);
         await reloadContacts();

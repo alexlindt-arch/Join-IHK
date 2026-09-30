@@ -196,6 +196,7 @@ async function createTask() {
 async function saveTask(task) {
     const id = await getNextTaskId();
     task.id = id;
+    await recordGuestCreate('tasks', id);
     const response = await fetch(`${ADDTASK_BASE_URL}/tasks/${id}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },

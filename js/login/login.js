@@ -3,31 +3,33 @@ const USERS_URL = `${FIREBASE_BASE}/users.json`;
 
 
 /**
- * Logs in as a guest user (with the photo of the guest account) and redirects to the summary page.
+ * Logs in as a guest with a new 15-minute guest session and redirects to the summary page.
  * @async
  * @returns {Promise<void>}
  */
 async function guestLogin() {
-    const photo = await loadGuestAccountPhoto();
-    const guestUser = { id: 'guest', name: 'Guest', email: '', isGuest: true, photo };
-    sessionStorage.setItem('currentUser', JSON.stringify(guestUser));
-    window.location.href = './html/summary.html';
+    try {
+        const guestUser = await startGuestSession();
+        sessionStorage.setItem('currentUser', JSON.stringify(guestUser));
+        window.location.href = './html/summary.html';
+    } catch (error) {
+        showNotification('Guest login failed. Please try again.', true);
+    }
 }
 
 
 /**
- * Loads the profile photo of the shared guest account, so it shows in the header right away.
- * @async
- * @returns {Promise<string>} Photo as base64 data URL, or an empty string.
+ * Tells the guest on the login page that the guest time is over and all guest changes were reset.
+ * @returns {void}
  */
-async function loadGuestAccountPhoto() {
-    try {
-        const response = await fetch(`${FIREBASE_BASE}/users/guest/photo.json`);
-        return (await response.json()) || '';
-    } catch (error) {
-        return '';
-    }
+function showGuestSessionEnded() {
+    if (new URLSearchParams(location.search).get('guestEnded') !== '1') return;
+    history.replaceState(null, '', location.pathname);
+    showNotification(`Your ${GUEST_SESSION_MINUTES}-minute guest session has ended. All guest changes were reset.`);
 }
+
+
+document.addEventListener('DOMContentLoaded', showGuestSessionEnded);
 
 
 /**

@@ -1,10 +1,20 @@
-/** Database path of the shared guest account (guests have no own user entry). */
-const GUEST_ACCOUNT_PATH = 'users/guest';
+/**
+ * Account of a guest: every guest session has its own account (name, email, phone, photo) that is
+ * stored in the guest session and removed together with all guest changes when the session ends.
+ * Needs js/guest_session.js, profile.js and profile_store.js.
+ */
+
+/** Validation rules for guests: any name, email and phone are optional. */
+const GUEST_PROFILE_RULES = {
+    name: { rule: /^[\p{L}'-]+(\s+[\p{L}'-]+)*$/u, required: true, text: 'Please enter a name (letters only).' },
+    email: { rule: PROFILE_RULES.email.rule, required: false, text: PROFILE_RULES.email.text },
+    phone: PROFILE_RULES.phone
+};
 
 
 /**
- * Tells whether the logged-in user is the guest.
- * @returns {boolean} True for the guest.
+ * Tells whether the logged-in user is a guest.
+ * @returns {boolean} True for guests.
  */
 function isGuestProfile() {
     return getCurrentUser()?.isGuest === true;
@@ -12,53 +22,51 @@ function isGuestProfile() {
 
 
 /**
- * Loads the profile photo of the guest account.
- * @async
- * @returns {Promise<string>} Photo as base64 data URL, or an empty string.
+ * Returns the URL of the account of the current guest session.
+ * @returns {string} Firebase URL ending in .json.
  */
-async function loadGuestPhoto() {
-    try {
-        const response = await fetch(`${JOIN_DB_URL}/${GUEST_ACCOUNT_PATH}/photo.json`);
-        return (await response.json()) || '';
-    } catch (error) {
-        return '';
-    }
+function getGuestAccountUrl() {
+    return `${GUEST_SESSIONS_URL}/${getGuestSessionId()}/account.json`;
 }
 
 
 /**
- * Shows the guest photo in the dialog; the stored photo wins over the one in the session.
+ * Fills the account form with the stored guest account.
  * @async
  * @param {Object} user - Guest user from the session.
  * @returns {Promise<void>}
  */
-async function fillGuestPhoto(user) {
-    profilePendingPhoto = (await loadGuestPhoto()) || user.photo || '';
+async function fillGuestAccount(user) {
+    const account = (await getGuestJson(getGuestAccountUrl())) || {};
+    document.getElementById('profile-name').value = account.name || user.name || 'Guest';
+    document.getElementById('profile-email').value = account.email || '';
+    document.getElementById('profile-phone').value = account.phone || '';
+    profilePendingPhoto = account.photo || user.photo || '';
     renderProfileAvatar();
 }
 
 
 /**
- * Guests may only change the photo: name, email and phone stay read-only and "Delete my account" is hidden.
+ * Hides "Delete my account" for guests: their account is removed automatically after the session.
  * @returns {void}
  */
 function applyGuestRestrictions() {
-    const isGuest = isGuestProfile();
-    document.getElementById('profile-delete').classList.toggle('d-none', isGuest);
-    if (!isGuest) return;
-    document.querySelectorAll('#profile-dialog .account-field-input').forEach(input => { input.readOnly = true; });
+    document.getElementById('profile-delete').classList.toggle('d-none', isGuestProfile());
 }
 
 
 /**
- * Saves the photo of the guest account and shows it in the header.
+ * Saves the guest account and shows the new name and photo in the header.
  * @async
  * @param {Object} user - Guest user from the session.
+ * @param {{name: string, email: string, phone: string}} values - Validated form values.
  * @returns {Promise<void>}
  */
-async function storeGuestProfile(user) {
-    await patchProfile(GUEST_ACCOUNT_PATH, { name: 'Guest', photo: profilePendingPhoto });
-    sessionStorage.setItem('currentUser', JSON.stringify({ ...user, photo: profilePendingPhoto }));
+async function storeGuestProfile(user, values) {
+    const account = { ...values, photo: profilePendingPhoto };
+    await sendGuestRequest(getGuestAccountUrl(), 'PUT', account);
+    const session = { ...user, name: values.name, email: values.email, photo: profilePendingPhoto };
+    sessionStorage.setItem('currentUser', JSON.stringify(session));
     setProfileMode(false);
     refreshPageAfterProfileSave();
 }
