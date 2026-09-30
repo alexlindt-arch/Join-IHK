@@ -6,3 +6,20 @@
  */
 const JOIN_DB_URL = 'https://join-ihk-lindt-default-rtdb.europe-west1.firebasedatabase.app';
 
+
+
+/**
+ * EmailJS account used to send the "forgot password" emails (https://www.emailjs.com).
+ * The public key is meant to be used in the browser; allowed domains are restricted in the EmailJS dashboard.
+ * The email template receives the variables to_email, to_name and reset_link.
+ * @type {{serviceId: string, templateId: string, publicKey: string}}
+ */
+const EMAILJS_CONFIG = {
+    serviceId: '',
+    templateId: '',
+    publicKey: ''
+};
+
+
+/** Minutes a password reset link stays valid. */
+const PASSWORD_RESET_VALID_MINUTES = 30;

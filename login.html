@@ -53,6 +53,8 @@
                             Guest Log in
                         </button>
                     </div>
+                    <button type="button" class="login-forgot-link"
+                        onclick="switchForm('login_section', 'forgot_section')">Forgot password?</button>
                 </form>
             </div>
 
@@ -109,6 +111,60 @@
                 </form>
             </div>
 
+            <div id="forgot_section" class="login-card d-none">
+                <div class="login-headline-section">
+                    <button type="button" class="login-back-btn" aria-label="Back to log in"
+                        onclick="switchForm('forgot_section', 'login_section')">
+                        <img class="login-back-arrow" src="./assets/icons/arrow-left-line.svg" alt="">
+                    </button>
+                    <h1 class="login-title">I forgot my password</h1>
+                </div>
+                <span class="login-divider"></span>
+                <p class="login-card-text">Don't worry! We will send you an email with the instructions to reset your
+                    password.</p>
+                <form class="login-form" novalidate onsubmit="requestPasswordReset(event)">
+                    <div class="input-container">
+                        <input type="email" id="forgot_email" class="input-field" placeholder="E-Mail" aria-label="E-Mail"
+                            aria-describedby="forgot_error" autocomplete="email" oninput="clearResetError('forgot_error')">
+                        <img src="./assets/icons/mail.svg" class="input-field-icon" alt="">
+                    </div>
+                    <div id="forgot_error" class="login-error" aria-live="polite"></div>
+                    <div class="login-buttons">
+                        <button type="submit" class="btn btn-primary" id="forgot_submit">Send me the email</button>
+                    </div>
+                </form>
+            </div>
+
+            <div id="reset_section" class="login-card d-none">
+                <div class="login-headline-section">
+                    <button type="button" class="login-back-btn" aria-label="Back to log in"
+                        onclick="cancelPasswordReset()">
+                        <img class="login-back-arrow" src="./assets/icons/arrow-left-line.svg" alt="">
+                    </button>
+                    <h1 class="login-title">Reset your password</h1>
+                </div>
+                <span class="login-divider"></span>
+                <p class="login-card-text">Change your account password</p>
+                <form class="login-form" novalidate onsubmit="resetPassword(event)">
+                    <div class="input-container">
+                        <input type="password" id="reset_password" class="input-field" placeholder="New password"
+                            aria-label="New password" aria-describedby="reset_error" autocomplete="new-password"
+                            oninput="clearResetError('reset_error')">
+                        <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
+                    </div>
+                    <div class="input-container">
+                        <input type="password" id="reset_password_confirm" class="input-field"
+                            placeholder="Confirm password" aria-label="Confirm password" aria-describedby="reset_error"
+                            autocomplete="new-password" oninput="clearResetError('reset_error')">
+                        <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
+                    </div>
+                    <div id="reset_error" class="login-error" aria-live="polite"></div>
+                    <div class="login-buttons">
+                        <button type="submit" class="btn btn-primary" id="reset_submit">Continue</button>
+                    </div>
+                </form>
+            </div>
+
         </main>
         <div class="landscape-warning">
             <p>Please turn your device to portrait mode.</p>
@@ -125,6 +181,8 @@
     <script src="./js/config.js?v=20260930b"></script>
     <script src="script.js?v=20260930b"></script>
     <script src="./js/login/login.js?v=20260930b"></script>
+    <script src="./js/login/password_reset.js?v=20260930b"></script>
+    <script src="./js/login/password_reset_store.js?v=20260930b"></script>
     <script src="./js/login/login_auth.js?v=20260930b"></script>
 
 </body>

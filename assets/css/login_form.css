@@ -299,3 +299,42 @@
     color: var(--primaryColor);
 }
 
+
+
+/* ── Forgot / reset password ───────────────────────────────────────────────── */
+.login-forgot-link {
+    align-self: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    background: transparent;
+    color: #29ABE2;
+    font-size: 16px;
+    transition: color 100ms;
+}
+
+.login-forgot-link:hover,
+.login-forgot-link:focus-visible {
+    color: #2A3647;
+    text-decoration: underline;
+}
+
+#forgot_section .login-title,
+#reset_section .login-title {
+    max-width: 422px;
+}
+
+@media (min-width: 769px) {
+    #forgot_section .login-title,
+    #reset_section .login-title {
+        font-size: 47px;
+    }
+}
+
+.login-card-text {
+    max-width: 422px;
+    margin: 24px auto;
+    color: #2A3647;
+    font-size: 20px;
+    line-height: 1.2;
+    text-align: center;
+}
