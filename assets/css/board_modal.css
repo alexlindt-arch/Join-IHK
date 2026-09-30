@@ -219,3 +219,35 @@ button.btn-add-task:active {
 #notification {
   z-index: 9999;
 }
+
+
+/* Add-task modal: title and footer stay visible, only the form fields scroll (with a visible scrollbar) */
+dialog[open].board-overlay > .add-task-modal {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#add-task-overlay .task-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+#add-task-overlay .task-form-detail {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  padding: 0 12px 8px 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #A8A8A8 transparent;
+}
+
+#add-task-overlay .form-footer {
+  flex-shrink: 0;
+  padding-top: 16px;
+}

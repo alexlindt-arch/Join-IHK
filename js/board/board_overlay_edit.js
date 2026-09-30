@@ -180,6 +180,7 @@ function toggleEditCategoryDropdown() {
   const options = document.getElementById('edit-category-options');
   const isOpen = options.classList.toggle('d-none') === false;
   document.getElementById('edit-category-toggle').setAttribute('aria-expanded', String(isOpen));
+  if (isOpen) options.scrollIntoView({ block: 'nearest' });
 }
 
 

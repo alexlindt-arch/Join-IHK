@@ -60,7 +60,9 @@ function setModalPriority(button) {
  */
 function toggleModalCategoryDropdown() {
     closeModalAssignDropdown();
-    document.getElementById('modal-category-options').classList.toggle('d-none');
+    const options = document.getElementById('modal-category-options');
+    const isOpen = options.classList.toggle('d-none') === false;
+    if (isOpen) options.scrollIntoView({ block: 'nearest' });
 }
 
 
