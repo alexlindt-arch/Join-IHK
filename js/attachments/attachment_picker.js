@@ -155,10 +155,24 @@ function showAttachmentToast(errors) {
     const toast = document.getElementById('attachment-toast');
     document.getElementById('attachment-toast-title').textContent = errors[0].title;
     document.getElementById('attachment-toast-text').textContent = errors.map(error => error.text).join(' ');
+    showUploadMeter(errors.find(error => error.usedShare !== undefined));
     if (toast.matches(':popover-open')) toast.hidePopover();
     toast.showPopover();
     clearTimeout(attachmentToastTimer);
     attachmentToastTimer = setTimeout(hideAttachmentToast, 6000);
+}
+
+
+/**
+ * Shows how much of the 1 MB upload limit is used, or hides the bar for other errors.
+ * @param {{usedShare: number}|undefined} limitError - Upload limit error, if there is one.
+ * @returns {void}
+ */
+function showUploadMeter(limitError) {
+    document.getElementById('attachment-toast-meter').classList.toggle('d-none', !limitError);
+    if (!limitError) return;
+    const percent = Math.min(100, Math.round(limitError.usedShare * 100));
+    document.getElementById('attachment-toast-meter-fill').style.width = `${percent}%`;
 }
 
 

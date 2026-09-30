@@ -15,7 +15,7 @@ const ATTACHMENT_MAX_INPUT_BYTES = 20 * 1024 * 1024;
  * @returns {Promise<{title: string, text: string}|null>} Null when the file is valid, otherwise the error.
  */
 async function validateAttachmentFile(file) {
-    const formatError = { title: 'This file format is not allowed!', text: `You can only upload JPEG and PNG ("${file.name}").` };
+    const formatError = { title: 'This file format is not allowed!', text: `You can only upload JPEG and PNG. "${file.name}" was not added.` };
     if (!isAllowedAttachmentType(file)) return formatError;
     if (!(await hasImageMagicBytes(file))) return formatError;
     if (file.size > ATTACHMENT_MAX_INPUT_BYTES) return { title: 'This file is too large!', text: `"${file.name}" is larger than 20 MB.` };
@@ -62,9 +62,9 @@ function exceedsTaskUploadLimit(attachments, newAttachment) {
  * @returns {{title: string, text: string}} Error.
  */
 function getUploadLimitError(fileName, attachments) {
-    const freeBytes = Math.max(0, ATTACHMENT_MAX_TASK_BYTES - getTotalAttachmentBytes(attachments));
-    const text = `"${fileName}" was not added: the images of a task may use max. 1 MB (${formatFileSize(freeBytes)} left).`;
-    return { title: 'Upload limit reached!', text };
+    const usedBytes = getTotalAttachmentBytes(attachments);
+    const text = `"${fileName}" does not fit anymore. The images of a task may use max. 1 MB – ${formatFileSize(usedBytes)} are already used.`;
+    return { title: 'Upload limit reached', text, usedShare: usedBytes / ATTACHMENT_MAX_TASK_BYTES };
 }
 
 

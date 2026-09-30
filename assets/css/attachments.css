@@ -193,46 +193,126 @@
     }
 }
 
-/* ---------- Upload error message (design: red box with close button) ---------- */
+/* ---------- Upload error message: card with warning icon, above the mobile navigation ---------- */
 .attachment-toast {
-    inset: auto 0 32px;
-    width: min(460px, calc(100vw - 32px));
-    margin: 0 auto;
-    padding: 16px 56px 16px 24px;
+    inset: auto 32px 32px auto;
+    width: min(440px, calc(100vw - 64px));
+    margin: 0;
+    padding: 20px 56px 20px 20px;
+    box-sizing: border-box;
     border: unset;
     border-radius: 20px;
+    background: #FFFFFF;
+    color: #2A3647;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.attachment-toast:popover-open {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    animation: attachmentToastIn 125ms ease-out;
+}
+
+.attachment-toast-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     background: #FF3D00;
     color: #FFFFFF;
-    box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+    font-size: 24px;
+    font-weight: 700;
 }
 
-.attachment-toast p {
+.attachment-toast-body {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
+    min-width: 0;
     margin: 0;
     font-size: 16px;
-    text-align: center;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
 }
 
-.attachment-toast strong {
+.attachment-toast-body strong {
+    color: #2A3647;
     font-size: 20px;
-    font-weight: 500;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.attachment-toast-meter {
+    display: block;
+    height: 8px;
+    margin-top: 4px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #E7E7E7;
+}
+
+.attachment-toast-meter.d-none {
+    display: none;
+}
+
+.attachment-toast-meter span {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: #FF3D00;
 }
 
 .attachment-toast-close {
     position: absolute;
-    top: 12px;
+    top: 14px;
     right: 14px;
-    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
     border-radius: 50%;
     background: transparent;
-    color: #FFFFFF;
-    font-size: 20px;
-    transition: background-color 100ms;
+    color: #2A3647;
+    font-size: 18px;
+    transition: background-color 100ms, color 100ms;
 }
 
 .attachment-toast-close:hover,
 .attachment-toast-close:focus-visible {
-    background: rgba(255, 255, 255, 0.2);
+    background: #EEEEEE;
+    color: var(--secondaryColor);
+}
+
+@keyframes attachmentToastIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Phones: full width with 16px margin, clearly above the bottom navigation */
+@media (max-width: 768px) {
+    .attachment-toast {
+        inset: auto 16px 100px 16px;
+        width: auto;
+        padding: 16px 48px 16px 16px;
+    }
+
+    .attachment-toast:popover-open {
+        gap: 12px;
+    }
+
+    .attachment-toast-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 20px;
+    }
+
+    .attachment-toast-body strong {
+        font-size: 18px;
+    }
 }

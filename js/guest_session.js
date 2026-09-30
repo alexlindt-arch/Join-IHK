@@ -9,8 +9,20 @@
 /** Minutes a guest may work before all guest changes are reset. */
 const GUEST_SESSION_MINUTES = 15;
 
-/** Database path of all guest sessions. */
+/** Database path of all guest sessions (account, created entries, originals). */
 const GUEST_SESSIONS_URL = `${JOIN_DB_URL}/guestSessions`;
+
+/** Small status per session (expiry, last sign of life, closing time), read by every page. */
+const GUEST_STATUS_URL = `${JOIN_DB_URL}/guestSessionStatus`;
+
+/** A closed guest page is reset when no Join page of the guest reopened within this time. */
+const GUEST_CLOSE_GRACE_MS = 15 * 1000;
+
+/** A guest without any sign of life for this time counts as gone (e.g. crashed browser). */
+const GUEST_IDLE_MS = 5 * 60 * 1000;
+
+/** Interval of the sign of life of the guest and of the check for ended sessions. */
+const GUEST_CHECK_INTERVAL_MS = 30 * 1000;
 
 
 /**
@@ -23,6 +35,7 @@ async function startGuestSession() {
     const expiresAt = Date.now() + GUEST_SESSION_MINUTES * 60 * 1000;
     const account = { name: 'Guest', email: '', phone: '', photo: '' };
     await sendGuestRequest(`${GUEST_SESSIONS_URL}/${sessionId}.json`, 'PUT', { expiresAt, account });
+    await sendGuestRequest(`${GUEST_STATUS_URL}/${sessionId}.json`, 'PUT', { expiresAt, lastSeen: Date.now(), closingAt: 0 });
     return { id: 'guest', name: 'Guest', email: '', isGuest: true, guestSessionId: sessionId, expiresAt };
 }
 
@@ -87,14 +100,45 @@ async function isTrackedByGuest(sessionUrl, collection, id) {
 
 
 /**
- * Resets every guest session whose 15 minutes are over (also sessions of guests who closed the tab).
+ * Resets every guest session that has ended: 15 minutes over, page closed or no sign of life.
  * @async
  * @returns {Promise<void>}
  */
 async function cleanupExpiredGuestSessions() {
-    const sessions = (await getGuestJson(`${GUEST_SESSIONS_URL}.json`)) || {};
-    const expired = Object.entries(sessions).filter(([, session]) => session && session.expiresAt <= Date.now());
-    for (const [sessionId, session] of expired) await resetGuestSession(sessionId, session);
+    const statuses = (await getGuestJson(`${GUEST_STATUS_URL}.json`)) || {};
+    const ended = Object.entries(statuses).filter(([, status]) => isGuestSessionOver(status)).map(([id]) => id);
+    ended.push(...(await findEndedSessionsWithoutStatus(statuses)));
+    for (const sessionId of ended) {
+        const session = await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`);
+        await resetGuestSession(sessionId, session || {});
+    }
+}
+
+
+/**
+ * Finds expired sessions that have no status entry (sessions created before the status existed).
+ * @async
+ * @param {Object} statuses - Status entries per session id.
+ * @returns {Promise<string[]>} Ids of expired sessions without status.
+ */
+async function findEndedSessionsWithoutStatus(statuses) {
+    const sessionIds = Object.keys((await getGuestJson(`${GUEST_SESSIONS_URL}.json?shallow=true`)) || {});
+    const withoutStatus = sessionIds.filter(id => !statuses[id]);
+    const expiries = await Promise.all(withoutStatus.map(id => getGuestJson(`${GUEST_SESSIONS_URL}/${id}/expiresAt.json`)));
+    return withoutStatus.filter((id, index) => !expiries[index] || expiries[index] <= Date.now());
+}
+
+
+/**
+ * Tells whether a guest session has ended.
+ * @param {{expiresAt: number, lastSeen: number, closingAt: number}} status - Session status.
+ * @returns {boolean} True when the time is over, the page was closed or the guest is gone.
+ */
+function isGuestSessionOver(status) {
+    const now = Date.now();
+    if (!status || now >= status.expiresAt) return true;
+    if (status.closingAt && now - status.closingAt > GUEST_CLOSE_GRACE_MS) return true;
+    return now - (status.lastSeen || 0) > GUEST_IDLE_MS;
 }
 
 
@@ -109,6 +153,7 @@ async function resetGuestSession(sessionId, session) {
     await restoreGuestOriginals(session.originals || {});
     await deleteGuestCreations(session.created || {});
     await sendGuestRequest(`${GUEST_SESSIONS_URL}/${sessionId}.json`, 'DELETE');
+    await sendGuestRequest(`${GUEST_STATUS_URL}/${sessionId}.json`, 'DELETE');
 }
 
 
@@ -170,8 +215,9 @@ function watchGuestSession() {
  */
 async function resetOwnGuestSession() {
     const sessionId = getGuestSessionId();
-    const session = sessionId ? await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`) : null;
-    if (session) await resetGuestSession(sessionId, session);
+    if (!sessionId) return;
+    const session = await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`);
+    await resetGuestSession(sessionId, session || {});
 }
 
 
@@ -219,12 +265,60 @@ async function sendGuestRequest(url, method, data) {
 
 
 /**
- * On every page: resets expired guest sessions and watches the session of the logged-in guest.
+ * Sign of life of the guest: updates the last activity and cancels a closing mark of a page change.
+ * When the session was already reset (e.g. the tab slept too long), the guest is logged out.
+ * @async
+ * @returns {Promise<void>}
+ */
+async function markGuestSessionActive() {
+    const sessionId = getGuestSessionId();
+    if (!sessionId) return;
+    const statusUrl = `${GUEST_STATUS_URL}/${sessionId}.json`;
+    if (!(await getGuestJson(statusUrl))) return endGuestSession();
+    await sendGuestRequest(statusUrl, 'PATCH', { lastSeen: Date.now(), closingAt: 0 });
+}
+
+
+/**
+ * Marks the session as closing when the guest leaves a page. A page change clears the mark again,
+ * a closed tab keeps it, so the session is reset after GUEST_CLOSE_GRACE_MS.
+ * keepalive lets the request finish even while the tab is closing.
+ * @returns {void}
+ */
+function markGuestSessionClosing() {
+    const sessionId = getGuestSessionId();
+    if (!sessionId) return;
+    fetch(`${GUEST_STATUS_URL}/${sessionId}.json`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ closingAt: Date.now() }),
+        keepalive: true
+    });
+}
+
+
+/**
+ * Starts the sign of life and the closing mark of the logged-in guest.
+ * @returns {void}
+ */
+function trackGuestPresence() {
+    if (!getGuestSessionId()) return;
+    markGuestSessionActive();
+    setInterval(markGuestSessionActive, GUEST_CHECK_INTERVAL_MS);
+    window.addEventListener('pagehide', markGuestSessionClosing);
+    window.addEventListener('pageshow', markGuestSessionActive);
+}
+
+
+/**
+ * On every page: resets ended guest sessions now and every 30 seconds, and watches the own guest session.
  * @returns {void}
  */
 function initGuestSessions() {
-    cleanupExpiredGuestSessions();
+    trackGuestPresence();
     watchGuestSession();
+    cleanupExpiredGuestSessions();
+    setInterval(cleanupExpiredGuestSessions, GUEST_CHECK_INTERVAL_MS);
 }
 
 
