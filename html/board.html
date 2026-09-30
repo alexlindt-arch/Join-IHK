@@ -11,7 +11,10 @@
     <link rel="manifest" href="../assets/icons/favicon/site.webmanifest" />
     <link rel="stylesheet" href="../style.css?v=20260930a">
     <link rel="stylesheet" href="../assets/css/board.css?v=20260930a">
-    <link rel="stylesheet" href="../assets/css/board_add_task.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_card.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_detail.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_edit.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/board_modal.css?v=20260930a">
     <link rel="stylesheet" href="../assets/css/board_responsive.css?v=20260930a">
     <link rel="stylesheet" href="../assets/css/add_task.css?v=20260930a">
     <link rel="stylesheet" href="../assets/vendor/flatpickr/flatpickr.min.css?v=20260930a">
@@ -28,24 +31,21 @@
             <img src="../assets/img/logo_big.svg" class="header-logo-mobil" alt="Join">
 
             <div class="header-account">
-                <a href="../html/help.html" class="help-icon-link" title="Hilfe">
-                    <img src="../assets/icons/help.svg" alt="View help" class="help-icon">
+                <a href="../html/help.html" class="help-icon-link" title="Help" aria-label="Help">
+                    <img src="../assets/icons/help.svg" alt="" class="help-icon">
                 </a>
 
-                <div class="avatar-wrapper" id="user-avatar-wrapper" onclick="toggleAvatarMenu()">
-                    <div class="user-avatar" id="user-avatar"></div>
+                <div class="avatar-wrapper" id="user-avatar-wrapper">
+                    <button type="button" class="user-avatar" id="user-avatar" aria-label="Open account menu"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="avatar-menu"
+                        onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
-                        <button class="avatar-menu-btn avatar-menu-btn--profile"
+                        <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
                             onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
-                        <button class="avatar-menu-btn avatar-menu-btn--mobile-only"
-                            onclick="window.location.href='help.html'; event.stopPropagation()">Help</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='privacy_policy.html'; event.stopPropagation()">Privacy
-                            Policy</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='legal_notice.html'; event.stopPropagation()">Legal
-                            Notice</button>
-                        <button class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
+                        <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
+                        <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
             </div>
@@ -110,10 +110,9 @@
             <h1 class="page-title">Board</h1>
             <div class="board-controls">
                 <div class="search-wrapper">
-                    <input class="search-input" type="text" id="board-search" placeholder="Find Task"
-                        oninput="filterTasks()">
+                    <input class="search-input" type="text" id="board-search" placeholder="Find Task" oninput="filterTasks()">
                     <div class="search-divider"></div>
-                    <button class="search-icon-btn" aria-label="Suchen">
+                    <button class="search-icon-btn" aria-label="Search">
                         <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M20.5 18.5H19.71L19.43 18.23C20.63 16.83 21.25 14.92 20.88 12.89C20.37 10.11 18.06 7.89 15.27 7.49C11.01 6.9 7.39 10.51 7.99 14.77C8.39 17.56 10.61 19.87 13.39 20.38C15.42 20.75 17.33 20.13 18.73 18.93L19 19.21V20L23.25 24.25C23.66 24.66 24.33 24.66 24.74 24.25C25.15 23.84 25.15 23.17 24.74 22.76L20.5 18.5ZM14.5 18.5C12.01 18.5 10 16.49 10 14C10 11.51 12.01 9.5 14.5 9.5C16.99 9.5 19 11.51 19 14C19 16.49 16.99 18.5 14.5 18.5Z"
@@ -123,8 +122,7 @@
                 </div>
                 <button class="btn-add-task" onclick="openAddTaskModal()">
                     <span class="btn-add-task-text">Add task</span>
-                    <svg class="btn-add-task-icon" width="20" height="20" viewBox="0 0 20 20" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
+                    <svg class="btn-add-task-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 1V19" stroke="white" stroke-width="2" stroke-linecap="round" />
                         <path d="M1 10H19" stroke="white" stroke-width="2" stroke-linecap="round" />
                     </svg>
@@ -133,42 +131,50 @@
         </div>
 
         <div class="board-columns">
-            <div class="board-col">
-                <div class="board-col-header">
-                    <span>To do</span>
-                </div>
+            <section class="board-col">
+                <header class="board-col-header">
+                    <h2 class="board-col-title" id="col-title-todo">To do</h2>
+                    <button type="button" class="col-add-btn" aria-label="Add task to To do" onclick="openAddTaskModal('todo')">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 1V14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /><path d="M1 7.5H14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /></svg>
+                    </button>
+                </header>
                 <div class="board-cards" id="todo" ondrop="moveTo('todo')"
                     ondragover="allowDrop(event); highlight('todo')" ondragleave="removeHighlight('todo')">
                 </div>
-            </div>
+            </section>
 
-            <div class="board-col">
-                <div class="board-col-header">
-                    <span>In progress</span>
-                </div>
+            <section class="board-col">
+                <header class="board-col-header">
+                    <h2 class="board-col-title" id="col-title-inProgress">In progress</h2>
+                    <button type="button" class="col-add-btn" aria-label="Add task to In progress" onclick="openAddTaskModal('inProgress')">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 1V14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /><path d="M1 7.5H14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /></svg>
+                    </button>
+                </header>
                 <div class="board-cards" id="inProgress" ondrop="moveTo('inProgress')"
                     ondragover="allowDrop(event); highlight('inProgress')" ondragleave="removeHighlight('inProgress')">
                 </div>
-            </div>
+            </section>
 
-            <div class="board-col">
-                <div class="board-col-header">
-                    <span>Await feedback</span>
-                </div>
-                <div class="board-cards" id="awaitFeedback" ondrop="moveTo('awaitFeedback')"
-                    ondragover="allowDrop(event); highlight('awaitFeedback')"
+            <section class="board-col">
+                <header class="board-col-header">
+                    <h2 class="board-col-title" id="col-title-awaitFeedback">Await feedback</h2>
+                    <button type="button" class="col-add-btn" aria-label="Add task to Await feedback" onclick="openAddTaskModal('awaitFeedback')">
+                        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true"><path d="M7.5 1V14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /><path d="M1 7.5H14" stroke="#2A3647" stroke-width="2" stroke-linecap="round" /></svg>
+                    </button>
+                </header>
+                <div class="board-cards" id="awaitFeedback" ondrop="moveTo('awaitFeedback')" ondragover="allowDrop(event); highlight('awaitFeedback')"
                     ondragleave="removeHighlight('awaitFeedback')">
                 </div>
-            </div>
+            </section>
 
-            <div class="board-col">
-                <div class="board-col-header">
-                    <span>Done</span>
-                </div>
+            <section class="board-col">
+                <header class="board-col-header">
+                    <h2 class="board-col-title" id="col-title-done">Done</h2>
+                </header>
                 <div class="board-cards" id="done" ondrop="moveTo('done')"
                     ondragover="allowDrop(event); highlight('done')" ondragleave="removeHighlight('done')">
                 </div>
-            </div>
+            </section>
         </div>
     </main>
 
@@ -200,24 +206,15 @@
 
                         <div class="form-group">
                             <label class="form-label" for="modal-task-desc">Description</label>
-                            <textarea class="form-input form-textarea" id="modal-task-desc"
-                                placeholder="Enter a description"></textarea>
+                            <textarea class="form-input form-textarea" id="modal-task-desc" placeholder="Enter a description"></textarea>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="modal-task-due">Due date <span class="required">*</span></label>
                             <div class="form-input-icon">
-                                <input class="form-input" type="text" id="modal-task-due"
-                                    placeholder="TT.MM.JJJJ" readonly style="cursor:pointer;"
+                                <input class="form-input" type="text" id="modal-task-due" placeholder="dd.mm.yyyy" readonly style="cursor:pointer;"
                                     onchange="updateModalCreateButton()">
-                                <svg class="input-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <mask id="mask-modal-cal" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
-                                        <rect width="24" height="24" fill="#D9D9D9"/>
-                                    </mask>
-                                    <g mask="url(#mask-modal-cal)">
-                                        <path d="M14.5 18C13.8 18 13.2083 17.7583 12.725 17.275C12.2417 16.7917 12 16.2 12 15.5C12 14.8 12.2417 14.2083 12.725 13.725C13.2083 13.2417 13.8 13 14.5 13C15.2 13 15.7917 13.2417 16.275 13.725C16.7583 14.2083 17 14.8 17 15.5C17 16.2 16.7583 16.7917 16.275 17.275C15.7917 17.7583 15.2 18 14.5 18ZM5 22C4.45 22 3.97917 21.8042 3.5875 21.4125C3.19583 21.0208 3 20.55 3 20V6C3 5.45 3.19583 4.97917 3.5875 4.5875C3.97917 4.19583 4.45 4 5 4H6V3C6 2.71667 6.09583 2.47917 6.2875 2.2875C6.47917 2.09583 6.71667 2 7 2C7.28333 2 7.52083 2.09583 7.7125 2.2875C7.90417 2.47917 8 2.71667 8 3V4H16V3C16 2.71667 16.0958 2.47917 16.2875 2.2875C16.4792 2.09583 16.7167 2 17 2C17.2833 2 17.5208 2.09583 17.7125 2.2875C17.9042 2.47917 18 2.71667 18 3V4H19C19.55 4 20.0208 4.19583 20.4125 4.5875C20.8042 4.97917 21 5.45 21 6V20C21 20.55 20.8042 21.0208 20.4125 21.4125C20.0208 21.8042 19.55 22 19 22H5ZM5 20H19V10H5V20ZM5 8H19V6H5V8Z" fill="#2A3647"/>
-                                    </g>
-                                </svg>
+                                <img class="input-icon" src="../assets/icons/event.svg" alt="">
                             </div>
                             <span class="field-error d-none" id="modal-error-due">This field is required</span>
                         </div>
@@ -225,44 +222,33 @@
                         <div class="form-group">
                             <span class="form-label" id="modal-prio-label">Prio</span>
                             <div class="prio-buttons" role="group" aria-labelledby="modal-prio-label">
-                                <button type="button" class="prio-btn prio-urgent" data-prio="urgent"
-                                    onclick="setModalPriority(this)">
+                                <button type="button" class="prio-btn prio-urgent" data-prio="urgent" onclick="setModalPriority(this)">
                                     Urgent
-                                    <svg width="20" height="15" viewBox="0 0 20 14.51" fill="none">
-                                        <path d="M0 8.76 L10 0 L20 8.76 L17.5 8.76 L10 2.5 L2.5 8.76 Z" />
-                                        <path d="M0 14.51 L10 5.75 L20 14.51 L17.5 14.51 L10 8.25 L2.5 14.51 Z" />
-                                    </svg>
+                                    <svg width="20" height="15" viewBox="0 0 20 14.51" fill="none"><path d="M0 8.76 L10 0 L20 8.76 L17.5 8.76 L10 2.5 L2.5 8.76 Z" /><path d="M0 14.51 L10 5.75 L20 14.51 L17.5 14.51 L10 8.25 L2.5 14.51 Z" /></svg>
                                 </button>
-                                <button type="button" class="prio-btn prio-medium prio-active" data-prio="medium"
-                                    onclick="setModalPriority(this)">
+                                <button type="button" class="prio-btn prio-medium prio-active" data-prio="medium" onclick="setModalPriority(this)">
                                     Medium
-                                    <svg width="20" height="8" viewBox="0 0 20 8" fill="none">
-                                        <rect x="0" y="0" width="20" height="2.21" rx="1.1" />
-                                        <rect x="0" y="5.24" width="20" height="2.21" rx="1.1" />
-                                    </svg>
+                                    <svg width="20" height="8" viewBox="0 0 20 8" fill="none"><rect x="0" y="0" width="20" height="2.21" rx="1.1" /><rect x="0" y="5.24" width="20" height="2.21" rx="1.1" /></svg>
                                 </button>
-                                <button type="button" class="prio-btn prio-low" data-prio="low"
-                                    onclick="setModalPriority(this)">
+                                <button type="button" class="prio-btn prio-low" data-prio="low" onclick="setModalPriority(this)">
                                     Low
-                                    <svg width="20" height="15" viewBox="0 0 20 14.51" fill="none">
-                                        <path d="M0 0 L10 8.76 L20 0 L17.5 0 L10 6.26 L2.5 0 Z" />
-                                        <path d="M0 5.75 L10 14.51 L20 5.75 L17.5 5.75 L10 12.01 L2.5 5.75 Z" />
-                                    </svg>
+                                    <svg width="20" height="15" viewBox="0 0 20 14.51" fill="none"><path d="M0 0 L10 8.76 L20 0 L17.5 0 L10 6.26 L2.5 0 Z" /><path d="M0 5.75 L10 14.51 L20 5.75 L17.5 5.75 L10 12.01 L2.5 5.75 Z" /></svg>
                                 </button>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Category <span class="required">*</span></label>
+                            <label class="form-label" id="modal-category-label" for="modal-category-toggle">Category <span class="required">*</span></label>
                             <div class="custom-select" id="modal-category-select">
-                                <div class="form-input select-toggle" id="modal-category-toggle"
+                                <button type="button" class="form-input select-toggle" id="modal-category-toggle"
+                                    aria-haspopup="listbox" aria-expanded="false"
                                     onclick="toggleModalCategoryDropdown()">
                                     <span id="modal-category-selected" class="select-placeholder">Select task category</span>
-                                    <span class="select-caret">&#9662;</span>
-                                </div>
-                                <div class="select-options d-none" id="modal-category-options">
-                                    <div class="select-option" onclick="selectModalCategory('Technical Task')">Technical Task</div>
-                                    <div class="select-option" onclick="selectModalCategory('User Story')">User Story</div>
+                                    <span class="select-caret" aria-hidden="true">&#9662;</span>
+                                </button>
+                                <div class="select-options d-none" id="modal-category-options" role="listbox" aria-labelledby="modal-category-label">
+                                    <button type="button" class="select-option" role="option" onclick="selectModalCategory('Technical Task')">Technical Task</button>
+                                    <button type="button" class="select-option" role="option" onclick="selectModalCategory('User Story')">User Story</button>
                                 </div>
                             </div>
                             <span class="field-error d-none" id="modal-error-category">This field is required</span>
@@ -307,8 +293,7 @@
                                         <button type="button" class="subtask-icon-btn" title="Clear"
                                             onclick="clearModalSubtaskInput()">&#10005;</button>
                                         <span class="subtask-action-divider"></span>
-                                        <button type="button" class="subtask-icon-btn" title="Add"
-                                            onclick="addModalSubtask()">&#10003;</button>
+                                        <button type="button" class="subtask-icon-btn" title="Add" onclick="addModalSubtask()">&#10003;</button>
                                     </span>
                                 </div>
                             </div>
@@ -316,13 +301,14 @@
                         </div>
 
                         <div class="form-group" style="position: relative;">
-                            <label class="form-label">Assigned to</label>
+                            <label class="form-label" for="modal-assign-toggle">Assigned to</label>
                             <div class="custom-select" id="modal-assign-select">
-                                <div class="form-input select-toggle" id="modal-assign-toggle"
+                                <button type="button" class="form-input select-toggle" id="modal-assign-toggle"
+                                    aria-haspopup="listbox" aria-expanded="false"
                                     onclick="toggleModalAssignDropdown()">
                                     <span>Select contacts to assign</span>
-                                    <span class="select-caret">&#9662;</span>
-                                </div>
+                                    <span class="select-caret" aria-hidden="true">&#9662;</span>
+                                </button>
                                 <div class="select-options d-none" id="modal-assign-options"></div>
                             </div>
                             <div class="assigned-avatars" id="modal-assigned-avatars"
@@ -366,8 +352,7 @@
                         <path d="M12 15.575L7.7 11.3L9.1 9.875L11 11.775V4H13V11.775L14.9 9.875L16.3 11.3L12 15.575ZM6 20C5.45 20 4.979 19.804 4.588 19.413C4.196 19.021 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.804 19.021 19.413 19.413C19.021 19.804 18.55 20 18 20H6Z" fill="currentColor" />
                     </svg>
                 </button>
-                <button type="button" class="image-viewer-btn" aria-label="Close image viewer"
-                    onclick="closeImageViewer()">&#x2715;</button>
+                <button type="button" class="image-viewer-btn" aria-label="Close image viewer" onclick="closeImageViewer()">&#x2715;</button>
             </div>
         </header>
         <div class="image-viewer-stage" id="image-viewer-stage">

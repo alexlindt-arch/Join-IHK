@@ -7,24 +7,6 @@ let editAssignedIds = [];
 let editSubtasks = [];
 let boardContacts = [];
 
-/**
- * Reads guest tasks from sessionStorage.
- * @returns {Array} Parsed task array or empty array on error.
- */
-function getGuestTasks() {
-    try { return JSON.parse(sessionStorage.getItem('guestTasks')) || []; } catch (e) { return []; }
-}
-
-
-/**
- * Persists guest tasks to sessionStorage.
- * @param {Array} tasks - Task array to store.
- * @returns {void}
- */
-function saveGuestTasks(tasks) {
-    sessionStorage.setItem('guestTasks', JSON.stringify(tasks));
-}
-
 
 /**
  * Initialises the board page.
@@ -41,18 +23,8 @@ function init() {
  */
 async function initTasks() {
     boardContacts = await loadBoardContacts();
-    allTasks = await loadBoardTasks();
+    allTasks = await loadRemoteTasks();
     displayTasks(allTasks);
-}
-
-
-/**
- * Loads tasks from guest storage or remote database depending on login state.
- * @returns {Promise<Array>} Array of task objects.
- */
-async function loadBoardTasks() {
-    if (checkIsGuest()) return await loadGuestTasks();
-    return await loadRemoteTasks();
 }
 
 
@@ -63,59 +35,11 @@ async function loadBoardTasks() {
 async function loadRemoteTasks() {
     try {
         const response = await fetch(`${BOARD_BASE_URL}/tasks.json`);
-        const data = await response.json();
-        if (!data) return [];
-        return Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+        return toEntryList(await response.json());
     } catch (error) {
-        console.error('Error loading tasks:', error);
+        notify('Tasks could not be loaded.', true);
         return [];
     }
-}
-
-
-/**
- * Loads guest tasks by merging demo data with session-stored changes.
- * @returns {Promise<Array>} Merged task array.
- */
-async function loadGuestTasks() {
-    try {
-        const fileTasks = await fetchDemoTasks();
-        return mergeWithSessionTasks(fileTasks);
-    } catch (e) {
-        console.error('Error loading guest tasks:', e);
-        return getGuestTasks();
-    }
-}
-
-
-/**
- * Fetches tasks from the local demo-task.json file.
- * @returns {Promise<Array>} Array of demo task objects.
- */
-async function fetchDemoTasks() {
-    const res = await fetch('../demo-task.json');
-    if (!res || !res.ok) return [];
-    const data = await res.json();
-    const raw = data?.tasks || data;
-    if (!raw) return [];
-    return Array.isArray(raw) ? raw.filter(Boolean) : Object.keys(raw).map(k => ({ ...raw[k], id: k })).filter(Boolean);
-}
-
-
-/**
- * Merges file-based demo tasks with locally modified session tasks.
- * Session tasks overwrite demo tasks with the same id.
- * @param {Array} fileTasks - Tasks loaded from the demo file.
- * @returns {Array} Sorted, merged task array.
- */
-function mergeWithSessionTasks(fileTasks) {
-    const local = getGuestTasks() || [];
-    const mergedMap = new Map();
-    fileTasks.forEach(t => mergedMap.set(String(t.id), t));
-    local.forEach(t => mergedMap.set(String(t.id), t));
-    const merged = Array.from(mergedMap.values());
-    merged.sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
-    return merged;
 }
 
 
@@ -166,16 +90,21 @@ function renderTaskCard(task) {
  */
 function attachTouchListenersToCard(card, id) {
     if (!card) return;
-    try {
-        card.addEventListener('touchstart', function (e) { touchDragStart(e, id); }, { passive: true });
-        card.addEventListener('touchmove', touchDragMove, { passive: false });
-        card.addEventListener('touchend', touchDragEnd, { passive: true });
-        card.addEventListener('touchcancel', () => { cancelTouchPress(); cleanupTouchDrag(card); }, { passive: true });
-    } catch (e) {
-        card.addEventListener('touchstart', function (e) { touchDragStart(e, id); });
-        card.addEventListener('touchmove', touchDragMove);
-        card.addEventListener('touchend', touchDragEnd);
-    }
+    card.addEventListener('touchstart', event => touchDragStart(event, id), { passive: true });
+    card.addEventListener('touchmove', touchDragMove, { passive: false });
+    card.addEventListener('touchend', touchDragEnd, { passive: true });
+    card.addEventListener('touchcancel', () => handleTouchCancel(card), { passive: true });
+}
+
+
+/**
+ * Stops a long press or a touch drag that the browser cancelled.
+ * @param {HTMLElement} card - Task card.
+ * @returns {void}
+ */
+function handleTouchCancel(card) {
+    cancelTouchPress();
+    cleanupTouchDrag(card);
 }
 
 
@@ -301,7 +230,7 @@ function showNoResultsMessage() {
     const el = document.createElement('div');
     el.id = 'board-no-results';
     el.className = 'board-no-results';
-    el.innerHTML = `<div class="board-empty">Keine Ergebnisse gefunden</div>`;
+    el.innerHTML = `<div class="board-empty">No results found</div>`;
     container.appendChild(el);
 }
 

@@ -1,0 +1,111 @@
+@media (max-height: 768px) {
+    .big-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        line-height: 50px;
+    }
+
+    .profile-placeholder img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .profile-placeholder {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .contacts-split-right {
+        margin-top: 64px;
+    }
+
+    /* 428px wide: 38px side padding -> 352px wide cards like in the design */
+    .contacts-list {
+        padding: 24px clamp(12px, 9vw, 38px) 96px;
+    }
+}
+
+@media (max-width: 425px) {
+    .contact-item {
+        padding: 15px 16px;
+        gap: 24px;
+    }
+
+    .profile-placeholder img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .big-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        line-height: 50px;
+    }
+
+    .profile-placeholder {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* ── Tablet: keep the right side inside the screen ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Compact sizes so the whole contact fits below the header without scrolling */
+    .contacts-split-right {
+        flex: 1;
+        min-width: 0;
+        gap: 24px;
+        margin-top: 24px;
+        margin-left: 24px;
+    }
+
+    .brand-header {
+        gap: 8px;
+        margin-bottom: 0;
+        padding-right: 0;
+    }
+
+    .brand-title {
+        font-size: 47px;
+    }
+
+    .contact-profile {
+        padding-top: 0;
+    }
+
+    .profile-header {
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 24px;
+    }
+
+    .profile-avatar {
+        flex-shrink: 0;
+        width: 80px;
+        height: 80px;
+        font-size: 28px;
+    }
+
+    .profile-name {
+        font-size: 36px;
+    }
+
+    .section-title {
+        min-height: 0;
+        margin-bottom: 16px;
+        font-size: 20px;
+    }
+
+    .profile-meta {
+        min-width: 0;
+    }
+
+    .profile-name,
+    .info-value {
+        overflow-wrap: anywhere;
+    }
+}

@@ -1,0 +1,219 @@
+.board-overlay:not(dialog) {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* Dialog-specific reset to remove UA chrome and use our overlay styling */
+dialog.board-overlay {
+  border: none;
+  padding: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Backdrop styling for browsers that support ::backdrop */
+dialog.board-overlay::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Ensure dialog uses our fixed positioning and centering when open */
+dialog[open].board-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center !important;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* When a dialog is open, prevent the page behind from scrolling */
+body.dialog-open {
+  overflow: hidden;
+}
+
+/* Keep scrolling confined to the dialog content if needed */
+dialog[open].board-overlay {
+  overflow: auto;
+}
+
+/* Ensure dialog is hidden by default unless it has the open attribute */
+dialog.board-overlay {
+  display: none;
+}
+
+.board-modal {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.detail-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #2A3647;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 100ms;
+}
+
+.detail-close-btn:hover {
+  background: #F0F0F0;
+}
+
+.detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2A3647;
+}
+
+.detail-desc {
+  font-size: 16px;
+  color: #2A3647;
+  line-height: 1.5;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 16px;
+  color: #2A3647;
+}
+
+.detail-label {
+  font-weight: 700;
+  min-width: 100px;
+  color: #2A3647;
+}
+
+.detail-prio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.detail-assignees {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-left: 4px;
+}
+
+.detail-assignee {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.detail-assignee-name {
+  font-size: 16px;
+  color: #2A3647;
+}
+
+.detail-more .detail-assignee-name {
+  color: #828282;
+  font-style: italic;
+}
+
+.detail-subtask-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 4px;
+}
+
+.detail-subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #2A3647;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background 100ms;
+}
+
+.detail-subtask-item:hover {
+  background: #F6F7F8;
+}
+
+.detail-subtask-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primaryColor);
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #D1D1D1;
+  margin-top: 4px;
+}
+
+.detail-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  color: #2A3647;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: background 100ms;
+}
+
+.detail-btn:hover {
+  background: #F0F0F0;
+}
+
+.detail-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.detail-divider-v {
+  width: 1px;
+  height: 24px;
+  background: #D1D1D1;
+}

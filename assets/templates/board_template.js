@@ -112,7 +112,7 @@ function buildProgressBar(subtasks, taskId) {
             <div class="card-progressbar">
                 <div class="card-progressbar-fill" style="width:${Math.round(100 / total * done)}%"></div>
             </div>
-            <span class="card-progress-label" title="${done} von ${total} Subtasks erledigt">${done}/${total}</span>
+            <span class="card-progress-label" title="${done} of ${total} subtasks done">${done}/${total}</span>
         </div>`;
 }
 
@@ -150,23 +150,38 @@ function taskDetailTemplate(task) {
  * @returns {string} HTML string or empty string if no contacts are assigned.
  */
 function buildDetailAssignees(assignedTo) {
-    if (!(assignedTo || []).length) return '';
+    const assignees = assignedTo || [];
     const max = 5;
-    const visible = assignedTo.slice(0, max);
-    let html = visible.map(a => `
+    const html = assignees.slice(0, max).map(detailAssigneeTemplate).join('');
+    return assignees.length > max ? html + detailMoreAssigneesTemplate(assignees.length - max) : html;
+}
+
+
+/**
+ * Returns one assigned contact of the detail view.
+ * @param {Object} assignee - Contact with color, initials and name.
+ * @returns {string} HTML string.
+ */
+function detailAssigneeTemplate(assignee) {
+    return `
         <div class="detail-assignee">
-            <span class="card-avatar" style="background:${a.color || '#ccc'}">${avatarInnerHTML(withContactPhoto(a))}</span>
-            ${fitNameHTML('detail-assignee-name', a.name || '')}
-        </div>`).join('');
-    if (assignedTo.length > max) {
-        const more = assignedTo.length - max;
-        html += `
+            <span class="card-avatar" style="background:${assignee.color || '#ccc'}">${avatarInnerHTML(withContactPhoto(assignee))}</span>
+            ${fitNameHTML('detail-assignee-name', assignee.name || '')}
+        </div>`;
+}
+
+
+/**
+ * Returns the "+N and N more" row for assignees that are not shown.
+ * @param {number} more - Number of hidden assignees.
+ * @returns {string} HTML string.
+ */
+function detailMoreAssigneesTemplate(more) {
+    return `
         <div class="detail-assignee detail-more">
             <span class="card-avatar card-avatar-more">+${more}</span>
             <span class="detail-assignee-name">and ${more} more</span>
         </div>`;
-    }
-    return html;
 }
 
 

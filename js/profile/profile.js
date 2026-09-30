@@ -104,7 +104,7 @@ async function loadProfileContact(user) {
             || entries.find(([key]) => String(key) === String(user.id));
         if (match) [profileContactKey, profileContact] = match;
     } catch (error) {
-        console.error('Error loading profile contact:', error);
+        profileContact = null;
     }
 }
 
@@ -118,7 +118,7 @@ function fillProfileForm(user) {
     const phone = profileContact?.phone;
     document.getElementById('profile-name').value = user.name || '';
     document.getElementById('profile-email').value = user.email || '';
-    document.getElementById('profile-phone').value = phone && phone !== 'no phone number provided' ? phone : '';
+    document.getElementById('profile-phone').value = phone || '';
     profilePendingPhoto = profileContact?.photo || user.photo || '';
     setProfileError('');
     renderProfileAvatar();
@@ -198,21 +198,32 @@ async function saveProfile(event) {
     if (!user || !values) return;
     setProfileSaving(true);
     try {
-        if (await isEmailTakenByOtherUser(values.email, user.id)) {
-            setProfileError('This email address is already used by another account.');
-            return;
-        }
-        await saveProfileToFirebase(user, values);
-        updateProfileSession(user, values);
-        closeProfileDialog();
-        showHeaderPhoto();
-        refreshPageAfterProfileSave();
+        await storeProfile(user, values);
     } catch (error) {
-        console.error('Error saving profile:', error);
         setProfileError('Saving failed. Please try again.');
     } finally {
         setProfileSaving(false);
     }
+}
+
+
+/**
+ * Stores valid profile changes everywhere and closes the dialog; rejects emails of other accounts.
+ * @async
+ * @param {Object} user - Logged-in user.
+ * @param {Object} values - Values of the profile form.
+ * @returns {Promise<void>}
+ */
+async function storeProfile(user, values) {
+    if (await isEmailTakenByOtherUser(values.email, user.id)) {
+        setProfileError('This email address is already used by another account.');
+        return;
+    }
+    await saveProfileToFirebase(user, values);
+    updateProfileSession(user, values);
+    closeProfileDialog();
+    showHeaderPhoto();
+    refreshPageAfterProfileSave();
 }
 
 
@@ -245,7 +256,7 @@ async function saveProfileToFirebase(user, values) {
         id: profileContact?.id ?? Number(key),
         name: values.name,
         email: values.email,
-        phone: values.phone || 'no phone number provided',
+        phone: values.phone || '',
         avatar: getInitials(values.name),
         color: profileContact?.color || getRandomColor(),
         photo: profilePendingPhoto

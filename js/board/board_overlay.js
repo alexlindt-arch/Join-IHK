@@ -81,31 +81,14 @@ function downloadTaskAttachment(taskId, index) {
 
 
 /**
- * Removes a task from allTasks and persists the deletion.
- * @async 
+ * Removes a task from allTasks and deletes it in the database.
+ * @async
  * @param {number|string} id
  * @returns {Promise<void>}
  */
 async function deleteTask(id) {
-  const task = allTasks.find(t => t.id == id);
   allTasks = allTasks.filter(t => t.id != id);
-  if (task && !checkIsGuest()) {
-    await deleteTaskRemote(task.id);
-  } else {
-    deleteTaskGuest();
-  }
-}
-
-
-/**
- * Persists deletion for guest users and refreshes the board.
- * @returns {void}
- */
-function deleteTaskGuest() {
-  saveGuestTasks(allTasks);
-  closeOverlay();
-  displayTasks(allTasks);
-  notify('Der Task wurde gelöscht.');
+  await deleteTaskRemote(id);
 }
 
 
@@ -120,10 +103,9 @@ async function deleteTaskRemote(id) {
     await fetch(`${BOARD_BASE_URL}/tasks/${id}.json`, { method: 'DELETE' });
     closeOverlay();
     displayTasks(allTasks);
-    notify('Der Task wurde gelöscht.');
+    notify('Task deleted');
   } catch (e) {
-    console.error('Error deleting task:', e);
-    showNotification('Error saving task!', true);
+    notify('Task could not be deleted. Please try again.', true);
   }
 }
 
@@ -146,17 +128,14 @@ async function toggleSubtask(taskId, subtaskIndex) {
 
 
 /**
- * Persists subtask state for guests locally or via the API.
- * @async 
+ * Saves the done state of all subtasks of a task in the database.
+ * @async
+ * @param {number|string} taskId - Task id.
+ * @param {Array} subtasks - Subtasks of the task.
  * @returns {Promise<void>}
  */
 async function saveSubtaskState(taskId, subtasks) {
-  const task = allTasks.find(t => t.id == taskId);
-  if (task && !checkIsGuest()) {
-    await updateSubtasksRemote(task.id, subtasks);
-  } else {
-    saveGuestTasks(allTasks);
-  }
+  await updateSubtasksRemote(taskId, subtasks);
 }
 
 
@@ -173,8 +152,7 @@ async function updateSubtasksRemote(taskId, subtasks) {
       body: JSON.stringify({ subtasks })
     });
   } catch (e) {
-    console.error('Error updating subtask:', e);
-    showNotification('Error updating subtask!', true);
+    notify('Subtask could not be saved. Please try again.', true);
   }
 }
 

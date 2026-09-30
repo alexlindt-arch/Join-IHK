@@ -10,7 +10,8 @@
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="./assets/icons/favicon/site.webmanifest" />
     <link rel="stylesheet" href="style.css?v=20260930a" />
-    <link rel="stylesheet" href="./assets/css/login.css?v=20260930a" />
+    <link rel="stylesheet" href="./assets/css/login_form.css?v=20260930a" />
+    <link rel="stylesheet" href="./assets/css/login_responsive.css?v=20260930a" />
     <title>Login</title>
 </head>
 
@@ -29,21 +30,21 @@
                 </button>
             </div>
         </div>
-        <div class="login-content">
+        <main class="login-content">
             <div id="login_section" class="login-card">
-                <h2>Log in</h2>
+                <h1 class="login-title">Log in</h1>
                 <span class="login-divider"></span>
 
                 <form class="login-form" novalidate onsubmit="login(); return false;">
                     <div class="input-container">
                         <input type="email" id="login_email" class="input-field" placeholder="E-Mail"
-                            autocomplete="email" oninput="clearLoginError()">
-                        <img src="./assets/icons/mail.svg" class="input-field-icon" alt="Mail-Icon">
+                            aria-label="E-Mail" autocomplete="email" oninput="clearLoginError()">
+                        <img src="./assets/icons/mail.svg" class="input-field-icon" alt="">
                     </div>
                     <div class="input-container">
                         <input type="password" id="login_passwort" class="input-field" placeholder="Password"
-                            autocomplete="current-password" oninput="clearLoginError()">
-                        <img src="./assets/icons/lock.svg" class="input-field-icon" alt="Lock-Icon">
+                            aria-label="Password" autocomplete="current-password" oninput="clearLoginError()">
+                        <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
                     </div>
                     <div id="login_error" class="login-error" aria-live="polite"></div>
                     <div class="login-buttons">
@@ -57,27 +58,29 @@
 
             <div id="registration_section" class="login-card d-none">
                 <div class="login-headline-section">
-                    <img class="login-back-arrow" src="./assets/icons/arrow-left-line.svg" alt="Back-Icon"
+                    <button type="button" class="login-back-btn" aria-label="Back to log in"
                         onclick="switchForm('registration_section', 'login_section')">
-                    <h2>Sign up</h2>
+                        <img class="login-back-arrow" src="./assets/icons/arrow-left-line.svg" alt="">
+                    </button>
+                    <h1 class="login-title">Sign up</h1>
                 </div>
                 <span class="login-divider"></span>
 
                 <form class="login-form" novalidate onsubmit="register(); return false;">
                     <div class="input-container">
-                        <input type="text" id="reg_name" class="input-field" placeholder="Name" autocomplete="name"
+                        <input type="text" id="reg_name" class="input-field" placeholder="Name" aria-label="Name" autocomplete="name"
                             oninput="validateRegistrationForm()">
                         <img src="./assets/icons/person.svg" class="input-field-icon" alt="">
                     </div>
                     <div class="input-container">
-                        <input type="email" id="reg_email" class="input-field" placeholder="E-Mail" autocomplete="email"
+                        <input type="email" id="reg_email" class="input-field" placeholder="E-Mail" aria-label="E-Mail" autocomplete="email"
                             oninput="validateRegistrationForm()"
                             onblur="markTouched('reg_email'); validateRegistrationForm();">
                         <img src="./assets/icons/mail.svg" class="input-field-icon" alt="">
                     </div>
                     <span id="email_format_hint" class="field-hint">Please enter a valid email address</span>
                     <div class="input-container">
-                        <input type="password" id="reg_passwort" class="input-field" placeholder="Password"
+                        <input type="password" id="reg_passwort" class="input-field" placeholder="Password" aria-label="Password"
                             autocomplete="new-password" oninput="validateRegistrationForm()"
                             onblur="markTouched('reg_passwort'); validateRegistrationForm();">
                         <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
@@ -85,7 +88,7 @@
                     <span id="pw_hint" class="field-hint"></span>
                     <div class="input-container">
                         <input type="password" id="reg_password_confirm" class="input-field"
-                            placeholder="Confirm Password" autocomplete="new-password"
+                            placeholder="Confirm Password" aria-label="Confirm Password" autocomplete="new-password"
                             oninput="validateRegistrationForm()"
                             onblur="markTouched('reg_password_confirm'); validateRegistrationForm();">
                         <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
@@ -106,7 +109,7 @@
                 </form>
             </div>
 
-        </div>
+        </main>
         <div class="landscape-warning">
             <p>Please turn your device to portrait mode.</p>
         </div>

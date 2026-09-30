@@ -7,7 +7,7 @@ const USERS_URL = `${FIREBASE_BASE}/users.json`;
  * @returns {void}
  */
 function guestLogin() {
-    const guestUser = { id: 'guest', name: 'Gast', email: '', isGuest: true };
+    const guestUser = { id: 'guest', name: 'Guest', email: '', isGuest: true };
     sessionStorage.setItem('currentUser', JSON.stringify(guestUser));
     window.location.href = './html/summary.html';
 }
@@ -188,7 +188,6 @@ async function loadUsers() {
         if (!data) return [];
         return Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
     } catch (e) {
-        console.error('Error loading users:', e);
         showNotification('Error loading users!', true);
         return [];
     }
@@ -207,7 +206,6 @@ async function loadContactEntries() {
         if (!data) return [];
         return Object.entries(data).filter(([, c]) => c).map(([key, contact]) => ({ key, contact }));
     } catch (e) {
-        console.error('Error loading contacts:', e);
         return [];
     }
 }

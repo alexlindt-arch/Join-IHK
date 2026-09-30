@@ -85,7 +85,7 @@
     gap: 26px;
   }
 
-  .board-col-header span {
+  .board-col-header .board-col-title {
     font-size: 27px;
     color: #2A3647;
   }
@@ -172,7 +172,7 @@
   .add-task-modal .edit-input,
   .add-task-modal .edit-textarea,
   .add-task-modal .detail-desc {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
@@ -227,7 +227,7 @@
   .add-task-modal .edit-input,
   .add-task-modal .edit-textarea,
   .add-task-modal .detail-desc {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
@@ -263,7 +263,7 @@
   }
 
   .select-toggle span {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   .modal-close-btn {
@@ -277,6 +277,6 @@
   .add-task-modal .edit-input,
   .add-task-modal .edit-textarea,
   .add-task-modal .detail-desc {
-    font-size: 13px;
+    font-size: 16px;
   }
 }

@@ -50,67 +50,6 @@ body.app-page {
   gap: 24px;
 }
 
-.avatar-wrapper {
-  position: relative;
-}
-
-.user-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #ffffff;
-  border: 3px solid var(--secondaryColor);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  font-weight: 500;
-  color: #000000;
-  cursor: pointer;
-  user-select: none;
-}
-
-.avatar-dropdown {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 10px;
-  width: 150px;
-  background: #2A3647;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 20px 0px 20px 20px;
-  z-index: 300;
-}
-
-.avatar-menu-btn {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  width: 130px;
-  height: 46px;
-  padding: 8px 10px;
-  border: none;
-  border-radius: 8px;
-  background: none;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.2;
-  color: #CDCDCD;
-  text-align: left;
-  transition: background 0.1s;
-}
-
-.avatar-menu-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-}
-
 @media (max-width: 1024px) {
   .main-wrapper {
     margin-left: 232px;
@@ -168,7 +107,7 @@ body.app-page {
   }
 
   .header-title {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 

@@ -1,0 +1,144 @@
+/* right split of contactsite */
+
+.contacts-split-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 84px;
+    flex: 2;
+    margin-left: 40px;
+}
+
+.btn-back-mobile {
+    display: none;
+}
+
+.brand-header {
+    display: flex;
+    align-items: center;
+    position: relative;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.brand-title {
+    font-size: 61px;
+    color: #000000;
+    margin: 0;
+}
+
+.brand-divider {
+    width: 3px;
+    height: 59px;
+    background-color: #3b91ff;
+}
+
+.brand-subtitle {
+    font-size: 22px;
+    color: #2c3e50;
+    font-weight: 400;
+}
+
+/* Profile Styles */
+
+.contact-profile {
+    padding: 10px;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.profile-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 32px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profile-avatar.orange {
+    background-color: #ff7b00;
+}
+
+.profile-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-name {
+    font-weight: 600;
+    color: #000000;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.profile-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 16px;
+    color: #555555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.profile-btn:hover {
+    color: #000000;
+}
+
+.profile-btn .icon {
+    font-size: 16px;
+}
+
+.section-title {
+    font-weight: 500;
+    color: #111111;
+    margin-bottom: 25px;
+}
+
+.info-group {
+    margin-bottom: 20px;
+}
+
+.info-label {
+    display: block;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 5px;
+}
+
+.info-value {
+    display: block;
+    color: #444444;
+}
+
+.info-value.email-link {
+    color: #3b91ff;
+}
+
+.info-value.email-link,
+.info-value.phone-link {
+    text-decoration: none;
+}
+
+.info-value.email-link:hover,
+.info-value.phone-link:hover {
+    text-decoration: underline;
+}

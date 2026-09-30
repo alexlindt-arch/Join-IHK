@@ -1,30 +1,30 @@
-
 /**
  * Renders the HTML template for a single contact item within the contact list.
- * * @param {Contact} contact - The contact object to be rendered.
+ * @param {Contact} contact - The contact object to be rendered.
+ * @param {string} displayName - Name shown in the list (the own contact is marked with "(You)").
  * @returns {string} The HTML string template for the list item.
  */
-function renderContactlist(contact) {
-    return `<div class="contact-item" id="${contact.id}" onclick="showContactDetails('${contact.id}')">
-        <div class="avatar" style="background-color: ${contact.color};">${avatarInnerHTML(contact)}</div>
-        <div class="contact-info">
-            <span class="name">${contact.name}</span>
-            <span class="email">${contact.email}</span>
-        </div>
-    </div>`;
+function renderContactlist(contact, displayName) {
+    return `<button type="button" class="contact-item" id="${imgEscape(contact.id)}" onclick="showContactDetails('${imgEscape(contact.id)}')">
+        <span class="avatar" style="background-color: ${imgEscape(contact.color)};">${avatarInnerHTML(contact)}</span>
+        <span class="contact-info">
+            <span class="name">${imgEscape(displayName)}</span>
+            <span class="email">${imgEscape(contact.email)}</span>
+        </span>
+    </button>`;
 }
 
 
 /**
  * Renders a letter group container (e.g., "A", "B", "C") used for alphabetical sorting in the contact list.
- * * @param {string} letter - The initial letter of the group.
+ * @param {string} letter - The initial letter of the group.
  * @param {string} itemsHtml - The pre-rendered HTML string of contacts belonging to this letter group.
  * @returns {string} The HTML string template for the letter group.
  */
 function renderLetterGroupTemplate(letter, itemsHtml) {
     return `
         <div class="letter-group">
-            <h2 class="letter-group-title">${letter}</h2>
+            <h2 class="letter-group-title">${imgEscape(letter)}</h2>
             ${itemsHtml}
         </div>
     `;
@@ -32,21 +32,30 @@ function renderLetterGroupTemplate(letter, itemsHtml) {
 
 
 /**
+ * Renders the hint shown when there are no contacts yet.
+ * @returns {string} The HTML string for the empty list.
+ */
+function renderEmptyContactsTemplate() {
+    return `<p class="contacts-empty">No contacts yet. Add your first contact!</p>`;
+}
+
+
+/**
  * Renders the detailed profile view of a contact, including action buttons for both desktop and mobile views.
- * * @param {Contact} contact - The contact object whose details are to be displayed.
+ * @param {Contact} contact - The contact object whose details are to be displayed.
  * @returns {string} The HTML string template for the detailed profile view.
  */
 function renderContactDetails(contact) {
     return `<div class="profile-header">
-                        <div class="profile-avatar" style="background-color: ${contact.color};">${avatarInnerHTML(contact)}</div>
+                        <div class="profile-avatar" style="background-color: ${imgEscape(contact.color)};">${avatarInnerHTML(contact)}</div>
                         <div class="profile-meta">
-                            <h2 class="profile-name">${contact.name}</h2>
+                            <h2 class="profile-name">${imgEscape(contact.name)}</h2>
                             <div class="profile-actions for-mobile-hide" id="profile">
-                                <button type="button" class="profile-btn" onclick="editContact('${contact.id}')">
-                                <img src="../assets/icons/edit_contacts.svg"alt="edit"> Edit
+                                <button type="button" class="profile-btn" onclick="editContact('${imgEscape(contact.id)}')">
+                                <img src="../assets/icons/edit_contacts.svg" alt=""> Edit
                                 </button>
-                                <button type="button" class="profile-btn" onclick="deleteContact('${contact.id}')">
-                                <img src="../assets/icons/delete.svg"alt="delete"> Delete
+                                <button type="button" class="profile-btn" onclick="deleteContact('${imgEscape(contact.id)}')">
+                                <img src="../assets/icons/delete.svg" alt=""> Delete
                                 </button>
                             </div>
                         </div>
@@ -56,64 +65,65 @@ function renderContactDetails(contact) {
                         <h3 class="section-title">Contact Information</h3>
 
                         <div class="info-group">
-                            <label class="info-label">E-mail</label>
-                            <span class="info-value email-link">${contact.email}</span>
+                            <span class="info-label">Email</span>
+                            <a class="info-value email-link" href="mailto:${imgEscape(contact.email)}">${imgEscape(contact.email)}</a>
                         </div>
 
                         <div class="info-group">
-                            <label class="info-label">Phone</label>
-                            <span class="info-value">${contact.phone}</span>
+                            <span class="info-label">Phone</span>
+                            <a class="info-value phone-link" href="tel:${imgEscape(contact.phone)}">${imgEscape(contact.phone)}</a>
                         </div>
 
-                        <button type="button" class="btn-options-mobile" onclick="toggleMobileOptions(event)">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <button type="button" class="btn-options-mobile" onclick="toggleMobileOptions(event)"
+                            aria-label="More options" aria-haspopup="true" aria-expanded="false" aria-controls="mobile-options-menu">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <circle cx="12" cy="5" r="2" fill="white"/>
                                 <circle cx="12" cy="12" r="2" fill="white"/>
                                 <circle cx="12" cy="19" r="2" fill="white"/>
                             </svg>
                         </button>
 
-                        <div id="mobile-options-menu" class="mobile-options-popup" onclick="event.stopPropagation()">
-                            <div class="menu-item" onclick="editContact('${contact.id}')">
-                               <img src="../assets/icons/edit_contacts.svg" alt="Edit">
-                               <span>Edit</span>
-                           </div>
-                            <div class="menu-item" onclick="deleteContact('${contact.id}')">
-                                <img src="../assets/icons/delete.svg" alt="Delete">
+                        <div id="mobile-options-menu" class="mobile-options-popup">
+                            <button type="button" class="menu-item" onclick="editContact('${imgEscape(contact.id)}')">
+                                <img src="../assets/icons/edit_contacts.svg" alt="">
+                                <span>Edit</span>
+                            </button>
+                            <button type="button" class="menu-item" onclick="deleteContact('${imgEscape(contact.id)}')">
+                                <img src="../assets/icons/delete.svg" alt="">
                                 <span>Delete</span>
-                            </div>
-                      </div>
+                            </button>
+                        </div>
                     </div>`;
 }
 
 
 /**
  * Renders the layout framework of the modal dialog used for adding or editing a contact.
- * It also stores the form submission action globally on the `window` object.
- * * @param {string} title - The title of the dialog (e.g., "Add contact" or "Edit contact").
- * @param {string} submitAction - The name of the global function (as a string) to execute upon form submission.
+ * The form is validated by JavaScript only (novalidate), see handleContactSubmit.
+ * @param {string} title - The title of the dialog (e.g., "Add contact" or "Edit contact").
  * @param {string} buttonHtml - The pre-rendered HTML string for the footer buttons (context-dependent).
+ * @param {boolean} showTagline - Whether the "Tasks are better with a team!" tagline is shown.
  * @returns {string} The HTML string template for the modal dialog.
  */
-function renderDialogContact(title, submitAction, buttonHtml) {
-    window.currentSubmitAction = submitAction; 
-    const isEdit = typeof title === 'string' && title.toLowerCase().includes('edit');
-    return `<div class="modal-content" onclick="event.stopPropagation()">
+function renderDialogContact(title, buttonHtml, showTagline) {
+    const taglineClass = showTagline ? 'modal-tagline' : 'modal-tagline d-none';
+    return `<div class="modal-content">
             <div class="modal-left">
-            <button type="button" class="close-dialog dp-show-mobile" onclick="closeDialog()">×</button>
-                <div class="modal-logo for-mobile-hide"><img src="../assets/img/logo_white.svg" alt="join icon"></div>
-                <h2>${title}</h2>
-                ${title.includes('Edit') ? '' : `<p class="modal-tagline">Tasks are better with a team!</p>`}
+                <button type="button" class="close-dialog dp-show-mobile" onclick="closeDialog()" aria-label="Close">×</button>
+                <div class="modal-logo for-mobile-hide"><img src="../assets/img/logo_white.svg" alt="Join logo"></div>
+                <h2 id="contact-dialog-title">${title}</h2>
+                <p class="${taglineClass}">Tasks are better with a team!</p>
                 <div class="modal-divider"></div>
             </div>
 
-            <form method="dialog" class="modal-right" onsubmit="handleContactSubmit(event, window.currentSubmitAction)">
-                <button type="button" class="close-dialog dp-hidden-mobile" onclick="closeDialog()">×</button>
+            <form class="modal-right" novalidate onsubmit="handleContactSubmit(event)">
+                <button type="button" class="close-dialog dp-hidden-mobile" onclick="closeDialog()" aria-label="Close">×</button>
 
                 <div class="avatar-upload">
-                    <label class="profile-placeholder" for="modal-photo" title="Upload photo (JPG/PNG)">
-                        <i class="fa-solid fa-user"></i>
-                    </label>
+                    <button type="button" class="profile-placeholder" title="Upload photo (JPEG or PNG)"
+                        aria-label="Upload photo (JPEG or PNG)" onclick="document.getElementById('modal-photo').click()">
+                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                    </button>
                     <input type="file" id="modal-photo" accept="image/jpeg,image/png" hidden
                         onchange="handleContactPhotoSelect(this)">
                     <button type="button" class="avatar-remove-btn d-none" id="avatar-remove-btn"
@@ -121,38 +131,41 @@ function renderDialogContact(title, submitAction, buttonHtml) {
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="modal-name" name="name" placeholder="Name" onblur="validateField('name')" autocomplete="off">
+                    <input type="text" id="modal-name" name="name" placeholder="Name" aria-label="Name"
+                        aria-describedby="name-error" onblur="validateField('name')" autocomplete="off">
                     <i class="fa-solid fa-user"></i>
                 </div>
-                <div id="name-error" class="error-message">Please enter both your first and last name.</div>
+                <div id="name-error" class="error-message" aria-live="polite">Please enter first and last name (letters only, no numbers).</div>
 
                 <div class="input-group">
-                    <input type="text" id="modal-email" name="email" placeholder="Email" onblur="validateField('email')" autocomplete="off">
+                    <input type="email" id="modal-email" name="email" placeholder="Email" aria-label="Email"
+                        aria-describedby="email-error" onblur="validateField('email')" autocomplete="off">
                     <i class="fa-solid fa-envelope"></i>
                 </div>
-                <div id="email-error" class="error-message">Please enter a valid email address.</div>
+                <div id="email-error" class="error-message" aria-live="polite">Please enter a valid email address.</div>
 
                 <div class="input-group">
-                    <input type="text" id="modal-phone" name="phone" placeholder="Phone" oninput="allowOnlyNumbers(this)" onblur="validateField('phone')" autocomplete="off">
+                    <input type="tel" id="modal-phone" name="phone" placeholder="Phone" aria-label="Phone"
+                        aria-describedby="phone-error" oninput="allowOnlyNumbers(this)" onblur="validateField('phone')" autocomplete="off">
                     <i class="fa-solid fa-phone"></i>
                 </div>
-                <div id="phone-error" class="error-message">Only numbers are allowed.</div>
+                <div id="phone-error" class="error-message" aria-live="polite">Only numbers are allowed (optionally starting with +).</div>
 
                 <div class="modal-footer">
                     ${buttonHtml}
                 </div>
             </form>
-        </div> `;
+        </div>`;
 }
 
 
 /**
  * Renders the action buttons for the dialog when an existing contact is being *edited* (Delete & Save).
- * * @param {Contact} contact - The contact object currently being edited.
+ * @param {Contact} contact - The contact object currently being edited.
  * @returns {string} The HTML string template for the "Delete" and "Save" buttons.
  */
 function renderDialogContactEditButton(contact) {
-    return `<button type="button" class="btn-cancel" onclick="deleteContact('${contact.id}')"> Delete <i
+    return `<button type="button" class="btn-cancel" onclick="deleteContact('${imgEscape(contact.id)}')"> Delete <i
                 class="fa-solid fa-xmark"></i></button>
             <button type="submit" class="btn-submit"> Save <i class="fa-solid fa-check"></i></button>`;
 }
@@ -160,7 +173,7 @@ function renderDialogContactEditButton(contact) {
 
 /**
  * Renders the action buttons for the dialog when a new contact is being *created* (Cancel & Create contact).
- * * @returns {string} The HTML string template for the "Cancel" and "Create contact" buttons.
+ * @returns {string} The HTML string template for the "Cancel" and "Create contact" buttons.
  */
 function renderDialogCreateContactButton() {
     return `<button type="button" class="btn-cancel btn-mobile-hide" onclick="closeDialog()"> Cancel <i

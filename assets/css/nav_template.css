@@ -51,7 +51,7 @@
     width: 32px;
     height: 32px;
     cursor: pointer;
-    transition: transform 0.15s;
+    transition: transform 100ms;
 }
 
 .help-icon:hover {
@@ -65,17 +65,24 @@
 .user-avatar {
   width: 48px;
   height: 48px;
+  padding: 0;
   border-radius: 50%;
   background: #ffffff;
   border: 3px solid var(--secondaryColor);
   display: flex;
   align-items: center;
   justify-content: center;
+  font: inherit;
   font-size: 16px;
   font-weight: 500;
   color: #000000;
   cursor: pointer;
   user-select: none;
+}
+
+.user-avatar:focus-visible {
+  outline: 2px solid #29ABE2;
+  outline-offset: 2px;
 }
 
 .avatar-dropdown {
@@ -111,12 +118,18 @@
   line-height: 1.2;
   color: #CDCDCD;
   text-align: left;
-  transition: background 0.1s;
+  transition: background 100ms;
 }
 
 .avatar-menu-btn:hover {
   background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
+}
+
+/* Links in the dropdown keep the grey menu colour of .avatar-menu-btn */
+a.avatar-menu-btn {
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .avatar-menu-btn--mobile-only {
@@ -187,7 +200,7 @@
     font-weight: 400;
     text-decoration: none;
     border-radius: 0 10px 10px 0;
-    transition: background-color 0.15s;
+    transition: background-color 100ms;
     white-space: nowrap;
 }
 
@@ -217,9 +230,9 @@
     width: 100%;
     padding: 8px 24px 8px 48px;
     color: var(--light-gray-4);
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color 100ms;
     white-space: nowrap;
 }
 
@@ -256,11 +269,11 @@
     padding: 8px 12px;
     border-radius: 10px;
     color: var(--white);
-    font-size: 12px;
+    font-size: 14px;
     text-decoration: none;
     flex: 1;
     text-align: center;
-    transition: background 0.15s;
+    transition: background 100ms;
 }
 
 .mobil-nav-link.aktiv {

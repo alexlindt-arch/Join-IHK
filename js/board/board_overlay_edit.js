@@ -64,43 +64,17 @@ function handleEditAssignOutsideClick(event) {
 }
 
 
-/** Loads board contacts from the appropriate source. 
- * @async 
- * @returns {Promise<Array>} 
+/**
+ * Loads all contacts from the database for the assign dropdown and the avatars.
+ * @async
+ * @returns {Promise<Array>} Normalised contacts.
  */
 async function loadBoardContacts() {
-  const contacts = await loadRemoteContacts();
-  return contacts.length || !checkIsGuest() ? contacts : await loadGuestContacts();
-}
-
-
-/** Fetches contacts from local db.json for guest users. 
- * @async 
- * @returns {Promise<Array>} 
- */
-async function loadGuestContacts() {
-  try {
-    const res = await fetch('../db.json');
-    const data = await res.json();
-    return mapContacts(Object.values(data.contacts || {}), true);
-  } catch (e) { return []; }
-}
-
-
-/** Fetches contacts from the remote Firebase endpoint. 
- * @async 
- * @returns {Promise<Array>} 
- */
-async function loadRemoteContacts() {
   try {
     const response = await fetch(`${BOARD_BASE_URL}/contacts.json`);
-    const data = await response.json();
-    if (!data) return [];
-    const raw = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
-    return mapContacts(raw, false);
+    return mapContacts(toEntryList(await response.json()));
   } catch (e) {
-    console.error('Error loading contacts:', e);
-    showNotification('Error loading contacts!', true);
+    notify('Contacts could not be loaded.', true);
     return [];
   }
 }
@@ -109,14 +83,12 @@ async function loadRemoteContacts() {
 /**
  * Normalises raw contacts into a sorted, uniform shape.
  * @param {Array} raw - Raw contact objects.
- * @param {boolean} isGuest - Use index-based IDs when true.
  * @returns {Array}
  */
-function mapContacts(raw, isGuest) {
+function mapContacts(raw) {
   return raw
-    .filter(Boolean)
-    .map((c, i) => ({
-      id: String(isGuest ? (c.id || i + 1) : c.id),
+    .map(c => ({
+      id: String(c.id),
       name: c.name || '',
       color: c.color || '#888',
       initials: getInitials(c.name),
@@ -169,7 +141,7 @@ function toggleEditPerson(id) {
  * */
 function canAssignMorePersons() {
   if (editAssignedIds.length >= 99) {
-    notify('Maximal 99 Personen können zugewiesen werden.', true);
+    notify('A maximum of 99 contacts can be assigned.', true);
     return false;
   }
   return true;
@@ -271,11 +243,27 @@ async function saveEditedTask(id) {
   const task = allTasks.find(t => t.id == id);
   if (!task) return;
   const title = document.getElementById('edit-title').value.trim();
-  if (!title) { notify('Title is required.', true); return; }
+  if (!isEditFormValid(title, task)) return;
   const updates = buildTaskUpdates(title, task);
   Object.assign(task, updates);
   await saveTaskUpdates(id, updates);
   resetEditState();
+}
+
+
+/**
+ * Checks the required fields of the edit form and shows a message for the first problem.
+ * An unchanged due date is accepted even if it has passed, so old tasks stay editable.
+ * @param {string} title - Entered title.
+ * @param {Object} task - Task before editing.
+ * @returns {boolean} True when the task can be saved.
+ */
+function isEditFormValid(title, task) {
+  const dueDate = document.getElementById('edit-due').value;
+  const dueDateError = dueDate === task.dueDate ? '' : getDueDateError(dueDate);
+  if (!title) notify('Please enter a title.', true);
+  else if (dueDateError) notify(dueDateError, true);
+  return Boolean(title && !dueDateError);
 }
 
 
@@ -310,19 +298,14 @@ function buildTaskUpdates(title, task) {
 
 
 /**
- * Saves updates locally for guests or via the remote API.
- * @async 
+ * Saves the changed fields of a task in the database.
+ * @async
+ * @param {number|string} id - Task id.
+ * @param {Object} updates - Changed task fields.
  * @returns {Promise<void>}
  */
 async function saveTaskUpdates(id, updates) {
-  const task = allTasks.find(t => t.id == id);
-  if (task && !checkIsGuest()) {
-    await updateTaskRemote(task.id, updates);
-  } else {
-    saveGuestTasks(allTasks);
-    closeOverlay();
-    displayTasks(allTasks);
-  }
+  await updateTaskRemote(id, updates);
 }
 
 
@@ -343,12 +326,13 @@ function buildPatchOptions(data) {
  */
 async function updateTaskRemote(id, updates) {
   try {
-    await fetch(`${BOARD_BASE_URL}/tasks/${id}.json`, buildPatchOptions(updates));
+    const response = await fetch(`${BOARD_BASE_URL}/tasks/${id}.json`, buildPatchOptions(updates));
+    if (!response.ok) throw new Error(`Saving failed with status ${response.status}`);
     closeOverlay();
     displayTasks(allTasks);
+    notify('Task updated');
   } catch (e) {
-    console.error('Error saving task:', e);
-    showNotification('Error saving task!', true);
+    notify('Task could not be saved. Please try again.', true);
   }
 }
 

@@ -21,17 +21,20 @@ async function createAttachmentFromFile(file) {
 
 /**
  * Loads a file into an HTMLImageElement through a temporary object URL.
+ * @async
  * @param {File} file - Image file.
- * @returns {Promise<HTMLImageElement>} Loaded image.
+ * @returns {Promise<HTMLImageElement>} Decoded image; rejects when the file cannot be read as image.
  */
-function loadImageElement(file) {
-    return new Promise((resolve, reject) => {
-        const url = URL.createObjectURL(file);
-        const image = new Image();
-        image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
-        image.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image could not be read')); };
-        image.src = url;
-    });
+async function loadImageElement(file) {
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+    image.src = url;
+    try {
+        await image.decode();
+        return image;
+    } finally {
+        URL.revokeObjectURL(url);
+    }
 }
 
 

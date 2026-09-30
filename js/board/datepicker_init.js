@@ -36,11 +36,7 @@ function initFor(el) {
  * @returns {void}
  */
 function runAttach() {
-  try {
-    document.querySelectorAll('input.date-picker').forEach(initFor);
-  } catch (e) {
-    console.error('attachDatepickers error', e);
-  }
+  document.querySelectorAll('input.date-picker').forEach(initFor);
 }
 
 
@@ -80,9 +76,7 @@ function startObserverAndAttach() {
  * @returns {void}
  */
 function scheduleRetry(retries, delay) {
-  setTimeout(function retryInit() {
-    waitForFlatpickrAndInit(retries - 1, delay);
-  }, delay);
+  setTimeout(() => waitForFlatpickrAndInit(retries - 1, delay), delay);
 }
 
 

@@ -22,24 +22,18 @@
             <img src="../assets/img/logo_big.svg" class="header-logo-mobil" alt="Join">
 
             <div class="header-account">
-                <a href="../html/help.html" class="help-icon-link" title="Hilfe">
-                    <img src="../assets/icons/help.svg" alt="View help" class="help-icon">
-                </a>
 
-                <div class="avatar-wrapper" id="user-avatar-wrapper" onclick="toggleAvatarMenu()">
-                    <div class="user-avatar" id="user-avatar"></div>
+                <div class="avatar-wrapper" id="user-avatar-wrapper">
+                    <button type="button" class="user-avatar" id="user-avatar" aria-label="Open account menu"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="avatar-menu"
+                        onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
-                        <button class="avatar-menu-btn avatar-menu-btn--profile"
+                        <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
                             onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
-                        <button class="avatar-menu-btn avatar-menu-btn--mobile-only"
-                            onclick="window.location.href='help.html'; event.stopPropagation()">Help</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='privacy_policy.html'; event.stopPropagation()">Privacy
-                            Policy</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='legal_notice.html'; event.stopPropagation()">Legal
-                            Notice</button>
-                        <button class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
+                        <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
+                        <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
             </div>

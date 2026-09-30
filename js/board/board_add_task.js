@@ -9,46 +9,19 @@ let modalContacts = [];
 let modalDefaultStatus = 'todo';
 
 
-/** Normalized contact list from guest or remote source. 
+/**
+ * Loads all contacts from the database for the assign dropdown of the modal.
  * @async
- * @returns {Promise<Array>} 
+ * @returns {Promise<Array>} Normalised contacts.
  */
 async function loadAssignContacts() {
-    const isGuest = typeof checkIsGuest === 'function' && checkIsGuest();
     try {
-        const contacts = await loadRemoteAssignContacts();
-        if (contacts.length || !isGuest) return contacts;
-        return await loadGuestAssignContacts();
+        const response = await fetch(ADDTASK_CONTACTS_URL);
+        return normalizeContacts(toEntryList(await response.json()));
     } catch (error) {
-        console.error('Error loading contacts:', error);
-        if (isGuest) return loadGuestAssignContacts().catch(() => []);
-        showNotification('Error loading contacts!', true);
+        notify('Contacts could not be loaded.', true);
         return [];
     }
-}
-
-
-/** Contacts loaded from local guest db.json. 
- * @async 
- * @returns {Promise<Array>}
- */
-async function loadGuestAssignContacts() {
-    const response = await fetch('../db.json');
-    const raw = await response.json();
-    const contacts = Object.entries(raw.contacts || {}).map(([key, c]) => ({ ...c, id: key }));
-    return normalizeContacts(contacts);
-}
-
-
-/** Contacts loaded from remote Firebase database. 
- * @async 
- *  @returns {Promise<Array>}  
- */
-async function loadRemoteAssignContacts() {
-    const response = await fetch(ADDTASK_CONTACTS_URL);
-    const raw = await response.json();
-    if (!raw) return [];
-    return normalizeContacts(Array.isArray(raw) ? raw : Object.values(raw));
 }
 
 
@@ -59,7 +32,6 @@ async function loadRemoteAssignContacts() {
  */
 function normalizeContacts(raw) {
     return raw
-        .filter(Boolean)
         .map(contact => ({
             id: String(contact.id),
             name: contact.name,
@@ -193,7 +165,7 @@ function toggleModalPerson(id) {
  */
 function canAssignMoreModalPersons() {
     if (modalAssignedIds.length >= 99) {
-        notify('Maximal 99 Personen können zugewiesen werden.', true);
+        notify('A maximum of 99 contacts can be assigned.', true);
         return false;
     }
     return true;

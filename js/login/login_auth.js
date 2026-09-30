@@ -255,7 +255,7 @@ async function findContactByEmail(email) {
 function buildNewUserAndContact(id, name, email, password) {
     return {
         newUser: { id, name, email, password },
-        newContact: { id, name, email, phone: 'no phone number provided', color: getRandomColor(), avatar: getInitials(name) }
+        newContact: { id, name, email, phone: '', color: getRandomColor(), avatar: getInitials(name) }
     };
 }
 
@@ -276,7 +276,6 @@ async function saveRegistration(newId, newUser, newContact) {
         showNotification('Registration successful!');
         setTimeout(() => switchForm('registration_section', 'login_section'), 2000);
     } catch (e) {
-        console.error('Registration error:', e);
         showNotification('Registration failed.', true);
     }
 }

@@ -1,0 +1,118 @@
+.task-card {
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 18px 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0px 0px 14px 3px rgba(0, 0, 0, 0.04);
+  cursor: grab;
+  transition: box-shadow 100ms, transform 100ms;
+  user-select: none;
+}
+
+.task-card:hover {
+  transform: rotate(5deg);
+}
+
+.task-card-category {
+  display: inline-block;
+  padding: 4px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #ffffff;
+  background: #1FD7C1;
+  align-self: flex-start;
+}
+
+.category-technical {
+  background: #1FD7C1;
+}
+
+.category-user-story {
+  background: #0038FF;
+}
+
+.task-card-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #2A3647;
+}
+
+.task-card-desc {
+  font-size: 16px;
+  color: #828282;
+  line-height: 1.4;
+}
+
+.card-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-progressbar {
+  flex: 1;
+  height: 8px;
+  background: #F4F4F4;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.card-progressbar-fill {
+  height: 100%;
+  background: var(--secondaryColor);
+  border-radius: 2px;
+  transition: width 0.3s;
+}
+
+.card-progress-label {
+  font-size: 14px;
+  color: #2A3647;
+  white-space: nowrap;
+}
+
+.task-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.task-card-avatars {
+  display: flex;
+}
+
+.card-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  margin-right: -8px;
+}
+
+.card-avatar-more {
+  background: #ff0000;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.drag-highlight-box {
+  min-height: 60px;
+  border-radius: 16px;
+  border: 2px dashed transparent;
+  transition: border-color 100ms, background 100ms;
+}
+
+.drag-active {
+  border-color: #4589FF !important;
+  background: rgba(69, 137, 255, 0.05) !important;
+  cursor: grabbing;
+}

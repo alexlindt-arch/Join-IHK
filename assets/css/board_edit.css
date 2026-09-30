@@ -1,0 +1,197 @@
+.edit-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.edit-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #2A3647;
+}
+
+.edit-input {
+  border: 1px solid #D1D1D1;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-family: 'Inter', sans-serif;
+  color: #2A3647;
+  outline: none;
+  transition: border-color 100ms;
+  width: 100%;
+}
+
+.edit-input:focus {
+  border-color: var(--secondaryColor);
+}
+
+.edit-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.edit-prio-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.edit-prio-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 2px;
+  border: 1px solid #D1D1D1;
+  border-radius: 10px;
+  background: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #2A3647;
+  transition: background 100ms, color 100ms;
+}
+
+.edit-prio-btn--active.edit-prio-urgent {
+  background: #FF3D00;
+  color: #ffffff;
+  border-color: #FF3D00;
+}
+
+.edit-prio-btn--active.edit-prio-urgent svg path,
+.edit-prio-btn--active.edit-prio-urgent svg rect {
+  fill: #ffffff;
+}
+
+.edit-prio-btn--active.edit-prio-medium {
+  background: #FFA800;
+  color: #ffffff;
+  border-color: #FFA800;
+}
+
+.edit-prio-btn--active.edit-prio-medium svg rect {
+  fill: #ffffff;
+}
+
+.edit-prio-btn--active.edit-prio-low {
+  background: #7AE229;
+  color: #ffffff;
+  border-color: #7AE229;
+}
+
+.edit-prio-btn--active.edit-prio-low svg path {
+  fill: #ffffff;
+}
+
+.edit-save-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.edit-save-row .btn-add-task {
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.edit-assign-wrapper {
+  position: relative;
+}
+
+.edit-assign-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.edit-assign-options {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #D1D1D1;
+  border-radius: 10px;
+  z-index: 50;
+  max-height: 170px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.edit-assigned-avatars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.edit-subtask-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-subtask-input-row .edit-input {
+  flex: 1;
+}
+
+.edit-subtask-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid #D1D1D1;
+  background: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  color: #2A3647;
+  transition: background 100ms;
+  flex-shrink: 0;
+}
+
+.edit-subtask-add-btn:hover {
+  background: #F0F0F0;
+}
+
+.edit-subtask-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 0;
+}
+
+.edit-subtask-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #2A3647;
+}
+
+.edit-subtask-item:hover {
+  background: #F6F7F8;
+}
+
+.edit-subtask-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.edit-subtask-inline-input {
+  flex: 1;
+  margin-right: 8px;
+  padding: 4px 8px;
+  font-size: 16px;
+}

@@ -1,7 +1,14 @@
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', initPage);
+
+
+/**
+ * Initialises the shared parts of every page: header avatar and closing of the avatar menu.
+ * @returns {void}
+ */
+function initPage() {
     initMain();
     document.addEventListener('click', closeAvatarMenuOnOutsideClick);
-});
+}
 
 
 /**
@@ -19,9 +26,9 @@ function initMain() {
  * @returns {void}
  */
 function closeAvatarMenuOnOutsideClick(e) {
-    if (!e.target.closest('#user-avatar-wrapper')) {
-        document.getElementById('avatar-menu')?.classList.add('d-none');
-    }
+    if (e.target.closest('#user-avatar-wrapper')) return;
+    document.getElementById('avatar-menu')?.classList.add('d-none');
+    document.getElementById('user-avatar')?.setAttribute('aria-expanded', 'false');
 }
 
 
@@ -30,7 +37,10 @@ function closeAvatarMenuOnOutsideClick(e) {
  * @returns {void}
  */
 function toggleAvatarMenu() {
-    document.getElementById('avatar-menu')?.classList.toggle('d-none');
+    const menu = document.getElementById('avatar-menu');
+    if (!menu) return;
+    const isOpen = menu.classList.toggle('d-none') === false;
+    document.getElementById('user-avatar')?.setAttribute('aria-expanded', String(isOpen));
 }
 
 
@@ -117,114 +127,6 @@ function setHeaderAvatar() {
 
 
 /**
- * Hides the help icon and avatar wrapper for non-logged-in users.
- * @param {Object|null} user - Current user object, or null if not logged in.
- * @returns {void}
- */
-function updateHeaderForUser(user) {
-    if (user) return;
-    const helpIcon = document.querySelector('.help-icon-link');
-    if (helpIcon) helpIcon.style.display = 'none';
-    const avatarWrapper = document.getElementById('user-avatar-wrapper');
-    if (avatarWrapper) avatarWrapper.style.display = 'none';
-}
-
-
-/**
- * Adds the active class to desktop nav links matching the current page.
- * @param {string} page - Current page filename.
- * @returns {void}
- */
-function activateDesktopNavLinks(page) {
-    document.querySelectorAll('.nav-link, .nav-bottom-link').forEach(link => {
-        if (link.getAttribute('href')?.endsWith(page)) link.classList.add('nav-item--active');
-    });
-}
-
-
-/**
- * Sets the active class on the matching mobile nav link for the current page.
- * @param {string} page - Current page filename.
- * @returns {void}
- */
-function activateMobileNavLinks(page) {
-    document.querySelectorAll('.mobil-nav-link').forEach(link => link.classList.remove('aktiv'));
-    document.querySelectorAll(`.mobil-nav-link[href$="${page}"]`).forEach(link => link.classList.add('aktiv'));
-}
-
-
-/**
- * Activates the correct nav links for the current page on desktop and mobile.
- * @returns {void}
- */
-function setActiveNavLink() {
-    const page = getCurrentPage();
-    activateDesktopNavLinks(page);
-    activateMobileNavLinks(page);
-}
-
-
-/**
- * Returns the HTML for the guest desktop navigation login link.
- * @returns {string} HTML string.
- */
-function getGuestDesktopNavHTML() {
-    return `<a href="../login.html" class="nav-link" id="nav_login"><img src="../assets/icons/login.svg" alt="" class="nav-icon"><span>Log In</span></a>`;
-}
-
-
-/**
- * Returns the HTML for the guest mobile navigation including active page states.
- * @param {string} page - Current page filename.
- * @returns {string} HTML string.
- */
-function getGuestMobileNavHTML(page) {
-    const isPrivacy = page === 'privacy_policy.html';
-    const isLegal = page === 'legal_notice.html';
-    return `
-        <a href="../login.html" class="mobil-nav-link">
-            <img src="../assets/icons/login.svg" alt="" class="mobil-nav-icon">
-            <span>Log In</span>
-        </a>
-        <a href="privacy_policy.html" class="mobil-nav-link${isPrivacy ? ' aktiv' : ''}">Privacy Policy</a>
-        <a href="legal_notice.html" class="mobil-nav-link${isLegal ? ' aktiv' : ''}">Legal Notice</a>
-    `;
-}
-
-
-/**
- * Replaces the desktop navigation with the guest login link.
- * @returns {void}
- */
-function setGuestDesktopNav() {
-    const navGroup = document.querySelector('.navigation-links-group');
-    if (navGroup) navGroup.innerHTML = getGuestDesktopNavHTML();
-}
-
-
-/**
- * Replaces the mobile navigation with guest-appropriate links.
- * @returns {void}
- */
-function setGuestMobileNav() {
-    const mobilNav = document.querySelector('.mobil-navigation');
-    if (mobilNav) mobilNav.innerHTML = getGuestMobileNavHTML(getCurrentPage());
-}
-
-
-/**
- * Switches navigation to guest mode when no user is logged in.
- * @param {Object|null} user - Current user object, or null if not logged in.
- * @returns {void}
- */
-function updateNavigationForUser(user) {
-    if (user) return;
-    setGuestDesktopNav();
-    setGuestMobileNav();
-}
-
-
-/**
  * Displays a notification message, moving it into the add-task dialog if open.
  * Falls back to showNotification() if the notification element is missing.
  * @param {string} message - Text to display.
@@ -284,3 +186,41 @@ function setActiveNavLink() {
 
 
 setActiveNavLink();
+
+
+/**
+ * Turns a Firebase collection (object or array, depending on its keys) into a list of entries.
+ * The database key becomes the id when the entry has no id of its own.
+ * @param {Object|Array|null} data - Collection as returned by Firebase.
+ * @returns {Array<Object>} Entries with an id.
+ */
+function toEntryList(data) {
+    return Object.entries(data || {})
+        .filter(([, entry]) => entry)
+        .map(([key, entry]) => ({ ...entry, id: entry.id ?? key }));
+}
+
+
+/**
+ * Tells whether a due date in the format dd.mm.yyyy lies before today.
+ * @param {string} dueDate - Date as shown in the date inputs.
+ * @returns {boolean} True for dates in the past.
+ */
+function isPastDueDate(dueDate) {
+    const [day, month, year] = (dueDate || '').split('.').map(Number);
+    if (!day || !month || !year) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return new Date(year, month - 1, day) < today;
+}
+
+
+/**
+ * Returns the error text for a due date field, or an empty string when the date is valid.
+ * @param {string} dueDate - Date as shown in the date inputs.
+ * @returns {string} Error text.
+ */
+function getDueDateError(dueDate) {
+    if (!dueDate) return 'This field is required';
+    return isPastDueDate(dueDate) ? 'The due date must not be in the past' : '';
+}

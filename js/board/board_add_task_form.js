@@ -102,7 +102,6 @@ async function trySaveModalTask(task, button) {
         closeAddTaskModal();
         await initTasks();
     } catch (error) {
-        console.error('Error saving task:', error);
         showTaskNotification('Could not save task. Please try again.', true);
         button.disabled = false;
     }
@@ -161,9 +160,23 @@ function validateModalField(value, errorId) {
  */
 function validateModalTask(task) {
     const titleOk = validateModalField(task.title, 'modal-error-title');
-    const dueOk = validateModalField(task.dueDate, 'modal-error-due');
+    const dueOk = validateModalDueDate(task.dueDate);
     const catOk = validateModalField(task.category, 'modal-error-category');
     return titleOk && dueOk && catOk;
+}
+
+
+/**
+ * Shows the due date error of the modal (missing or in the past).
+ * @param {string} dueDate - Selected due date.
+ * @returns {boolean} True when the date is valid.
+ */
+function validateModalDueDate(dueDate) {
+    const error = getDueDateError(dueDate);
+    const errorElement = document.getElementById('modal-error-due');
+    errorElement.textContent = error || 'This field is required';
+    errorElement.classList.toggle('d-none', !error);
+    return !error;
 }
 
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,12 @@
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/icons/favicon/site.webmanifest" />
     <link rel="stylesheet" href="../style.css?v=20260930a">
-    <link rel="stylesheet" href="../assets/css/contacts.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_list.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_detail.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_dialog.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_mobile.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_responsive.css?v=20260930a">
+    <link rel="stylesheet" href="../assets/css/contacts_desktop.css?v=20260930a">
     <link rel="stylesheet" href="../assets/css/features.css?v=20260930a">
     <link rel="stylesheet" href="../assets/css/profile.css?v=20260930a">
     <title>Contacts</title>
@@ -23,24 +28,21 @@
             <img src="../assets/img/logo_big.svg" class="header-logo-mobil" alt="Join">
 
             <div class="header-account">
-                <a href="../html/help.html" class="help-icon-link" title="Hilfe">
-                    <img src="../assets/icons/help.svg" alt="View help" class="help-icon">
+                <a href="../html/help.html" class="help-icon-link" title="Help">
+                    <img src="../assets/icons/help.svg" alt="" class="help-icon">
                 </a>
 
-                <div class="avatar-wrapper" id="user-avatar-wrapper" onclick="toggleAvatarMenu()">
-                    <div class="user-avatar" id="user-avatar"></div>
+                <div class="avatar-wrapper" id="user-avatar-wrapper">
+                    <button type="button" class="user-avatar" id="user-avatar" aria-label="Open account menu"
+                        aria-haspopup="true" aria-expanded="false" aria-controls="avatar-menu"
+                        onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
-                        <button class="avatar-menu-btn avatar-menu-btn--profile"
+                        <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
                             onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
-                        <button class="avatar-menu-btn avatar-menu-btn--mobile-only"
-                            onclick="window.location.href='help.html'; event.stopPropagation()">Help</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='privacy_policy.html'; event.stopPropagation()">Privacy
-                            Policy</button>
-                        <button class="avatar-menu-btn"
-                            onclick="window.location.href='legal_notice.html'; event.stopPropagation()">Legal
-                            Notice</button>
-                        <button class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
+                        <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
+                        <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
             </div>
@@ -55,7 +57,7 @@
         <div class="navigation-links-group">
             <a href="../html/summary.html" class="nav-link" id="nav_overview">
                 <img src="../assets/icons/summary.svg" alt="" class="nav-icon">
-                <span>Summary</Summary></span>
+                <span>Summary</span>
             </a>
             <a href="../html/add_task.html" class="nav-link" id="nav_addtask">
                 <img src="../assets/icons/add_task.svg" alt="" class="nav-icon">
@@ -106,43 +108,44 @@
 
         <main class="contacts-main">
 
-            <section class="contacts-split-left">
+            <section class="contacts-split-left" aria-label="Contact list">
 
                 <div class="contacts-list">
                     <div class="btn-add-contact">
-                        <button type="button" onclick="openAddContactModal()">
+                        <button type="button" onclick="openAddContactModal()" aria-label="Add new contact">
                             <span class="for-mobile-hide">Add new contact</span>
-                            <img src="../assets/icons/person_add.svg" alt="Add Contact" class="fab-icon">
+                            <img src="../assets/icons/person_add.svg" alt="" class="fab-icon">
                         </button>
                     </div>
-                    <div class="contact-item-placeholder" id="contacts-list-import">
-                        No contacts yet. Add your first contact!</div>
+                    <div class="contact-item-placeholder" id="contacts-list-import" aria-live="polite"></div>
                 </div>
             </section>
 
-            <section class="contacts-split-right for-mobile-hide">
+            <section class="contacts-split-right for-mobile-hide" aria-labelledby="contacts-heading">
 
                 <div class="brand-header">
-                    <h1 class="brand-title">Contacts</h1>
+                    <h1 class="brand-title" id="contacts-heading">Contacts</h1>
                     <div class="brand-divider"></div>
                     <span class="brand-subtitle">Better with a team</span>
 
-                    <button type="button" class="btn-back-mobile" onclick="resetMobileContactView()">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <button type="button" class="btn-back-mobile" onclick="resetMobileContactView()"
+                        aria-label="Back to contact list">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true">
                             <path d="M20 11H7.83L13.42 5.41L12 4L4 12L12 20L13.41 18.59L7.83 13H20V11Z"
                                 fill="#29ABE2" />
                         </svg>
                     </button>
                 </div>
 
-                <div class="contact-profile" id="contact-details-view" role="complementary"
-                    aria-labelledby="details-heading">
+                <div class="contact-profile" id="contact-details-view" aria-live="polite"
+                    aria-label="Contact details">
                 </div>
             </section>
         </main>
     </div>
 
-    <dialog id="add-contact-dialog" onclick="closeDialog()">
+    <dialog id="add-contact-dialog" aria-labelledby="contact-dialog-title" onclick="closeDialogOnBackdrop(event)">
     </dialog>
 
 
@@ -151,6 +154,9 @@
     <script src="../js/image_utils.js?v=20260930a"></script>
     <script src="../assets/templates/contacts_template.js?v=20260930a"></script>
     <script src="../js/contacts/contacts.js?v=20260930a"></script>
+    <script src="../js/contacts/contacts_store.js?v=20260930a"></script>
+    <script src="../js/contacts/contact_sync.js?v=20260930a"></script>
+    <script src="../js/contacts/contact_validation.js?v=20260930a"></script>
     <script src="../js/contacts/contact_add_edit.js?v=20260930a"></script>
     <script src="../script.js?v=20260930a"></script>
 

@@ -36,14 +36,16 @@ async function validateImageFile(file) {
  * @param {File} file - The image file.
  * @returns {Promise<HTMLImageElement>}
  */
-function loadImageFromFile(file) {
-    return new Promise((resolve, reject) => {
-        const url = URL.createObjectURL(file);
-        const img = new Image();
-        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
-        img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image could not be loaded')); };
-        img.src = url;
-    });
+async function loadImageFromFile(file) {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.src = url;
+    try {
+        await img.decode();
+        return img;
+    } finally {
+        URL.revokeObjectURL(url);
+    }
 }
 
 

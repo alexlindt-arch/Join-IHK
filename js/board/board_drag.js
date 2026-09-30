@@ -56,24 +56,9 @@ async function moveTo(status) {
   const task = allTasks.find(t => t.id == currentDraggedTaskId);
   if (!task) return;
   task.status = status;
-  await updateTaskStatus(task);
+  await updateTaskStatusRemote(task.id, task.status);
   displayTasks(allTasks);
   currentDraggedTaskId = null;
-}
-
-
-/**
- * Persists the updated task status for guests or remote users.
- * @async 
- * @param {Object} task
- * @returns {Promise<void>}
- */
-async function updateTaskStatus(task) {
-  if (!checkIsGuest()) {
-    await updateTaskStatusRemote(task.id, task.status);
-  } else {
-    saveGuestTasks(allTasks);
-  }
 }
 
 
@@ -92,8 +77,7 @@ async function updateTaskStatusRemote(taskId, status) {
       body: JSON.stringify({ status })
     });
   } catch (e) {
-    console.error('Error updating task status:', e);
-    showNotification('Error updating task status!', true);
+    notify('Error updating task status!', true);
   }
 }
 

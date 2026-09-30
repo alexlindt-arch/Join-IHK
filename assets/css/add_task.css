@@ -12,7 +12,7 @@ body.app-page { max-width: none; }
 .form-label { font-size: 20px; font-weight: 400; color: #2A3647; }
 .required { color: #FF8190; }
 
-.form-input { height: 48px; border: 1px solid #D1D1D1; border-radius: 10px; padding: 12px 16px; font-size: 20px; font-family: 'Inter', sans-serif; color: #000000; outline: none; transition: border-color 0.1s; }
+.form-input { height: 48px; border: 1px solid #D1D1D1; border-radius: 10px; padding: 12px 16px; font-size: 20px; font-family: 'Inter', sans-serif; color: #000000; outline: none; transition: border-color 100ms; }
 #task-title { padding: 12px 21px; }
 .form-input:focus { border-color: var(--secondaryColor); }
 .form-input::placeholder { color: #D1D1D1; }
@@ -26,7 +26,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { position: absolute; inse
 #task-due { background-image: none; }
 
 .prio-buttons { display: flex; gap: 16px; }
-.prio-btn { flex: 1; height: 56px; border: none; border-radius: 10px; background: #ffffff; box-shadow: 0px 0px 4px 0px #0000001A; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; font-size: 20px; font-weight: 400; font-family: 'Inter', sans-serif; color: #000000; cursor: pointer; transition: background 0.1s, color 0.1s, box-shadow 0.1s; }
+.prio-btn { flex: 1; height: 56px; border: none; border-radius: 10px; background: #ffffff; box-shadow: 0px 0px 4px 0px #0000001A; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px; font-size: 20px; font-weight: 400; font-family: 'Inter', sans-serif; color: #000000; cursor: pointer; transition: background 100ms, color 100ms, box-shadow 100ms; }
 .prio-btn.prio-active { font-size: 21px; }
 .prio-btn:hover:not(.prio-active) { box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2); }
 
@@ -50,12 +50,12 @@ input[type="date"]::-webkit-calendar-picker-indicator { position: absolute; inse
 .form-actions { display: flex; gap: 16px; flex-shrink: 0; flex-wrap: nowrap; }
 
 /* Figma Secondary: padding 16px, gap 4px, Text 20px/400 */
-.btn-clear { flex: none; height: 56px; padding: 0 16px; border: 1px solid #2A3647; border-radius: 10px; background: #F6F7F8; font-size: 20px; font-weight: 400; color: #2A3647; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; transition: background 0.1s, color 0.1s; }
+.btn-clear { flex: none; height: 56px; padding: 0 16px; border: 1px solid #2A3647; border-radius: 10px; background: #F6F7F8; font-size: 20px; font-weight: 400; color: #2A3647; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; transition: background 100ms, color 100ms; }
 .btn-clear:hover { background: #ffffff; border-color: var(--primaryColor); }
 .btn-x { font-size: 24px; line-height: 1; }
 
 /* Figma Primary: padding 16px, gap 4px, Text 21px/700 */
-.btn-create { flex: none; height: 56px; padding: 0 16px; border: none; border-radius: 10px; background: var(--primaryColor); font-size: 21px; font-weight: 700; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; transition: background 0.1s; }
+.btn-create { flex: none; height: 56px; padding: 0 16px; border: none; border-radius: 10px; background: var(--primaryColor); font-size: 21px; font-weight: 700; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; transition: background 100ms; }
 .btn-create:hover:not(:disabled) { background: var(--activeColor); }
 .btn-create:disabled { background: #d1d1d1; cursor: not-allowed; opacity: 0.7; }
 .btn-icon { width: 24px; height: 24px; filter: brightness(0) invert(1); }
@@ -114,7 +114,8 @@ input[type="date"]::-webkit-calendar-picker-indicator { position: absolute; inse
 
 @media (max-width: 350px) {
   .prio-buttons { flex-direction: row; gap: 8px; }
-  .prio-btn { padding: 0 4px; gap: 4px; font-size: 14px; }
+  .prio-btn { flex: 1 1 auto; padding: 0 2px; gap: 4px; font-size: 16px; }
+  .prio-btn svg { flex-shrink: 0; }
 }
 
 @media (max-width: 320px) {
@@ -125,25 +126,29 @@ input[type="date"]::-webkit-calendar-picker-indicator { position: absolute; inse
 
 .custom-select { position: relative; }
 .select-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+/* Toggles and options are buttons: keep the look of the .form-input / .edit-input they sit on */
+.select-toggle, .edit-assign-toggle { width: 100%; background: #FFFFFF; text-align: left; font-weight: inherit; line-height: inherit; }
+.select-toggle:focus-visible, .edit-assign-toggle:focus-visible, .select-option:focus-visible { outline: 2px solid #29ABE2; outline-offset: -2px; }
 .select-placeholder { color: #D1D1D1; }
-.select-caret { color: var(--primaryColor); font-size: 12px; pointer-events: none; }
+.select-caret { color: var(--primaryColor); font-size: 16px; pointer-events: none; }
 .select-options { position: absolute; top: 100%; margin-top: 4px; left: 0; right: 0; height: fit-content; max-height: 170px; background: #ffffff; border: 1px solid #D1D1D1; border-radius: 10px; overflow: auto; z-index: 50; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); }
-.select-option, .assign-option { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-size: 16px; cursor: pointer; transition: background 0.1s, color 0.1s; }
+.select-option, .assign-option { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; font-size: 16px; cursor: pointer; transition: background 100ms, color 100ms; }
+.select-option { width: 100%; border: unset; background: transparent; font-family: inherit; font-weight: inherit; line-height: inherit; color: inherit; text-align: left; }
 .select-option:hover, .assign-option:hover { background: var(--light-gray-4); }
 .assign-option--active { background: var(--primaryColor); color: #ffffff; }
 .assign-option-left { display: flex; align-items: center; gap: 12px; }
 .assign-checkbox { font-size: 28px; }
 
-.avatar-chip { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: #ffffff; font-size: 12px; font-weight: 600; border: 1px solid #ffffff; flex-shrink: 0; }
+.avatar-chip { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: #ffffff; font-size: 14px; font-weight: 600; border: 1px solid #ffffff; flex-shrink: 0; }
 .avatar-chip-more { background: #ff0000; color: #ffffff; font-weight: 700; }
 .assigned-avatars { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-.field-error { color: #FF8190; font-size: 13px; }
+.field-error { color: #FF8190; font-size: 14px; }
 
 .subtask-input-wrapper { position: relative; }
 .subtask-input-wrapper .form-input { width: 100%; padding-right: 84px; }
 .subtask-actions { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; }
 .subtask-edit-actions { display: flex; align-items: center; }
-.subtask-icon-btn { border: unset; background: transparent; cursor: pointer; font-size: 18px; line-height: 1; color: var(--primaryColor); padding: 4px 8px; border-radius: 50%; transition: background 0.1s; }
+.subtask-icon-btn { border: unset; background: transparent; cursor: pointer; font-size: 18px; line-height: 1; color: var(--primaryColor); padding: 4px 8px; border-radius: 50%; transition: background 100ms; }
 .subtask-icon-btn:hover { background: #eef0f2; }
 .subtask-action-divider { width: 1px; height: 18px; background: #D1D1D1; }
 
@@ -166,3 +171,5 @@ input[type="date"]::-moz-calendar-picker-indicator { display: none; }
 /* Flatpickr calendar above modals/dialogs */
 .flatpickr-calendar { z-index: 99999 !important; }
 .add-task-modal .flatpickr-calendar { position: absolute !important; z-index: 99999 !important; }
+/* Calendar text: days 16px, weekday captions 90% = 14.4px small print */
+.flatpickr-calendar.flatpickr-calendar { font-size: 16px; }

@@ -1,0 +1,221 @@
+/* Add Task Modal */
+.add-task-modal {
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.2);
+  padding: 48px;
+  /* use a responsive width that keeps the modal centered */
+  width: min(1100px, calc(100% - 64px));
+  max-width: 1100px;
+  max-height: 90vh;
+  position: relative;
+  overflow: auto;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+/* Strong centering: ensure modal is visually centered even if page layout interferes */
+dialog[open].board-overlay>.add-task-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  /* keep responsive sizing */
+  width: min(1100px, calc(100% - 64px));
+  max-height: 100vh;
+}
+
+/* Progress popover (tooltip / detail) */
+.progress-popover {
+  position: absolute;
+  background: #ffffff;
+  border: 1px solid #D1D1D1;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  z-index: 400;
+  min-width: 200px;
+}
+
+.progress-popover.d-none {
+  display: none;
+}
+
+.progress-popover-header {
+  font-weight: 700;
+  font-size: 16px;
+  color: #2A3647;
+  margin-bottom: 6px;
+}
+
+.progress-popover-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.progress-popover-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 16px;
+  color: #2A3647;
+}
+
+.progress-popover-item.done {
+  color: #8A8A8A;
+  text-decoration: line-through;
+}
+
+.progress-popover-check {
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.progress-popover-title {
+  flex: 1;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  background: transparent;
+  border: none;
+  font-size: 32px;
+  cursor: pointer;
+  color: #2A3647;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 100ms;
+}
+
+.modal-close-btn:hover {
+  background: #F0F0F0;
+}
+
+.modal-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2A3647;
+  margin-bottom: 32px;
+}
+
+#add-task-overlay .task-form {
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+#add-task-overlay .btn-add-task {
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 100ms;
+}
+
+#add-task-overlay .btn-add-task:hover {
+  background: var(--secondaryColor);
+}
+
+.task-form-detail {
+  overflow: auto;
+  max-height: 550px;
+  scrollbar-width: none;
+}
+
+.edit-box {
+  overflow: auto;
+  max-height: 500px;
+  scrollbar-width: none;
+}
+
+.show-detail {
+  overflow: auto;
+  max-height: 500px;
+  scrollbar-width: none;
+}
+
+button.btn-add-task {
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 100ms;
+}
+
+button.btn-add-task:hover {
+  background: var(--secondaryColor);
+}
+
+button.btn-add-task:active {
+  background: var(--activeColor);
+}
+
+#add-task-overlay .col-add-btn {
+  border: none;
+  cursor: pointer;
+  transition: background 100ms;
+}
+
+#add-task-overlay .col-add-btn:hover {
+  background: #F0F0F0;
+}
+
+@media (max-width: 425px) {
+  dialog[open].board-overlay>.add-task-modal {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    /* keep responsive sizing */
+    width: min(1100px, calc(100% - 20px));
+    max-height: 100vh;
+  }
+}
+
+@media (max-width: 375px) {
+  .board-modal {
+    padding: 20px;
+  }
+}
+
+.subtask-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 50px;
+  overflow: auto;
+}
+
+.avatar-chip-more {
+  background: #ff0202;
+  color: #2A3647;
+  font-weight: 700;
+}
+
+.assign-checkbox {
+  font-weight: 700;
+  font-size: 28px;
+}
+
+#notification {
+  z-index: 9999;
+}

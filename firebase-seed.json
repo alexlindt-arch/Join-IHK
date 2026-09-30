@@ -1,0 +1,403 @@
+{
+  "contacts": {
+    "1": {
+      "name": "Anton Mayer",
+      "email": "antonm@gmail.com",
+      "phone": "+49 1111111111",
+      "color": "#8E44AD",
+      "id": 1,
+      "avatar": "AM",
+      "photo": ""
+    },
+    "2": {
+      "name": "Anja Schulz",
+      "email": "schulz@hotmail.com",
+      "phone": "+49 172 3456789",
+      "color": "#E67E22",
+      "id": 2,
+      "avatar": "AS",
+      "photo": ""
+    },
+    "3": {
+      "name": "Benedikt Ziegler",
+      "email": "benedikt@gmail.com",
+      "phone": "+49 151 9876543",
+      "color": "#3498DB",
+      "id": 3,
+      "avatar": "BZ",
+      "photo": ""
+    },
+    "4": {
+      "name": "David Eisenberg",
+      "email": "david@gmail.com",
+      "phone": "+49 160 1122334",
+      "color": "#2ECC71",
+      "id": 4,
+      "avatar": "DE",
+      "photo": ""
+    },
+    "5": {
+      "name": "Eva Fischer",
+      "email": "eva@gmail.com",
+      "phone": "+49 173 4455667",
+      "color": "#F39C12",
+      "id": 5,
+      "avatar": "EF",
+      "photo": ""
+    },
+    "6": {
+      "name": "Emmanuel Mauer",
+      "email": "emmanuel@gmail.com",
+      "phone": "+49 152 7788990",
+      "color": "#E74C3C",
+      "id": 6,
+      "avatar": "EM",
+      "photo": ""
+    },
+    "7": {
+      "name": "Felix Neumann",
+      "email": "felix.n@web.de",
+      "phone": "+49 174 5566778",
+      "color": "#1ABC9C",
+      "id": 7,
+      "avatar": "FN",
+      "photo": ""
+    },
+    "8": {
+      "name": "Hannah Wagner",
+      "email": "wagner.hannah@gmx.de",
+      "phone": "+49 157 8899001",
+      "color": "#9B59B6",
+      "id": 8,
+      "avatar": "HW",
+      "photo": ""
+    },
+    "9": {
+      "name": "Ina Becker",
+      "email": "ina.becker@gmail.com",
+      "phone": "+49 162 3344556",
+      "color": "#34495E",
+      "id": 9,
+      "avatar": "IB",
+      "photo": ""
+    },
+    "10": {
+      "name": "Jonas Hoffmann",
+      "email": "jonas.hoff@outlook.com",
+      "phone": "+49 171 2233445",
+      "color": "#16A085",
+      "id": 10,
+      "avatar": "JH",
+      "photo": ""
+    },
+    "11": {
+      "name": "Katrin Krause",
+      "email": "katrin.k@yahoo.com",
+      "phone": "+49 151 6677889",
+      "color": "#D35400",
+      "id": 11,
+      "avatar": "KK",
+      "photo": ""
+    },
+    "12": {
+      "name": "Lukas Weber",
+      "email": "lukas.weber@gmail.com",
+      "phone": "+49 176 9900112",
+      "color": "#27AE60",
+      "id": 12,
+      "avatar": "LW",
+      "photo": ""
+    },
+    "13": {
+      "name": "Marie Schreiber",
+      "email": "marie.s@web.de",
+      "phone": "+49 152 4455661",
+      "color": "#C0392B",
+      "id": 13,
+      "avatar": "MS",
+      "photo": ""
+    },
+    "14": {
+      "name": "Nico Lange",
+      "email": "nico.lange@gmx.de",
+      "phone": "+49 160 7788992",
+      "color": "#7F8C8D",
+      "id": 14,
+      "avatar": "NL",
+      "photo": ""
+    },
+    "15": {
+      "name": "Olivia Peters",
+      "email": "olivia.p@gmail.com",
+      "phone": "+49 173 1122335",
+      "color": "#2980B9",
+      "id": 15,
+      "avatar": "OP",
+      "photo": ""
+    },
+    "16": {
+      "name": "Philipp Fuchs",
+      "email": "fuchs.phil@outlook.com",
+      "phone": "+49 157 5566773",
+      "color": "#5DADE2",
+      "id": 16,
+      "avatar": "PF",
+      "photo": ""
+    },
+    "17": {
+      "name": "Sarah Krüger",
+      "email": "sarah.k@gmail.com",
+      "phone": "+49 172 8899004",
+      "color": "#52BE80",
+      "id": 17,
+      "avatar": "SK",
+      "photo": ""
+    },
+    "18": {
+      "name": "Tim Schwarz",
+      "email": "tim.schwarz@web.de",
+      "phone": "+49 162 2233446",
+      "color": "#F5B041",
+      "id": 18,
+      "avatar": "TS",
+      "photo": ""
+    },
+    "19": {
+      "name": "Vanessa Richter",
+      "email": "v.richter@gmx.de",
+      "phone": "+49 174 6677881",
+      "color": "#A569BD",
+      "id": 19,
+      "avatar": "VR",
+      "photo": ""
+    },
+    "20": {
+      "name": "Yannick Vogt",
+      "email": "yannick.v@gmail.com",
+      "phone": "+49 151 1122336",
+      "color": "#566573",
+      "id": 20,
+      "avatar": "YV",
+      "photo": ""
+    }
+  },
+  "tasks": {
+    "1": {
+      "id": 1,
+      "title": "Contact Form & Imprint",
+      "description": "Create a contact form and an imprint page for the company website.",
+      "dueDate": "16.10.2026",
+      "priority": "urgent",
+      "category": "User Story",
+      "status": "todo",
+      "assignedTo": [
+        {
+          "id": "1",
+          "name": "Anton Mayer",
+          "color": "#8E44AD",
+          "initials": "AM"
+        },
+        {
+          "id": "5",
+          "name": "Eva Fischer",
+          "color": "#F39C12",
+          "initials": "EF"
+        },
+        {
+          "id": "9",
+          "name": "Ina Becker",
+          "color": "#34495E",
+          "initials": "IB"
+        }
+      ],
+      "subtasks": [
+        {
+          "title": "Design contact form",
+          "done": false
+        },
+        {
+          "title": "Write imprint texts",
+          "done": false
+        }
+      ],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    },
+    "2": {
+      "id": 2,
+      "title": "Kanban Board Filter",
+      "description": "Filter tasks on the board by title and description with instant results.",
+      "dueDate": "23.10.2026",
+      "priority": "medium",
+      "category": "Technical Task",
+      "status": "todo",
+      "assignedTo": [
+        {
+          "id": "3",
+          "name": "Benedikt Ziegler",
+          "color": "#3498DB",
+          "initials": "BZ"
+        },
+        {
+          "id": "12",
+          "name": "Lukas Weber",
+          "color": "#27AE60",
+          "initials": "LW"
+        }
+      ],
+      "subtasks": [],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    },
+    "3": {
+      "id": 3,
+      "title": "HTML Base Template Creation",
+      "description": "Create reusable HTML base templates for header, sidebar and footer.",
+      "dueDate": "30.10.2026",
+      "priority": "low",
+      "category": "Technical Task",
+      "status": "inProgress",
+      "assignedTo": [
+        {
+          "id": "2",
+          "name": "Anja Schulz",
+          "color": "#E67E22",
+          "initials": "AS"
+        },
+        {
+          "id": "7",
+          "name": "Felix Neumann",
+          "color": "#1ABC9C",
+          "initials": "FN"
+        }
+      ],
+      "subtasks": [
+        {
+          "title": "Header template",
+          "done": true
+        },
+        {
+          "title": "Sidebar template",
+          "done": false
+        }
+      ],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    },
+    "4": {
+      "id": 4,
+      "title": "Daily Recipe Recommender",
+      "description": "Implement a daily recipe recommendation with a portion calculator.",
+      "dueDate": "06.11.2026",
+      "priority": "medium",
+      "category": "User Story",
+      "status": "awaitFeedback",
+      "assignedTo": [
+        {
+          "id": "4",
+          "name": "David Eisenberg",
+          "color": "#2ECC71",
+          "initials": "DE"
+        },
+        {
+          "id": "8",
+          "name": "Hannah Wagner",
+          "color": "#9B59B6",
+          "initials": "HW"
+        },
+        {
+          "id": "10",
+          "name": "Jonas Hoffmann",
+          "color": "#16A085",
+          "initials": "JH"
+        }
+      ],
+      "subtasks": [
+        {
+          "title": "Recipe data model",
+          "done": true
+        },
+        {
+          "title": "Portion calculator",
+          "done": true
+        },
+        {
+          "title": "Daily rotation",
+          "done": false
+        }
+      ],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    },
+    "5": {
+      "id": 5,
+      "title": "Accessibility Review",
+      "description": "Check keyboard navigation, focus states and screen reader labels on all pages.",
+      "dueDate": "13.11.2026",
+      "priority": "urgent",
+      "category": "Technical Task",
+      "status": "awaitFeedback",
+      "assignedTo": [
+        {
+          "id": "6",
+          "name": "Emmanuel Mauer",
+          "color": "#E74C3C",
+          "initials": "EM"
+        },
+        {
+          "id": "11",
+          "name": "Katrin Krause",
+          "color": "#D35400",
+          "initials": "KK"
+        }
+      ],
+      "subtasks": [
+        {
+          "title": "Keyboard navigation",
+          "done": true
+        },
+        {
+          "title": "ARIA labels",
+          "done": false
+        }
+      ],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    },
+    "6": {
+      "id": 6,
+      "title": "CSS Architecture Planning",
+      "description": "Define CSS naming conventions and structure (BEM-style, responsive breakpoints).",
+      "dueDate": "20.11.2026",
+      "priority": "low",
+      "category": "Technical Task",
+      "status": "done",
+      "assignedTo": [
+        {
+          "id": "13",
+          "name": "Marie Schreiber",
+          "color": "#C0392B",
+          "initials": "MS"
+        },
+        {
+          "id": "14",
+          "name": "Nico Lange",
+          "color": "#7F8C8D",
+          "initials": "NL"
+        }
+      ],
+      "subtasks": [
+        {
+          "title": "Establish CSS methodology",
+          "done": true
+        },
+        {
+          "title": "Setup base styles",
+          "done": true
+        }
+      ],
+      "attachments": [],
+      "createdAt": "2026-09-30T10:00:00.000Z"
+    }
+  }
+}

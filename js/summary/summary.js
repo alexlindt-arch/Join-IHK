@@ -19,51 +19,17 @@ async function initSummary() {
 
 
 /**
- * Loads all tasks: from sessionStorage for guests, from Firebase for users.
+ * Loads all tasks from the database.
  * @async
  * @returns {Promise<Object[]>} List of task objects (empty if none/unreachable).
  */
 async function loadTasks() {
-    if (typeof checkIsGuest === 'function' && checkIsGuest()) return loadGuestTasks();
     try {
         const response = await fetch(SUMMARY_TASKS_URL);
-        const data = await response.json();
-        if (!data) return [];
-        return Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
+        return toEntryList(await response.json());
     } catch (error) {
-        console.error('Error loading tasks:', error);
         return [];
     }
-}
-
-
-/**
- * Merges demo file tasks with locally stored guest tasks, sorted by id.
- * @async
- * @returns {Promise<Object[]>} Merged and sorted guest task list.
- */
-async function loadGuestTasks() {
-    try {
-        const fileTasks = await safeFetchFileTasks('../demo-task.json');
-        const local = JSON.parse(sessionStorage.getItem('guestTasks')) || [];
-        return mergeTasksById(fileTasks || [], local || []);
-    } catch (e) {
-        try { return JSON.parse(sessionStorage.getItem('guestTasks')) || []; } catch (e) { return []; }
-    }
-}
-
-
-/**
- * Merges two task arrays by id (local entries overwrite file entries) and sorts by id.
- * @param {Object[]} fileTasks - Tasks loaded from the demo JSON file.
- * @param {Object[]} localTasks - Tasks stored in sessionStorage.
- * @returns {Object[]} Deduplicated, id-sorted task array.
- */
-function mergeTasksById(fileTasks, localTasks) {
-    const map = new Map();
-    fileTasks.forEach(t => map.set(String(t.id), t));
-    localTasks.forEach(t => map.set(String(t.id), t));
-    return Array.from(map.values()).sort((a, b) => (Number(a.id) || 0) - (Number(b.id) || 0));
 }
 
 
@@ -155,19 +121,6 @@ function renderGreeting() {
 
 
 /**
- * Returns the logged-in user from session storage, or null for guests.
- * @returns {Object|null} Current user object or null.
- */
-function getCurrentUser() {
-    try {
-        return JSON.parse(sessionStorage.getItem('currentUser'));
-    } catch (error) {
-        return null;
-    }
-}
-
-
-/**
  * Returns a greeting based on the current hour of the day.
  * @returns {string} 'Good morning' | 'Good afternoon' | 'Good evening'.
  */
@@ -178,6 +131,7 @@ function getDaytimeGreeting() {
     return 'Good evening';
 }
 
+
 /**
  * Sets the text content of an element if it exists.
  * @param {string} id - Element id.
@@ -187,23 +141,4 @@ function getDaytimeGreeting() {
 function setText(id, value) {
     const element = document.getElementById(id);
     if (element) element.textContent = value;
-}
-
-/**
- * Safely fetches and normalizes tasks from a local JSON file (used for guest view).
- * @async
- * @param {string} path - Relative path to the JSON file.
- * @returns {Promise<Object[]>} Array of task objects, empty on error.
- */
-async function safeFetchFileTasks(path) {
-    try {
-        const res = await fetch(path);
-        if (!res || !res.ok) return [];
-        const data = await res.json();
-        const raw = data?.tasks || data;
-        if (!raw) return [];
-        return Array.isArray(raw) ? raw.filter(Boolean) : Object.keys(raw).map(k => ({ ...raw[k], id: k }));
-    } catch (e) {
-        return [];
-    }
 }

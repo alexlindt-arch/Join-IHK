@@ -21,6 +21,10 @@
         display: none;
     }
 
+    .header-background {
+        padding-left: 0;
+    }
+
     .mobil-navigation {
         display: flex;
     }
@@ -47,7 +51,6 @@
     }
 
     .header {
-        padding: 0 0 0 12;
         height: 64px;
     }
 
@@ -61,10 +64,6 @@
 
     h3 {
         font-size: 22px;
-    }
-
-    .header {
-        padding: 0 20 0 0;
     }
 
     .mobil-nav-link {
@@ -89,16 +88,16 @@
     }
 
     .header {
-        padding: 0 0 0 12;
         height: 64px;
     }
 
     .mobil-navigation {
         height: 60px;
+        padding: 0 8px;
     }
 
     .mobil-nav-link {
-        font-size: 12px;
+        font-size: 14px;
         padding: 4px 6px;
         height: 54px;
     }

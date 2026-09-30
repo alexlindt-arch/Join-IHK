@@ -1,4 +1,3 @@
-const dialogElement = document.querySelector("dialog");
 const dialog = document.getElementById("add-contact-dialog");
 const contactListContainer = document.getElementById("contacts-list-import");
 const contactDetailsContainer = document.getElementById("contact-details-view");
@@ -9,8 +8,7 @@ let dialogContactBase = {};
 
 
 /**
- * Initializes the contacts view: resets the local contacts cache,
- * loads contacts from the appropriate source (guest or remote DB)
+ * Initializes the contacts view: loads the contacts from Firebase
  * and renders them into the DOM.
  * @async
  * @returns {Promise<void>}
@@ -20,67 +18,58 @@ async function init() {
     loadedContacts = [];
     await loadAndPrepareContacts();
     renderContacts();
-
 }
 
 
 /**
- * Loads the contacts from Firebase, normalizes them into an array and
- * populates `loadedContacts` via {@link addContactsToLoaded}.
- * Guests see the same real contacts (including everyone who registered);
- * the demo file db.json is only used when Firebase cannot be reached.
+ * Loads the contacts from Firebase into `loadedContacts`.
+ * Guests and registered users read the same data.
+ * Shows a notification if the contacts cannot be loaded.
  * @async
  * @returns {Promise<void>}
  */
 async function loadAndPrepareContacts() {
     try {
-        let raw = await fetchContactsSource(CONTACTS_URL, data => data);
-        if (!raw && checkIsGuest()) raw = await fetchContactsSource('../db.json', data => data.contacts);
+        const response = await fetch(CONTACTS_URL);
+        if (!response.ok) throw new Error(`Firebase answered ${response.status}`);
+        const raw = await response.json();
         const arr = Object.keys(raw || {}).map(key => ({ ...raw[key], id: key }));
         loadedContacts = [];
         addContactsToLoaded(arr.filter(c => c && c.name));
-    } catch (error) { console.error("Fehler beim Laden:", error); }
-}
-
-
-/**
- * Fetches a contact source and returns its contact collection, or null if it is unreachable or empty.
- * @async
- * @param {string} url - Firebase URL or path of the demo file.
- * @param {function(Object): Object} pick - Picks the contact collection from the response.
- * @returns {Promise<Object|Array|null>}
- */
-async function fetchContactsSource(url, pick) {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) return null;
-        const data = await response.json();
-        return (data && pick(data)) || null;
     } catch (error) {
-        return null;
+        showToastFeedback('Contacts could not be loaded. Please try again.');
     }
 }
 
 
 /**
+ * Reloads the contacts from Firebase and re-renders the list.
+ * @async
+ * @returns {Promise<void>}
+ */
+async function reloadContacts() {
+    await loadAndPrepareContacts();
+    renderContacts();
+}
+
+
+/**
  * Adds an array of raw contact objects to the global `loadedContacts`
- * array, normalizing fields (phone, color, avatar) and avoiding
+ * array, normalizing fields (color, avatar, photo) and avoiding
  * duplicate entries by id.
- * @param {Array<Object>} contactsFromDB - Raw contact objects (e.g. from Firebase/JSON).
+ * @param {Array<Object>} contactsFromDB - Raw contact objects from Firebase.
  * @returns {void}
  */
 function addContactsToLoaded(contactsFromDB) {
     contactsFromDB.forEach(c => {
         const cId = String(c.id);
-        if (!loadedContacts.some(lc => String(lc.id) === cId)) {
-            loadedContacts.push({
-                id: cId, name: c.name, email: c.email,
-                phone: c.phone || 'no phone number provided',
-                color: c.color || getRandomColor(),
-                avatar: c.avatar || getInitials(c.name),
-                photo: c.photo || ''
-            });
-        }
+        if (loadedContacts.some(lc => String(lc.id) === cId)) return;
+        loadedContacts.push({
+            id: cId, name: c.name, email: c.email || '', phone: c.phone || '',
+            color: c.color || getRandomColor(),
+            avatar: c.avatar || getInitials(c.name),
+            photo: c.photo || ''
+        });
     });
 }
 
@@ -91,15 +80,35 @@ function addContactsToLoaded(contactsFromDB) {
  * @returns {Object<string, Array<Object>>} A map of letter -> array of contacts.
  */
 function groupContactsByLetter() {
-    let groups = {};
-    let sorted = [...loadedContacts].sort((a, b) => a.name.localeCompare(b.name));
-
+    const groups = {};
+    const sorted = [...loadedContacts].sort((a, b) => a.name.localeCompare(b.name));
     sorted.forEach(contact => {
-        let firstLetter = contact.name.charAt(0).toUpperCase();
+        const firstLetter = contact.name.charAt(0).toUpperCase();
         if (!groups[firstLetter]) groups[firstLetter] = [];
         groups[firstLetter].push(contact);
     });
     return groups;
+}
+
+
+/**
+ * Checks whether a contact belongs to the logged-in user (same email).
+ * @param {Object} contact - A loaded contact.
+ * @returns {boolean} True if it is the user's own contact.
+ */
+function isOwnContact(contact) {
+    const email = String(getCurrentUser()?.email || '').toLowerCase();
+    return email !== '' && String(contact.email).toLowerCase() === email;
+}
+
+
+/**
+ * Returns the name shown in the list; the user's own contact is marked with "(You)".
+ * @param {Object} contact - A loaded contact.
+ * @returns {string} Display name.
+ */
+function getContactDisplayName(contact) {
+    return isOwnContact(contact) ? `${contact.name} (You)` : contact.name;
 }
 
 
@@ -110,7 +119,9 @@ function groupContactsByLetter() {
  * @returns {string} HTML markup for the letter group.
  */
 function renderLetterGroup([letter, contactsInGroup]) {
-    let itemsHtml = contactsInGroup.map(renderContactlist).join('');
+    const itemsHtml = contactsInGroup
+        .map(contact => renderContactlist(contact, getContactDisplayName(contact)))
+        .join('');
     return renderLetterGroupTemplate(letter, itemsHtml);
 }
 
@@ -122,11 +133,12 @@ function renderLetterGroup([letter, contactsInGroup]) {
  */
 function renderContacts() {
     if (!contactListContainer) return;
-
-    let groupedData = groupContactsByLetter();
-    let html = Object.entries(groupedData).map(renderLetterGroup).join('');
-
-    contactListContainer.innerHTML = html;
+    if (loadedContacts.length === 0) {
+        contactListContainer.innerHTML = renderEmptyContactsTemplate();
+        return;
+    }
+    const groupedData = groupContactsByLetter();
+    contactListContainer.innerHTML = Object.entries(groupedData).map(renderLetterGroup).join('');
 }
 
 
@@ -149,6 +161,16 @@ function closeDialog() {
 
 
 /**
+ * Closes the dialog when the backdrop (the dialog element itself) is clicked.
+ * @param {MouseEvent} event - The click event on the dialog.
+ * @returns {void}
+ */
+function closeDialogOnBackdrop(event) {
+    if (event.target === dialog) closeDialog();
+}
+
+
+/**
  * Displays the detail view for a given contact, marks the
  * corresponding list item as active, and switches to the detail
  * view on mobile viewports.
@@ -156,145 +178,27 @@ function closeDialog() {
  * @returns {void}
  */
 function showContactDetails(contactId) {
-    const currentActive = document.querySelector('.contact-item.active');
-    if (currentActive) currentActive.classList.remove('active');
+    clearActiveContact();
     const clickedElement = document.getElementById(contactId);
-    if (clickedElement) clickedElement.classList.add('active');
+    if (clickedElement) {
+        clickedElement.classList.add('active');
+        clickedElement.setAttribute('aria-current', 'true');
+    }
     const contact = loadedContacts.find(c => String(c.id) === String(contactId));
     if (contact) contactDetailsContainer.innerHTML = renderContactDetails(contact);
-
-    if (window.innerWidth <= 768) {
-        toggleMobileContactView(true);
-    }
+    if (window.innerWidth <= 768) toggleMobileContactView(true);
 }
 
 
 /**
- * Assigns an id, avatar and color to a new contact, then saves it
- * either locally (guest mode) or to the remote database.
- * @async
- * @param {Object} newContact - The new contact data (name, email, phone).
- * @returns {Promise<void>}
- */
-async function saveContactToDB(newContact) {
-    const isGuest = checkIsGuest();
-    newContact.id = loadedContacts.reduce((max, c) => Math.max(max, Number(c.id) || 0), 0) + 1;
-    newContact.avatar = getInitials(newContact.name);
-    newContact.color = getRandomColor();
-
-    if (isGuest) {
-        saveGuestContact(newContact);
-    } else {
-        await saveUserContact(newContact);
-    }
-}
-
-
-/**
- * Persists a new contact to the remote Firebase database, reloads
- * the contact list, closes the dialog and re-renders the UI.
- * @async
- * @param {Object} newContact - The contact to persist.
- * @returns {Promise<void>}
- */
-async function saveUserContact(newContact) {
-    try {
-        await fetch(`${CONTACTS_URL.replace('.json', '')}/${newContact.id}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(newContact)
-        });
-        await loadAndPrepareContacts();
-        dialog.close();
-        renderContacts();
-    } catch (e) { console.error("Fehler beim Cloud-Speichern:", e); }
-}
-
-
-/**
- * Handles submission of the "Edit contact" form: reads updated values
- * and dispatches to the guest or remote update routine.
- * @async
- * @param {SubmitEvent} event - The form submit event.
- * @param {string|number} id - The id of the contact being updated.
- * @returns {Promise<void>}
- */
-async function updateContact(event, id) {
-    event.preventDefault();
-    const contact = loadedContacts.find(c => String(c.id) === String(id));
-    if (!contact) return;
-    const data = new FormData(event.target);
-    const updated = {
-        id: contact.id, color: contact.color,
-        name: data.get('name').trim(), email: data.get('email').trim(),
-        phone: data.get('phone').trim() || 'no phone number provided',
-        photo: pendingContactPhoto
-    };
-    updated.avatar = getInitials(updated.name);
-    if (checkIsGuest()) updateGuestContact(updated); else await updateUserContact(updated);
-}
-
-
-/**
- * Persists an updated contact to the remote Firebase database, reloads
- * the contact list and refreshes the UI to reflect the change.
- * @async
- * @param {Object} updated - The updated contact data.
- * @returns {Promise<void>}
- */
-async function updateUserContact(updated) {
-    try {
-        await fetch(`${CONTACTS_URL.replace('.json', '')}/${updated.id}.json`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updated)
-        });
-        await loadAndPrepareContacts();
-        finalizeUpdate(updated.id);
-    } catch (e) { console.error('Update error:', e); }
-}
-
-
-/**
- * Updates a contact in the local `loadedContacts` array for guest
- * users (no backend persistence).
- * @param {Object} updated - The updated contact data.
+ * Removes the active marking from the currently selected list item.
  * @returns {void}
  */
-function updateGuestContact(updated) {
-    const idx = loadedContacts.findIndex(c => String(c.id) === String(updated.id));
-    if (idx !== -1) loadedContacts[idx] = updated;
-    finalizeUpdate(updated.id);
-}
-
- 
-/**
- * Common cleanup after a contact update: closes the dialog,
- * re-renders the contact list, and re-opens the detail view
- * for the updated contact.
- * @param {string|number} id - The id of the updated contact.
- * @returns {void}
- */
-function finalizeUpdate(id) {
-    dialog.close();
-    renderContacts();
-    showContactDetails(String(id));
-}
-
-
-/**
- * Determines whether the current session belongs to a guest user
- * by inspecting `sessionStorage`. Defaults to `true` (guest) if
- * the session data cannot be parsed.
- * @returns {boolean} `true` if the current user is a guest, otherwise `false`.
- */
-function checkIsGuest() {
-    try {
-        const user = JSON.parse(sessionStorage.getItem('currentUser'));
-        return user?.isGuest === true;
-    } catch (e) {
-        return true;
-    }
+function clearActiveContact() {
+    const currentActive = document.querySelector('.contact-item.active');
+    if (!currentActive) return;
+    currentActive.classList.remove('active');
+    currentActive.removeAttribute('aria-current');
 }
 
 
@@ -321,10 +225,7 @@ function toggleMobileContactView(showDetails) {
  */
 function resetMobileContactView() {
     toggleMobileContactView(false);
-    const currentActive = document.querySelector('.contact-item.active');
-    if (currentActive) {
-        currentActive.classList.remove('active');
-    }
+    clearActiveContact();
 }
 
 
@@ -337,25 +238,21 @@ function resetMobileContactView() {
 function toggleMobileOptions(event) {
     event.stopPropagation();
     const menu = document.getElementById('mobile-options-menu');
-    if (menu) {
-        menu.classList.toggle('show');
-    }
-    if (menu && menu.classList.contains('show')) {
-        document.addEventListener('click', closeMobileOptionsOutside);
-    }
+    if (!menu) return;
+    const isOpen = menu.classList.toggle('show');
+    event.currentTarget.setAttribute('aria-expanded', String(isOpen));
+    if (isOpen) document.addEventListener('click', closeMobileOptionsOutside);
 }
 
 
 /**
- * Closes the mobile options menu when a click occurs outside of it,
- * and removes itself as a document click listener.
+ * Closes the mobile options menu on the next click (outside or on a menu
+ * entry) and removes itself as a document click listener.
  * @returns {void}
  */
 function closeMobileOptionsOutside() {
-    const menu = document.getElementById('mobile-options-menu');
-    if (menu) {
-        menu.classList.remove('show');
-    }
+    document.getElementById('mobile-options-menu')?.classList.remove('show');
+    document.querySelector('.btn-options-mobile')?.setAttribute('aria-expanded', 'false');
     document.removeEventListener('click', closeMobileOptionsOutside);
 }
 
@@ -363,30 +260,34 @@ function closeMobileOptionsOutside() {
 /**
  * Resets the split-view layout to its default (desktop) state
  * whenever the window is resized above the mobile breakpoint.
+ * @returns {void}
  */
-window.addEventListener('resize', function () {
-    if (window.innerWidth > 768) {
-        const left = document.querySelector('.contacts-split-left');
-        const right = document.querySelector('.contacts-split-right');
-        if (left && right) {
-            left.style.display = '';
-            right.style.display = '';
-        }
+function resetSplitViewOnResize() {
+    if (window.innerWidth <= 768) return;
+    const left = document.querySelector('.contacts-split-left');
+    const right = document.querySelector('.contacts-split-right');
+    if (left && right) {
+        left.style.display = '';
+        right.style.display = '';
     }
-});
+}
+
+
+window.addEventListener('resize', resetSplitViewOnResize);
 
 
 /**
  * Displays a transient toast notification with the given message.
+ * While the modal dialog is open, the toast is placed inside it so it stays visible.
  * @param {string} message - The text to display in the toast.
  * @returns {void}
  */
 function showToastFeedback(message) {
     const toast = document.createElement('div');
     toast.className = 'contact-success-toast';
+    toast.setAttribute('role', 'status');
     toast.textContent = message;
-    document.body.appendChild(toast);
-    
+    (dialog?.open ? dialog : document.body).appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 50);
     setTimeout(() => removeToastFeedback(toast), 3000);
 }
@@ -401,5 +302,3 @@ function removeToastFeedback(toast) {
     toast.classList.remove('show');
     setTimeout(() => toast.remove(), 400);
 }
-
-

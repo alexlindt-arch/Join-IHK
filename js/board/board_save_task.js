@@ -1,46 +1,11 @@
 /**
- * Routes task saving to guest or remote storage.
- * @async 
+ * Saves a new task from the board modal in the database.
+ * @async
  * @param {Object} task
  * @returns {Promise<void>}
  */
 async function saveModalTask(task) {
-  if (checkIsGuest()) {
-    await saveModalTaskAsGuest(task);
-  } else {
-    await saveModalTaskRemote(task);
-  }
-}
-
-
-/**
- * Assigns an ID and persists a new task in guest (local) storage.
- * @async 
- * @param {Object} task
- * @returns {Promise<void>}
- */
-async function saveModalTaskAsGuest(task) {
-  const guestTasks = getGuestTasks();
-  task.id = await resolveGuestTaskId(guestTasks);
-  guestTasks.push(task);
-  saveGuestTasks(guestTasks);
-}
-
-
-/**
- * Returns the next available task ID by taking the max of demo and local IDs.
- * @async 
- * @param {Array} guestTasks
- * @returns {Promise<number>}
- */
-async function resolveGuestTaskId(guestTasks) {
-  const maxLocalId = calcMaxId(guestTasks);
-  try {
-    const fileTasks = await fetchDemoTaskList();
-    return Math.max(calcMaxId(fileTasks), maxLocalId) + 1;
-  } catch (e) {
-    return maxLocalId + 1;
-  }
+  await saveModalTaskRemote(task);
 }
 
 
@@ -51,21 +16,6 @@ async function resolveGuestTaskId(guestTasks) {
  */
 function calcMaxId(tasks) {
   return tasks.length ? Math.max(...tasks.map(t => Number(t.id) || 0)) : 0;
-}
-
-
-/**
- * Fetches the demo task list from the static JSON file.
- * @async 
- * @returns {Promise<Array>}
- */
-async function fetchDemoTaskList() {
-  const res = await fetch('../demo-task.json');
-  if (!res || !res.ok) return [];
-  const data = await res.json();
-  const raw = data?.tasks || data;
-  if (!raw) return [];
-  return Array.isArray(raw) ? raw.filter(Boolean) : Object.keys(raw).map(k => ({ ...raw[k], id: k })).filter(Boolean);
 }
 
 
@@ -99,9 +49,7 @@ async function getNextModalTaskId() {
     const tasks = Array.isArray(data) ? data.filter(Boolean) : Object.values(data).filter(Boolean);
     return calcMaxId(tasks) + 1;
   } catch (error) {
-    console.error('Error getting next task ID:', error);
-    showNotification('Error getting next task ID!', true);
-    return 1;
+    return Date.now();
   }
 }
 

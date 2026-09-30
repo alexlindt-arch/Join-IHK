@@ -54,7 +54,7 @@ function positionPopover(pop, event) {
  * @returns {string}
  */
 function renderPopoverHeader(done, total) {
-  return `<div class="progress-popover-header">${done} von ${total} Subtasks erledigt</div>`;
+  return `<div class="progress-popover-header">${done} of ${total} subtasks done</div>`;
 }
 
 

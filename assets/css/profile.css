@@ -124,7 +124,7 @@
     color: #FFFFFF;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
-    transition: background-color 0.15s, transform 0.15s;
+    transition: background-color 100ms, transform 100ms;
 }
 
 .profile-dialog-avatar:hover .profile-dialog-camera {
@@ -137,7 +137,7 @@
     border: none;
     background: none;
     color: var(--secondaryColor);
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -151,7 +151,7 @@
     gap: 6px;
     width: 100%;
     color: #2A3647;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
 }
 
@@ -165,7 +165,7 @@
     font-size: 16px;
     color: #000000;
     box-sizing: border-box;
-    transition: border-color 0.15s;
+    transition: border-color 100ms;
 }
 
 .profile-dialog-field input:focus {
@@ -200,7 +200,7 @@
     font-size: 18px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    transition: background-color 100ms, border-color 100ms, color 100ms;
 }
 
 .profile-dialog-btn:hover {

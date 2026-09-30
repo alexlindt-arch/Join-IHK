@@ -63,7 +63,7 @@ function buildEditBasicFields(task) {
             <label class="edit-label">Due Date</label>
             <div class="form-input-icon">
                 <input id="edit-due" class="edit-input date-picker flatpickr-edit" type="text"
-                    placeholder="TT.MM.JJJJ"
+                    placeholder="dd.mm.yyyy"
                     value="${escapeHtml(task.dueDate || '')}" readonly style="cursor:pointer;">
                 <img src="../assets/icons/event.svg" class="input-icon" alt="calendar">
             </div>
@@ -94,10 +94,11 @@ function buildEditAssignField() {
         <div class="edit-form-group">
             <label class="edit-label">Assigned To</label>
             <div class="edit-assign-wrapper">
-                <div class="edit-input edit-assign-toggle" onclick="toggleEditAssignDropdown()">
+                <button type="button" class="edit-input edit-assign-toggle" aria-haspopup="listbox"
+                    aria-expanded="false" onclick="toggleEditAssignDropdown()">
                     <span>Select contacts</span>
-                    <span class="select-caret">&#9662;</span>
-                </div>
+                    <span class="select-caret" aria-hidden="true">&#9662;</span>
+                </button>
                 <div class="edit-assign-options d-none" id="edit-assign-options"></div>
             </div>
             <div class="edit-assigned-avatars" id="edit-assigned-avatars"></div>

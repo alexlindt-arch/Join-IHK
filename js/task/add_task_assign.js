@@ -1,46 +1,16 @@
 /**
- * Loads contacts from the guest database (db.json).
- * @async
- * @returns {Promise<Object[]>} Normalized contacts for the guest user.
- */
-async function loadGuestContacts() {
-    const response = await fetch('../db.json');
-    const raw = await response.json();
-    const contactsObj = raw.contacts || {};
-    const contacts = Object.entries(contactsObj).map(([key, c]) => ({ ...c, id: key }));
-    return normalizeContacts(contacts);
-}
-
-
-/**
- * Loads contacts from Firebase for authenticated users.
- * @async
- * @returns {Promise<Object[]>} Normalized contacts from the remote database.
- */
-async function loadFirebaseContacts() {
-    const response = await fetch(ADDTASK_CONTACTS_URL);
-    const raw = await response.json();
-    if (!raw) return [];
-    return normalizeContacts(Array.isArray(raw) ? raw : Object.values(raw));
-}
-
-
-/**
- * Loads and normalizes all contacts used in the assignment dropdown.
- * Guests see the real contacts from Firebase too; the demo file is only the fallback.
+ * Loads all contacts from the database for the assign dropdown.
  * @async
  * @returns {Promise<Object[]>} Normalized contacts (empty if unreachable).
  */
 async function loadAssignContacts() {
-    const isGuest = typeof checkIsGuest === 'function' && checkIsGuest();
     try {
-        const contacts = await loadFirebaseContacts();
-        if (contacts.length || !isGuest) return contacts;
+        const response = await fetch(ADDTASK_CONTACTS_URL);
+        return normalizeContacts(toEntryList(await response.json()));
     } catch (error) {
-        console.error('Error loading contacts:', error);
-        if (!isGuest) return [];
+        showTaskNotification('Contacts could not be loaded.', true);
+        return [];
     }
-    return loadGuestContacts();
 }
 
 
@@ -51,7 +21,6 @@ async function loadAssignContacts() {
  */
 function normalizeContacts(raw) {
     return raw
-        .filter(Boolean)
         .map(contact => ({
             id: String(contact.id),
             name: contact.name,
@@ -110,7 +79,7 @@ function togglePerson(id) {
  */
 function canAssignMorePersons() {
     if (assignedIds.length >= 99) {
-        notify('Maximal 99 Personen können zugewiesen werden.', true);
+        notify('A maximum of 99 contacts can be assigned.', true);
         return false;
     }
     return true;
