@@ -37,6 +37,7 @@ function renderEditModal(task) {
   renderEditAssignOptions();
   renderEditAssignedAvatars();
   renderEditSubtasks();
+  setAttachments('edit', task.attachments);
   attachEditModalListeners();
 }
 
@@ -302,7 +303,8 @@ function buildTaskUpdates(title, task) {
     dueDate: document.getElementById('edit-due').value,
     priority: editSelectedPrio || task.priority,
     assignedTo: buildAssignedTo(),
-    subtasks: editSubtasks
+    subtasks: editSubtasks,
+    attachments: getAttachments('edit')
   };
 }
 

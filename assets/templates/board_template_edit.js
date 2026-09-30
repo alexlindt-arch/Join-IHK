@@ -9,6 +9,7 @@ function editTaskTemplate(task) {
         + buildEditBasicFields(task)
         + buildEditPrioField(prioButtons)
         + buildEditAssignField()
+        + attachmentPickerTemplate('edit')
         + buildEditSubtaskField()
         + '</div>'
         + buildEditSaveButton(task.id);

@@ -7,6 +7,7 @@ function clearModalTaskForm() {
     resetModalPriority();
     resetModalCategory();
     resetModalAssignAndSubtasks();
+    setAttachments('modal', []);
     hideModalFieldErrors();
     updateModalCreateButton();
 }
@@ -132,6 +133,7 @@ function collectModalTask() {
         category: modalSelectedCategory,
         assignedTo: collectModalAssignedTo(),
         subtasks: modalSubtasks,
+        attachments: getAttachments('modal'),
         status: modalDefaultStatus,
         createdAt: new Date().toISOString()
     };

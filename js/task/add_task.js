@@ -124,6 +124,7 @@ function collectTask() {
         priority: selectedPriority,
         assignedTo: getAssignedContacts(),
         subtasks: subtasks,
+        attachments: getAttachments('task'),
         status: 'todo',
         createdAt: new Date().toISOString()
     };
@@ -242,11 +243,12 @@ async function saveTask(task) {
     if (checkIsGuest()) return saveGuestTask(task);
     const id = await getNextTaskId();
     task.id = id;
-    await fetch(`${ADDTASK_BASE_URL}/tasks/${id}.json`, {
+    const response = await fetch(`${ADDTASK_BASE_URL}/tasks/${id}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(task)
     });
+    if (!response.ok) throw new Error(`Saving failed with status ${response.status}`);
 }
 
 
@@ -280,6 +282,7 @@ function clearTaskForm() {
     resetCategoryLabel();
     renderSubtasks();
     renderAssignedAvatars();
+    setAttachments('task', []);
     updateSubtaskActions();
     setPriority(document.querySelector('.prio-medium'));
     ['error-title', 'error-due', 'error-category'].forEach(hideError);

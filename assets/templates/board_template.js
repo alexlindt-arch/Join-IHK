@@ -198,6 +198,7 @@ function buildDetailHTML(task, prioLabel, assignees, subtaskList) {
     return buildDetailHeader(task)
         + buildDetailInfo(task, prioLabel)
         + buildDetailAssignSection(task, assignees)
+        + detailAttachmentSectionTemplate(task)
         + buildDetailSubtaskSection(task, subtaskList)
         + '</div>'
         + buildDetailActions(task);

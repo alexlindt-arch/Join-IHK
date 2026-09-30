@@ -56,6 +56,31 @@ function openTaskDetail(id) {
 
 
 /**
+ * Opens an attachment of a task in the image viewer.
+ * @param {number|string} taskId - Task id.
+ * @param {number} index - Index of the attachment.
+ * @returns {void}
+ */
+function openTaskAttachment(taskId, index) {
+  const task = allTasks.find(t => t.id == taskId);
+  if (task) openImageViewer(task.attachments || [], index);
+}
+
+
+/**
+ * Downloads an attachment of a task.
+ * @param {number|string} taskId - Task id.
+ * @param {number} index - Index of the attachment.
+ * @returns {void}
+ */
+function downloadTaskAttachment(taskId, index) {
+  const task = allTasks.find(t => t.id == taskId);
+  const attachment = task?.attachments?.[index];
+  if (attachment) downloadAttachment(attachment);
+}
+
+
+/**
  * Removes a task from allTasks and persists the deletion.
  * @async 
  * @param {number|string} id

@@ -77,11 +77,12 @@ async function fetchDemoTaskList() {
  */
 async function saveModalTaskRemote(task) {
   task.id = await getNextModalTaskId();
-  await fetch(`${ADDTASK_BASE_URL}/tasks/${task.id}.json`, {
+  const response = await fetch(`${ADDTASK_BASE_URL}/tasks/${task.id}.json`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(task)
   });
+  if (!response.ok) throw new Error(`Saving failed with status ${response.status}`);
 }
 
 
