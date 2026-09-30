@@ -221,13 +221,17 @@
     margin-bottom: 16px;
 }
 
+/* The container has the width, the input fills it: the icon always sits inside the input */
 .input-field {
-    width: 422px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .input-container {
     position: relative;
-    width: 100%;
+    width: 422px;
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .input-field-icon {

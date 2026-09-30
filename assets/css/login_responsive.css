@@ -27,6 +27,10 @@
         width: 100%;
     }
 
+    .input-container {
+        width: 100%;
+    }
+
     .login-logo-animated .logo-dark {
         margin-top: -20px;
         margin-left: -50px;

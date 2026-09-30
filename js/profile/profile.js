@@ -63,7 +63,17 @@ async function openProfileDialog() {
     setProfileMode(false);
     lockPageScroll(true);
     dialog.showModal();
-    document.getElementById('profile-save').focus();
+    document.getElementById('profile-save').focus({ preventScroll: true });
+    scrollProfileToTop();
+}
+
+
+/**
+ * Shows the account dialog from the top, also on small screens where its content scrolls.
+ * @returns {void}
+ */
+function scrollProfileToTop() {
+    document.querySelectorAll('.account-dialog-inner, .account-dialog-main').forEach(box => { box.scrollTop = 0; });
 }
 
 

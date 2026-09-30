@@ -77,7 +77,8 @@ async function saveProfile(event) {
  */
 function startProfileEdit() {
     setProfileMode(true);
-    document.getElementById('profile-name').focus();
+    document.getElementById('profile-name').focus({ preventScroll: true });
+    scrollProfileToTop();
 }
 
 
