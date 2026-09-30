@@ -20,6 +20,7 @@ async function openEditModal(id) {
  */
 function initEditState(task) {
   editSelectedPrio = task.priority || 'medium';
+  editSelectedCategory = task.category || '';
   editSubtasks = (task.subtasks || []).map(s => ({ ...s }));
   editAssignedIds = (task.assignedTo || []).map(a => String(a.id));
 }
@@ -53,14 +54,13 @@ function attachEditModalListeners() {
 
 
 /**
- * Closes the assign dropdown on clicks outside the assign wrapper.
+ * Closes the assign and category dropdowns of the edit form on clicks outside of them.
  * @param {MouseEvent} event
  * @returns {void}
  */
 function handleEditAssignOutsideClick(event) {
-  if (event.target.closest('.edit-assign-wrapper')) return;
-  const opts = document.getElementById('edit-assign-options');
-  if (opts && !opts.classList.contains('d-none')) opts.classList.add('d-none');
+  if (!event.target.closest('.edit-assign-wrapper')) document.getElementById('edit-assign-options')?.classList.add('d-none');
+  if (!event.target.closest('.edit-category-select')) document.getElementById('edit-category-options')?.classList.add('d-none');
 }
 
 
@@ -166,9 +166,32 @@ function renderEditAssignedAvatars() {
  * @returns {void}
  */
 function selectEditPrio(button, prio) {
-  document.querySelectorAll('.edit-prio-btn').forEach(b => b.classList.remove('edit-prio-btn--active'));
-  button.classList.add('edit-prio-btn--active');
+  document.querySelectorAll('.edit-prio-group .prio-btn').forEach(b => b.classList.remove('prio-active'));
+  button.classList.add('prio-active');
   editSelectedPrio = prio;
+}
+
+
+/**
+ * Opens or closes the category dropdown of the edit form.
+ * @returns {void}
+ */
+function toggleEditCategoryDropdown() {
+  const options = document.getElementById('edit-category-options');
+  const isOpen = options.classList.toggle('d-none') === false;
+  document.getElementById('edit-category-toggle').setAttribute('aria-expanded', String(isOpen));
+}
+
+
+/**
+ * Stores the chosen category and shows it in the dropdown toggle.
+ * @param {string} category - 'Technical Task' or 'User Story'.
+ * @returns {void}
+ */
+function selectEditCategory(category) {
+  editSelectedCategory = category;
+  document.getElementById('edit-category-selected').textContent = category;
+  toggleEditCategoryDropdown();
 }
 
 
@@ -261,8 +284,10 @@ async function saveEditedTask(id) {
 function isEditFormValid(title, task) {
   const dueDate = document.getElementById('edit-due').value;
   const dueDateError = dueDate === task.dueDate ? '' : getDueDateError(dueDate);
-  if (!title) notify('Please enter a title.', true);
-  else if (dueDateError) notify(dueDateError, true);
+  const dueErrorElement = document.getElementById('edit-error-due');
+  dueErrorElement.textContent = dueDateError || 'This field is required';
+  dueErrorElement.classList.toggle('d-none', !dueDateError);
+  document.getElementById('edit-error-title').classList.toggle('d-none', Boolean(title));
   return Boolean(title && !dueDateError);
 }
 
@@ -290,6 +315,7 @@ function buildTaskUpdates(title, task) {
     description: document.getElementById('edit-desc').value.trim(),
     dueDate: document.getElementById('edit-due').value,
     priority: editSelectedPrio || task.priority,
+    category: editSelectedCategory || task.category,
     assignedTo: buildAssignedTo(),
     subtasks: editSubtasks,
     attachments: getAttachments('edit')
@@ -343,6 +369,7 @@ async function updateTaskRemote(id, updates) {
  */
 function resetEditState() {
   editSelectedPrio = null;
+  editSelectedCategory = '';
   editAssignedIds = [];
   editSubtasks = [];
 }

@@ -1,0 +1,338 @@
+/* "My account" dialog (desktop layout), opened from the avatar menu on every page */
+
+.user-avatar-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.user-avatar:has(.user-avatar-photo) {
+    overflow: hidden;
+}
+
+/* ---------- Account dialog (desktop) ---------- */
+
+.account-dialog {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(1212px, calc(100vw - 64px));
+    height: min(592px, calc(100vh - 32px));
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: none;
+    border-radius: 30px;
+    background: #FFFFFF;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    overscroll-behavior: contain;
+    font-family: 'Inter', sans-serif;
+}
+
+.account-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.account-dialog-inner {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.account-dialog-close {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: unset;
+    border-radius: 50%;
+    background: transparent;
+    color: #2A3647;
+    font-size: 32px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 100ms, color 100ms;
+}
+
+.account-dialog-close:hover {
+    background: #F6F7F8;
+    color: var(--secondaryColor);
+}
+
+.account-dialog-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 40%;
+    padding: 0 48px;
+    background: #2A3647;
+    box-sizing: border-box;
+}
+
+.account-dialog-logo {
+    width: 56px;
+    height: auto;
+    margin-bottom: 12px;
+}
+
+.account-dialog-title {
+    margin: 0;
+    color: #FFFFFF;
+    font-size: 61px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.account-dialog-bar {
+    width: 90px;
+    height: 3px;
+    margin-top: 16px;
+    border-radius: 2px;
+    background: var(--secondaryColor);
+}
+
+.account-dialog-main {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    flex: 1;
+    min-width: 0;
+    padding: 48px 64px 48px 48px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+/* ---------- Avatar with camera button ---------- */
+
+.account-avatar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.account-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+}
+
+.account-avatar-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #FFFFFF;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.16);
+    color: #FFFFFF;
+    font-size: 47px;
+    font-weight: 500;
+    line-height: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.account-avatar-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.account-avatar-camera {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: unset;
+    outline: 3px solid #FFFFFF;
+    border-radius: 50%;
+    background: #2A3647;
+    color: #FFFFFF;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 100ms, transform 100ms;
+}
+
+.account-avatar-camera:hover {
+    background: var(--secondaryColor);
+    transform: scale(1.08);
+}
+
+.account-avatar-camera:focus-visible {
+    box-shadow: 0 0 0 6px var(--secondaryColor);
+}
+
+.account-avatar-remove {
+    padding: 4px 8px;
+    border: unset;
+    background: none;
+    color: #2A3647;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 100ms;
+}
+
+.account-avatar-remove:hover {
+    color: var(--secondaryColor);
+    text-decoration: underline;
+}
+
+/* ---------- Fields ---------- */
+
+.account-dialog-fields {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    max-width: 422px;
+}
+
+.account-field-box {
+    position: relative;
+    display: block;
+}
+
+.account-field-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.account-field-input {
+    width: 100%;
+    height: 50px;
+    padding: 0 52px 0 21px;
+    border: 1px solid #D1D1D1;
+    border-radius: 10px;
+    background: #FFFFFF;
+    color: #000000;
+    font-family: inherit;
+    font-size: 20px;
+    box-sizing: border-box;
+    transition: border-color 100ms;
+}
+
+.account-field-input::placeholder {
+    color: #D1D1D1;
+}
+
+.account-dialog--edit .account-field-input:focus {
+    border-color: var(--secondaryColor);
+    outline: none;
+}
+
+.account-field-input[readonly] {
+    cursor: default;
+}
+
+.account-field-input[readonly]:focus {
+    outline: none;
+}
+
+.account-field-input[readonly]:focus-visible {
+    border-color: #A8A8A8;
+}
+
+.account-field-input--invalid,
+.account-dialog--edit .account-field-input--invalid:focus {
+    border-color: #FF8190;
+}
+
+.account-field-icon {
+    position: absolute;
+    top: 50%;
+    right: 21px;
+    width: 24px;
+    height: 24px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.account-field-error {
+    min-height: 20px;
+    margin: 4px 0 6px 4px;
+    color: #FF8190;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.account-dialog-error {
+    min-height: 20px;
+    margin: 0 0 8px;
+    color: #FF3D00;
+    font-size: 14px;
+}
+
+/* ---------- Buttons ---------- */
+
+.account-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.account-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    height: 56px;
+    padding: 0 20px;
+    border: unset;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 100ms, color 100ms, box-shadow 100ms;
+}
+
+.account-btn--outline {
+    background: #FFFFFF;
+    box-shadow: inset 0 0 0 1px #2A3647;
+    color: #2A3647;
+}
+
+.account-btn--outline:hover {
+    box-shadow: inset 0 0 0 2px var(--secondaryColor), 0 4px 4px rgba(0, 0, 0, 0.25);
+    color: var(--secondaryColor);
+}
+
+.account-btn--filled {
+    min-width: 110px;
+    background: #2A3647;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.account-btn--filled:hover {
+    background: var(--secondaryColor);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.account-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}

@@ -3,6 +3,7 @@ const BOARD_BASE_URL = JOIN_DB_URL;
 let allTasks = [];
 let currentDraggedTaskId = null;
 let editSelectedPrio = null;
+let editSelectedCategory = '';
 let editAssignedIds = [];
 let editSubtasks = [];
 let boardContacts = [];

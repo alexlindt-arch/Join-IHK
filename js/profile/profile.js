@@ -1,8 +1,9 @@
 /**
- * "My profile": lets a logged-in user edit name, email, phone and photo from the avatar menu.
- * Name and email are stored in the user account (so the login uses the new email),
- * everything is stored in the user's contact as well, so the contact list stays in sync.
- * Needs config.js (JOIN_DB_URL), image_utils.js (fileToAvatar) and script.js (getCurrentUser, getInitials).
+ * "My account": shows the data of the logged-in user from the avatar menu and lets the user edit
+ * name, email, phone and photo. Name and email are stored in the user account (so the login uses
+ * the new email), everything is stored in the user's contact as well, so the contact list stays in sync.
+ * Needs config.js (JOIN_DB_URL), image_utils.js (fileToAvatar, imgEscape), script.js (getCurrentUser,
+ * getInitials, getRandomColor) and assets/templates/profile_template.js.
  */
 const PROFILE_DB_URL = JOIN_DB_URL;
 
@@ -13,12 +14,15 @@ let profileContact = null;
 /** Photo shown in the dialog until it is saved (data URL or empty). */
 let profilePendingPhoto = '';
 
+/** True while the dialog is in "Edit account" mode. */
+let profileEditMode = false;
+
 document.addEventListener('DOMContentLoaded', initProfileMenu);
 window.addEventListener('load', showHeaderPhoto);
 
 
 /**
- * Hides "My profile" for guests, because guests have no account to edit.
+ * Hides "Account" for guests, because guests have no account to edit.
  * @returns {void}
  */
 function initProfileMenu() {
@@ -38,13 +42,13 @@ function showHeaderPhoto() {
     const avatar = document.getElementById('user-avatar');
     if (!avatar || !user || user.isGuest) return;
     avatar.innerHTML = user.photo
-        ? `<img class="user-avatar-photo" src="${user.photo}" alt="">`
+        ? `<img class="user-avatar-photo" src="${imgEscape(user.photo)}" alt="">`
         : getInitials(user.name);
 }
 
 
 /**
- * Opens the profile dialog with the current data of the logged-in user.
+ * Opens the account dialog in view mode with the current data of the logged-in user.
  * @async
  * @returns {Promise<void>}
  */
@@ -55,14 +59,15 @@ async function openProfileDialog() {
     const dialog = getProfileDialog();
     await loadProfileContact(user);
     fillProfileForm(user);
+    setProfileMode(false);
     lockPageScroll(true);
     dialog.showModal();
-    document.getElementById('profile-name').focus();
+    document.getElementById('profile-save').focus();
 }
 
 
 /**
- * Returns the profile dialog and creates it on first use.
+ * Returns the account dialog and creates it on first use.
  * @returns {HTMLDialogElement}
  */
 function getProfileDialog() {
@@ -71,8 +76,18 @@ function getProfileDialog() {
     document.body.insertAdjacentHTML('beforeend', profileDialogTemplate());
     dialog = document.getElementById('profile-dialog');
     dialog.addEventListener('click', event => { if (event.target === dialog) closeProfileDialog(); });
-    dialog.addEventListener('close', () => lockPageScroll(false));
+    dialog.addEventListener('close', handleProfileDialogClosed);
     return dialog;
+}
+
+
+/**
+ * Unlocks the page and gives the focus back to the avatar button that opened the menu.
+ * @returns {void}
+ */
+function handleProfileDialogClosed() {
+    lockPageScroll(false);
+    document.getElementById('user-avatar')?.focus();
 }
 
 
@@ -115,12 +130,28 @@ async function loadProfileContact(user) {
  * @returns {void}
  */
 function fillProfileForm(user) {
-    const phone = profileContact?.phone;
     document.getElementById('profile-name').value = user.name || '';
     document.getElementById('profile-email').value = user.email || '';
-    document.getElementById('profile-phone').value = phone || '';
+    document.getElementById('profile-phone').value = profileContact?.phone || '';
     profilePendingPhoto = profileContact?.photo || user.photo || '';
-    setProfileError('');
+    renderProfileAvatar();
+}
+
+
+/**
+ * Switches the dialog between "My account" (read-only) and "Edit account" (editable).
+ * @param {boolean} edit - True for edit mode.
+ * @returns {void}
+ */
+function setProfileMode(edit) {
+    profileEditMode = edit;
+    const dialog = document.getElementById('profile-dialog');
+    dialog.classList.toggle('account-dialog--edit', edit);
+    document.getElementById('profile-dialog-title').textContent = edit ? 'Edit account' : 'My account';
+    document.getElementById('profile-save').textContent = edit ? 'Save ✓' : 'Edit';
+    dialog.querySelectorAll('.account-field-input').forEach(input => { input.readOnly = !edit; });
+    document.getElementById('profile-camera').classList.toggle('d-none', !edit);
+    clearProfileErrors();
     renderProfileAvatar();
 }
 
@@ -134,9 +165,9 @@ function renderProfileAvatar() {
     const name = document.getElementById('profile-name').value;
     circle.style.backgroundColor = profileContact?.color || '#2A3647';
     circle.innerHTML = profilePendingPhoto
-        ? `<img class="profile-dialog-photo" src="${profilePendingPhoto}" alt="">`
+        ? `<img class="account-avatar-photo" src="${imgEscape(profilePendingPhoto)}" alt="">`
         : getInitials(name);
-    document.getElementById('profile-photo-remove').classList.toggle('d-none', !profilePendingPhoto);
+    document.getElementById('profile-photo-remove').classList.toggle('d-none', !profilePendingPhoto || !profileEditMode);
 }
 
 
@@ -167,232 +198,77 @@ async function handleProfilePhotoSelect(input) {
 function removeProfilePhoto() {
     profilePendingPhoto = '';
     renderProfileAvatar();
+    document.getElementById('profile-camera').focus();
 }
 
 
 /**
- * Reads and validates the form.
- * @returns {{name: string, email: string, phone: string}|null} Values, or null after showing an error.
- */
-function readProfileForm() {
-    const name = document.getElementById('profile-name').value.trim().replace(/\s+/g, ' ');
-    const email = document.getElementById('profile-email').value.trim();
-    const phone = document.getElementById('profile-phone').value.trim();
-    if (!name) return setProfileError('Please enter your name.');
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email)) return setProfileError('Please enter a valid email address.');
-    if (phone && !/^\+?[\d\s/-]{4,}$/.test(phone)) return setProfileError('Please enter a valid phone number.');
-    return { name, email, phone };
-}
-
-
-/**
- * Saves the profile: user account, matching contact and session, then refreshes the header.
- * @async
- * @param {SubmitEvent} event - Form submit.
- * @returns {Promise<void>}
- */
-async function saveProfile(event) {
-    event.preventDefault();
-    const user = getCurrentUser();
-    const values = readProfileForm();
-    if (!user || !values) return;
-    setProfileSaving(true);
-    try {
-        await storeProfile(user, values);
-    } catch (error) {
-        setProfileError('Saving failed. Please try again.');
-    } finally {
-        setProfileSaving(false);
-    }
-}
-
-
-/**
- * Stores valid profile changes everywhere and closes the dialog; rejects emails of other accounts.
- * @async
- * @param {Object} user - Logged-in user.
- * @param {Object} values - Values of the profile form.
- * @returns {Promise<void>}
- */
-async function storeProfile(user, values) {
-    if (await isEmailTakenByOtherUser(values.email, user.id)) {
-        setProfileError('This email address is already used by another account.');
-        return;
-    }
-    await saveProfileToFirebase(user, values);
-    updateProfileSession(user, values);
-    closeProfileDialog();
-    showHeaderPhoto();
-    refreshPageAfterProfileSave();
-}
-
-
-/**
- * Checks whether another account already uses the email.
- * @async
- * @param {string} email - New email.
- * @param {string|number} userId - Id of the logged-in user.
- * @returns {Promise<boolean>}
- */
-async function isEmailTakenByOtherUser(email, userId) {
-    const data = await (await fetch(`${PROFILE_DB_URL}/users.json`)).json();
-    const users = Object.values(data || {}).filter(Boolean);
-    const wanted = email.toLowerCase();
-    return users.some(u => String(u.email || '').toLowerCase() === wanted && String(u.id) !== String(userId));
-}
-
-
-/**
- * Writes the new values into the user account and into the user's contact.
- * @async
- * @param {Object} user - Logged-in user.
- * @param {{name: string, email: string, phone: string}} values - New values.
- * @returns {Promise<void>}
- */
-async function saveProfileToFirebase(user, values) {
-    await patchProfile(`users/${user.id}`, { name: values.name, email: values.email });
-    const key = profileContactKey ?? user.id;
-    await patchProfile(`contacts/${key}`, {
-        id: profileContact?.id ?? Number(key),
-        name: values.name,
-        email: values.email,
-        phone: values.phone || '',
-        avatar: getInitials(values.name),
-        color: profileContact?.color || getRandomColor(),
-        photo: profilePendingPhoto
-    });
-}
-
-
-/**
- * Sends a PATCH request to Firebase.
- * @async
- * @param {string} path - Path below the database root.
- * @param {Object} data - Fields to update.
- * @returns {Promise<void>}
- * @throws {Error} When Firebase answers with an error.
- */
-async function patchProfile(path, data) {
-    const response = await fetch(`${PROFILE_DB_URL}/${path}.json`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    if (!response.ok) throw new Error(`Firebase answered ${response.status}`);
-}
-
-
-/**
- * Stores the new name, email and photo in the session, so every page shows them.
- * @param {Object} user - Logged-in user.
- * @param {{name: string, email: string}} values - New values.
+ * Hides the error of a field while the user types; the name also updates the initials.
+ * @param {string} key - Field key (name, email or phone).
  * @returns {void}
  */
-function updateProfileSession(user, values) {
-    const session = { ...user, name: values.name, email: values.email, photo: profilePendingPhoto };
-    sessionStorage.setItem('currentUser', JSON.stringify(session));
+function handleProfileInput(key) {
+    setProfileFieldError(key, '');
+    if (key === 'name') renderProfileAvatar();
 }
 
 
 /**
- * Updates the page parts that show the user: greeting on the summary, list on the contacts page.
- * @returns {void}
- */
-function refreshPageAfterProfileSave() {
-    if (typeof renderGreeting === 'function') renderGreeting();
-    if (typeof init === 'function' && document.querySelector('.contacts-list')) init();
-    showProfileToast('Profile saved');
-}
-
-
-/**
- * Shows a short confirmation at the bottom of the page.
+ * Shows a short confirmation at the bottom of the page (above open dialogs).
  * @param {string} text - Message.
  * @returns {void}
  */
 function showProfileToast(text) {
     const toast = document.createElement('div');
     toast.className = 'profile-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('popover', 'manual');
     toast.textContent = text;
     document.body.appendChild(toast);
+    toast.showPopover?.();
     setTimeout(() => toast.remove(), 2500);
 }
 
 
 /**
- * Shows an error in the dialog.
+ * Shows a general error in the dialog (photo or saving problems).
  * @param {string} text - Error text, empty to hide it.
- * @returns {null} Always null, so validation can `return setProfileError(...)`.
+ * @returns {void}
  */
 function setProfileError(text) {
     const box = document.getElementById('profile-error');
     if (box) box.textContent = text;
-    return null;
 }
 
 
 /**
- * Disables the save button while saving.
- * @param {boolean} saving
+ * Shows or hides the red hint under a field and marks the field as invalid.
+ * @param {string} key - Field key (name, email or phone).
+ * @param {string} text - Error text, empty to hide it.
  * @returns {void}
  */
-function setProfileSaving(saving) {
-    const button = document.getElementById('profile-save');
-    button.disabled = saving;
-    button.textContent = saving ? 'Saving …' : 'Save';
+function setProfileFieldError(key, text) {
+    document.getElementById(`profile-${key}-error`).textContent = text;
+    document.getElementById(`profile-${key}`).classList.toggle('account-field-input--invalid', Boolean(text));
+    document.getElementById(`profile-${key}`).setAttribute('aria-invalid', String(Boolean(text)));
 }
 
 
 /**
- * Closes the profile dialog.
+ * Hides all errors of the account form.
+ * @returns {void}
+ */
+function clearProfileErrors() {
+    Object.keys(PROFILE_RULES).forEach(key => setProfileFieldError(key, ''));
+    setProfileError('');
+}
+
+
+/**
+ * Closes the account dialog.
  * @returns {void}
  */
 function closeProfileDialog() {
     document.getElementById('profile-dialog')?.close();
     lockPageScroll(false);
-}
-
-
-/**
- * Markup of the profile dialog.
- * @returns {string} HTML string.
- */
-function profileDialogTemplate() {
-    return `
-        <dialog class="profile-dialog" id="profile-dialog" aria-labelledby="profile-dialog-title">
-            <form class="profile-dialog-form" onsubmit="saveProfile(event)" novalidate>
-                <button type="button" class="profile-dialog-close" onclick="closeProfileDialog()" aria-label="Close">&times;</button>
-                <h2 class="profile-dialog-title" id="profile-dialog-title">My profile</h2>
-                <span class="profile-dialog-divider" aria-hidden="true"></span>
-                <label class="profile-dialog-avatar" for="profile-photo" title="Change photo (JPG/PNG)">
-                    <span class="profile-dialog-circle" id="profile-avatar-circle"></span>
-                    <span class="profile-dialog-camera" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
-                            stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z" />
-                            <circle cx="12" cy="13" r="3.5" />
-                        </svg>
-                    </span>
-                </label>
-                <input type="file" id="profile-photo" accept="image/jpeg,image/png" hidden onchange="handleProfilePhotoSelect(this)">
-                <button type="button" class="profile-dialog-link d-none" id="profile-photo-remove" onclick="removeProfilePhoto()">Remove photo</button>
-                <label class="profile-dialog-field">
-                    <span>Name</span>
-                    <input type="text" id="profile-name" autocomplete="name" oninput="renderProfileAvatar()">
-                </label>
-                <label class="profile-dialog-field">
-                    <span>Email</span>
-                    <input type="email" id="profile-email" autocomplete="email">
-                </label>
-                <label class="profile-dialog-field">
-                    <span>Phone</span>
-                    <input type="tel" id="profile-phone" autocomplete="tel" placeholder="optional">
-                </label>
-                <p class="profile-dialog-error" id="profile-error" aria-live="polite"></p>
-                <div class="profile-dialog-actions">
-                    <button type="button" class="profile-dialog-btn profile-dialog-btn--secondary" onclick="closeProfileDialog()">Cancel</button>
-                    <button type="submit" class="profile-dialog-btn" id="profile-save">Save</button>
-                </div>
-            </form>
-        </dialog>`;
 }

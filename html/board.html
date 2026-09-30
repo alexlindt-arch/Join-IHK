@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../assets/css/features.css?v=20260930b">
     <link rel="stylesheet" href="../assets/css/profile.css?v=20260930b">
     <link rel="stylesheet" href="../assets/css/attachments.css?v=20260930b">
+    <link rel="stylesheet" href="../assets/css/image_viewer.css?v=20260930b">
     <title>Board</title>
 </head>
 
@@ -40,11 +41,10 @@
                         aria-haspopup="true" aria-expanded="false" aria-controls="avatar-menu"
                         onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
-                        <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
-                            onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
+                        <button type="button" class="avatar-menu-btn avatar-menu-btn--profile" onclick="openProfileDialog(); event.stopPropagation()">Account</button>
                         <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
-                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
@@ -273,12 +273,11 @@
                                 accept="image/jpeg,image/png" multiple tabindex="-1" aria-hidden="true"
                                 onchange="handleAttachmentInput(event, 'modal')">
                             <button type="button" class="attachment-dropzone" id="attachment-dropzone-modal"
-                                aria-describedby="attachment-hint-modal attachment-error-modal"
+                                aria-describedby="attachment-hint-modal"
                                 onclick="openAttachmentDialog('modal')" ondragover="handleAttachmentDragOver(event)"
                                 ondragleave="handleAttachmentDragLeave(event)" ondrop="handleAttachmentDrop(event, 'modal')">
                                 Drag a file or browse <span class="attachment-plus" aria-hidden="true">+</span>
                             </button>
-                            <p class="field-error attachment-error d-none" id="attachment-error-modal" role="alert"></p>
                             <ul class="attachment-list d-none" id="attachment-list-modal" aria-label="Selected images"></ul>
                         </section>
 
@@ -321,7 +320,7 @@
             <div class="form-footer">
                 <span class="required-hint"><span class="required">*</span>This field is required</span>
                 <div class="form-actions">
-                    <button type="button" class="btn-clear" onclick="clearModalTaskForm()">Clear <span class="btn-x">✕</span></button>
+                    <button type="button" class="btn-clear" onclick="closeAddTaskModal()">Cancel <span class="btn-x">✕</span></button>
                     <button type="submit" class="btn-create" id="modal-btn-create" disabled>
                         Create Task
                         <img src="../assets/icons/done.svg" alt="" class="btn-icon">
@@ -332,6 +331,10 @@
         </div>
     </dialog>
 
+    <div class="attachment-toast" id="attachment-toast" popover="manual" role="alert">
+        <p><strong id="attachment-toast-title"></strong><span id="attachment-toast-text"></span></p>
+        <button type="button" class="attachment-toast-close" aria-label="Close message" onclick="hideAttachmentToast()">&#x2715;</button>
+    </div>
     <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer" onclick="handleViewerBackdropClick(event)"
         onkeydown="handleViewerKeydown(event)">
         <header class="image-viewer-bar">
@@ -387,7 +390,9 @@
     <script src="../js/board/board_save_task.js?v=20260930b"></script>
     <script src="../js/board/board.js?v=20260930b"></script>
     <script src="../script.js?v=20260930b"></script>
+    <script src="../assets/templates/profile_template.js?v=20260930b"></script>
     <script src="../js/profile/profile.js?v=20260930b"></script>
+    <script src="../js/profile/profile_store.js?v=20260930b"></script>
 </body>
 
 </html>

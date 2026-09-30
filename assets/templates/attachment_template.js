@@ -12,12 +12,11 @@ const ATTACHMENT_DOWNLOAD_ICON = `<svg width="20" height="20" viewBox="0 0 24 24
  * @returns {string} HTML string.
  */
 function attachmentPickerTemplate(pickerId) {
-    const labelClass = pickerId === 'edit' ? 'edit-label' : 'form-label';
     return `
-        <section class="form-group edit-form-group attachment-field" aria-labelledby="attachment-label-${pickerId}">
+        <section class="form-group attachment-field" aria-labelledby="attachment-label-${pickerId}">
             <div class="attachment-header">
                 <div>
-                    <h3 class="${labelClass} attachment-label" id="attachment-label-${pickerId}">Attachments</h3>
+                    <h3 class="form-label attachment-label" id="attachment-label-${pickerId}">Attachments</h3>
                     <p class="attachment-hint" id="attachment-hint-${pickerId}">Allowed file types are JPEG and PNG</p>
                 </div>
                 <button type="button" class="attachment-delete-all d-none" id="attachment-delete-all-${pickerId}"
@@ -26,12 +25,11 @@ function attachmentPickerTemplate(pickerId) {
             <input type="file" class="attachment-input" id="attachment-input-${pickerId}" accept="image/jpeg,image/png"
                 multiple tabindex="-1" aria-hidden="true" onchange="handleAttachmentInput(event, '${pickerId}')">
             <button type="button" class="attachment-dropzone" id="attachment-dropzone-${pickerId}"
-                aria-describedby="attachment-hint-${pickerId} attachment-error-${pickerId}"
+                aria-describedby="attachment-hint-${pickerId}"
                 onclick="openAttachmentDialog('${pickerId}')" ondragover="handleAttachmentDragOver(event)"
                 ondragleave="handleAttachmentDragLeave(event)" ondrop="handleAttachmentDrop(event, '${pickerId}')">
                 Drag a file or browse <span class="attachment-plus" aria-hidden="true">+</span>
             </button>
-            <p class="field-error attachment-error d-none" id="attachment-error-${pickerId}" role="alert"></p>
             <ul class="attachment-list d-none" id="attachment-list-${pickerId}" aria-label="Selected images"></ul>
         </section>`;
 }

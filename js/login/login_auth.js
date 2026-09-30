@@ -273,7 +273,7 @@ async function saveRegistration(newId, newUser, newContact) {
         await saveUserToFirebase(newId, newUser);
         const existing = await findContactByEmail(newContact.email);
         if (!existing) await saveContactToFirebase(newId, newContact);
-        showNotification('Registration successful!');
+        showNotification('You Signed Up successfully');
         setTimeout(() => switchForm('registration_section', 'login_section'), 2000);
     } catch (e) {
         showNotification('Registration failed.', true);

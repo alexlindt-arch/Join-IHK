@@ -108,15 +108,15 @@ function getNextDeadline(tasks) {
 
 
 /**
- * Renders the time-based greeting, the user's name and the header avatar.
+ * Renders the time-based greeting with the user's name; guests only get the greeting ("Good morning!").
  * @returns {void}
  */
 function renderGreeting() {
     const user = getCurrentUser();
-    const name = user?.name || 'Guest';
-    setText('greeting-time', `${getDaytimeGreeting()}${user ? ',' : ''}`);
-    setText('greeting-name', user ? name : '');
-    setText('user-avatar', getInitials(name));
+    const isNamedUser = Boolean(user && !user.isGuest);
+    setText('greeting-time', `${getDaytimeGreeting()}${isNamedUser ? ',' : '!'}`);
+    setText('greeting-name', isNamedUser ? user.name : '');
+    setText('user-avatar', getInitials(user?.name || 'Guest'));
 }
 
 

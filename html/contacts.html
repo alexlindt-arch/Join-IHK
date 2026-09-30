@@ -38,10 +38,10 @@
                         onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
                         <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
-                            onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
+                            onclick="openProfileDialog(); event.stopPropagation()">Account</button>
                         <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
-                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
@@ -161,7 +161,9 @@
     <script src="../script.js?v=20260930b"></script>
 
 
+    <script src="../assets/templates/profile_template.js?v=20260930b"></script>
     <script src="../js/profile/profile.js?v=20260930b"></script>
+    <script src="../js/profile/profile_store.js?v=20260930b"></script>
 </body>
 
 </html>

@@ -195,3 +195,37 @@
   padding: 4px 8px;
   font-size: 16px;
 }
+
+
+/* ---------- Edit overlay in two columns (Figma "Edit task Overlay", 1072px) ---------- */
+.board-modal:has(> #board-edit-box:not(.d-none)) {
+  position: relative;
+  max-width: 1072px;
+  max-height: calc(100vh - 32px);
+  padding: 32px 40px;
+  border-radius: 30px;
+  box-sizing: border-box;
+}
+
+.edit-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+}
+
+.edit-task-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-height: calc(100vh - 112px);
+  margin-top: 16px;
+  padding-right: 8px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 600px) {
+  .board-modal:has(> #board-edit-box:not(.d-none)) {
+    padding: 32px 16px 24px;
+  }
+}

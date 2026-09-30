@@ -4,6 +4,9 @@
  */
 const attachmentStore = {};
 
+/** Timer that hides the upload message box again. */
+let attachmentToastTimer = null;
+
 
 /**
  * Returns the attachments of a picker.
@@ -23,7 +26,6 @@ function getAttachments(pickerId) {
  */
 function setAttachments(pickerId, attachments) {
     attachmentStore[pickerId] = [...(attachments || [])];
-    clearAttachmentError(pickerId);
     renderAttachmentPicker(pickerId);
 }
 
@@ -68,7 +70,7 @@ async function addAttachmentFiles(pickerId, files) {
     }
     setAttachmentBusy(pickerId, false);
     renderAttachmentPicker(pickerId);
-    showAttachmentErrors(pickerId, errors);
+    if (errors.length) showAttachmentToast(errors);
 }
 
 
@@ -77,7 +79,7 @@ async function addAttachmentFiles(pickerId, files) {
  * @async
  * @param {string} pickerId - Picker id.
  * @param {File} file - Selected file.
- * @returns {Promise<string>} Empty string on success, otherwise the error message.
+ * @returns {Promise<{title: string, text: string}|null>} Null on success, otherwise the error.
  */
 async function addAttachmentFile(pickerId, file) {
     const validationError = await validateAttachmentFile(file);
@@ -85,11 +87,11 @@ async function addAttachmentFile(pickerId, file) {
     try {
         const attachment = await createAttachmentFromFile(file);
         const attachments = getAttachments(pickerId);
-        if (exceedsTaskUploadLimit(attachments, attachment)) return getUploadLimitMessage(file.name, attachments);
+        if (exceedsTaskUploadLimit(attachments, attachment)) return getUploadLimitError(file.name, attachments);
         attachmentStore[pickerId] = [...attachments, attachment];
-        return '';
+        return null;
     } catch (error) {
-        return `"${file.name}" could not be read. Please choose another image.`;
+        return { title: 'This file could not be read!', text: `"${file.name}" is not a valid image.` };
     }
 }
 
@@ -102,7 +104,6 @@ async function addAttachmentFile(pickerId, file) {
  */
 function removeAttachment(pickerId, index) {
     attachmentStore[pickerId] = getAttachments(pickerId).filter((_, i) => i !== index);
-    clearAttachmentError(pickerId);
     renderAttachmentPicker(pickerId);
     focusAttachmentDropzone(pickerId);
 }
@@ -146,26 +147,28 @@ function openPickerAttachment(pickerId, index) {
 
 
 /**
- * Shows the error messages of a picker below the drop zone.
- * @param {string} pickerId - Picker id.
- * @param {string[]} errors - Error messages.
+ * Shows upload errors in the red message box: the title of the first error and the texts of all errors.
+ * @param {Array<{title: string, text: string}>} errors - Upload errors.
  * @returns {void}
  */
-function showAttachmentErrors(pickerId, errors) {
-    const errorElement = document.getElementById(`attachment-error-${pickerId}`);
-    errorElement.innerHTML = errors.map(error => `<span>${escapeAttachmentText(error)}</span>`).join('');
-    errorElement.classList.toggle('d-none', errors.length === 0);
+function showAttachmentToast(errors) {
+    const toast = document.getElementById('attachment-toast');
+    document.getElementById('attachment-toast-title').textContent = errors[0].title;
+    document.getElementById('attachment-toast-text').textContent = errors.map(error => error.text).join(' ');
+    if (toast.matches(':popover-open')) toast.hidePopover();
+    toast.showPopover();
+    clearTimeout(attachmentToastTimer);
+    attachmentToastTimer = setTimeout(hideAttachmentToast, 6000);
 }
 
 
 /**
- * Hides the error messages of a picker.
- * @param {string} pickerId - Picker id.
+ * Hides the red upload message box.
  * @returns {void}
  */
-function clearAttachmentError(pickerId) {
-    const errorElement = document.getElementById(`attachment-error-${pickerId}`);
-    if (errorElement) showAttachmentErrors(pickerId, []);
+function hideAttachmentToast() {
+    const toast = document.getElementById('attachment-toast');
+    if (toast?.matches(':popover-open')) toast.hidePopover();
 }
 
 

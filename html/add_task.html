@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="../assets/css/features.css?v=20260930b">
     <link rel="stylesheet" href="../assets/css/profile.css?v=20260930b">
     <link rel="stylesheet" href="../assets/css/attachments.css?v=20260930b">
+    <link rel="stylesheet" href="../assets/css/image_viewer.css?v=20260930b">
     <title>Add Task</title>
 </head>
 
@@ -35,10 +36,10 @@
                         onclick="toggleAvatarMenu()"></button>
                     <div class="avatar-dropdown d-none" id="avatar-menu">
                         <button type="button" class="avatar-menu-btn avatar-menu-btn--profile"
-                            onclick="openProfileDialog(); event.stopPropagation()">My profile</button>
+                            onclick="openProfileDialog(); event.stopPropagation()">Account</button>
                         <a class="avatar-menu-btn avatar-menu-btn--mobile-only" href="help.html">Help</a>
-                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <a class="avatar-menu-btn" href="legal_notice.html">Legal Notice</a>
+                        <a class="avatar-menu-btn" href="privacy_policy.html">Privacy Policy</a>
                         <button type="button" class="avatar-menu-btn" onclick="logout(); event.stopPropagation()">Log out</button>
                     </div>
                 </div>
@@ -195,12 +196,11 @@
                                 accept="image/jpeg,image/png" multiple tabindex="-1" aria-hidden="true"
                                 onchange="handleAttachmentInput(event, 'task')">
                             <button type="button" class="attachment-dropzone" id="attachment-dropzone-task"
-                                aria-describedby="attachment-hint-task attachment-error-task"
+                                aria-describedby="attachment-hint-task"
                                 onclick="openAttachmentDialog('task')" ondragover="handleAttachmentDragOver(event)"
                                 ondragleave="handleAttachmentDragLeave(event)" ondrop="handleAttachmentDrop(event, 'task')">
                                 Drag a file or browse <span class="attachment-plus" aria-hidden="true">+</span>
                             </button>
-                            <p class="field-error attachment-error d-none" id="attachment-error-task" role="alert"></p>
                             <ul class="attachment-list d-none" id="attachment-list-task" aria-label="Selected images"></ul>
                         </section>
 
@@ -258,6 +258,10 @@
         </main>
     </div>
 
+    <div class="attachment-toast" id="attachment-toast" popover="manual" role="alert">
+        <p><strong id="attachment-toast-title"></strong><span id="attachment-toast-text"></span></p>
+        <button type="button" class="attachment-toast-close" aria-label="Close message" onclick="hideAttachmentToast()">&#x2715;</button>
+    </div>
     <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer" onclick="handleViewerBackdropClick(event)"
         onkeydown="handleViewerKeydown(event)">
         <header class="image-viewer-bar">
@@ -305,7 +309,9 @@
     <script src="../js/task/add_task_subtasks.js?v=20260930b"></script>
     <script src="../js/task/add_task_assign.js?v=20260930b"></script>
     <script src="../assets/vendor/flatpickr/flatpickr.min.js?v=20260930b"></script>
+    <script src="../assets/templates/profile_template.js?v=20260930b"></script>
     <script src="../js/profile/profile.js?v=20260930b"></script>
+    <script src="../js/profile/profile_store.js?v=20260930b"></script>
 </body>
 
 </html>

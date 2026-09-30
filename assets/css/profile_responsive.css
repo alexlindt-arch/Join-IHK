@@ -1,0 +1,118 @@
+/* "My account" dialog on tablet and mobile, plus the scroll lock of the page behind it */
+
+/* ---------- Tablet ---------- */
+
+@media (max-width: 1100px) and (min-width: 769px) {
+    .account-dialog-side {
+        flex-basis: 34%;
+        padding: 0 32px;
+    }
+
+    .account-dialog-title {
+        font-size: 44px;
+    }
+
+    .account-dialog-main {
+        gap: 32px;
+        padding: 80px 32px 32px;
+    }
+
+    .account-btn {
+        font-size: 18px;
+    }
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 768px) {
+    .account-dialog {
+        width: min(396px, calc(100vw - 32px));
+        height: min(760px, calc(100dvh - 32px));
+        border-radius: 20px;
+    }
+
+    .account-dialog-inner {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .account-dialog-close {
+        top: 16px;
+        right: 16px;
+        color: #FFFFFF;
+    }
+
+    .account-dialog-close:hover {
+        background: rgba(255, 255, 255, 0.12);
+        color: #FFFFFF;
+    }
+
+    .account-dialog-side {
+        flex: 0 0 auto;
+        justify-content: flex-start;
+        padding: 64px 24px 88px;
+    }
+
+    .account-dialog-logo {
+        display: none;
+    }
+
+    .account-dialog-title {
+        font-size: 47px;
+    }
+
+    .account-dialog-main {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+        flex: 1 0 auto;
+        padding: 0 24px 24px;
+        overflow: visible;
+    }
+
+    .account-avatar-col {
+        margin-top: -60px;
+    }
+
+    .account-dialog-fields {
+        max-width: none;
+    }
+
+    .account-dialog-actions {
+        flex-wrap: nowrap;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .account-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        height: 50px;
+        padding: 0 8px;
+        font-size: 16px;
+        line-height: 1.2;
+        white-space: normal;
+    }
+
+    .account-field-input {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .account-dialog-title {
+        font-size: 36px;
+    }
+}
+
+/* ---------- Page behind the open dialog does not scroll ---------- */
+
+html.profile-dialog-open,
+body.profile-dialog-open {
+    overflow: hidden;
+}
+
+body.profile-dialog-open main,
+body.profile-dialog-open main * {
+    overflow: hidden;
+}

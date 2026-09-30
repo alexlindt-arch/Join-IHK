@@ -12,13 +12,14 @@ const ATTACHMENT_MAX_INPUT_BYTES = 20 * 1024 * 1024;
  * Checks format, file size and file signature of a selected file.
  * @async
  * @param {File} file - Selected file.
- * @returns {Promise<string>} Empty string when the file is valid, otherwise an error message.
+ * @returns {Promise<{title: string, text: string}|null>} Null when the file is valid, otherwise the error.
  */
 async function validateAttachmentFile(file) {
-    if (!isAllowedAttachmentType(file)) return `"${file.name}" is not allowed. Only JPEG and PNG images can be uploaded.`;
-    if (file.size > ATTACHMENT_MAX_INPUT_BYTES) return `"${file.name}" is too large to be processed (max. 20 MB).`;
-    if (!(await hasImageMagicBytes(file))) return `"${file.name}" is not a valid JPEG or PNG image.`;
-    return '';
+    const formatError = { title: 'This file format is not allowed!', text: `You can only upload JPEG and PNG ("${file.name}").` };
+    if (!isAllowedAttachmentType(file)) return formatError;
+    if (!(await hasImageMagicBytes(file))) return formatError;
+    if (file.size > ATTACHMENT_MAX_INPUT_BYTES) return { title: 'This file is too large!', text: `"${file.name}" is larger than 20 MB.` };
+    return null;
 }
 
 
@@ -55,14 +56,15 @@ function exceedsTaskUploadLimit(attachments, newAttachment) {
 
 
 /**
- * Returns the error message shown when an image does not fit into the upload limit.
+ * Returns the error shown when an image does not fit into the upload limit of the database.
  * @param {string} fileName - Name of the rejected file.
  * @param {Array<{size: number}>} attachments - Attachments already added to the task.
- * @returns {string} Error message.
+ * @returns {{title: string, text: string}} Error.
  */
-function getUploadLimitMessage(fileName, attachments) {
+function getUploadLimitError(fileName, attachments) {
     const freeBytes = Math.max(0, ATTACHMENT_MAX_TASK_BYTES - getTotalAttachmentBytes(attachments));
-    return `"${fileName}" was not added: the images of a task may use max. 1 MB in total (${formatFileSize(freeBytes)} left).`;
+    const text = `"${fileName}" was not added: the images of a task may use max. 1 MB (${formatFileSize(freeBytes)} left).`;
+    return { title: 'Upload limit reached!', text };
 }
 
 
