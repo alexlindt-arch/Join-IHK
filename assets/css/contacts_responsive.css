@@ -108,4 +108,42 @@
     .info-value {
         overflow-wrap: anywhere;
     }
+
+    /* Narrow tablets: the list gets a fixed width and the contact is shown in one column,
+       so name, Edit and Delete never run out of the detail area */
+    .contacts-split-left {
+        flex: 0 0 clamp(240px, 32vw, 320px);
+        min-width: 0;
+    }
+
+    .contact-profile {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .profile-meta {
+        max-width: 100%;
+    }
+
+    .profile-actions {
+        flex-wrap: wrap;
+        gap: 8px 16px;
+    }
+
+    .contact-info {
+        min-width: 0;
+    }
+
+    .contact-info .name,
+    .contact-info .email {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 }
