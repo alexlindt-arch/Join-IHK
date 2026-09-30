@@ -6,7 +6,9 @@
  */
 function assignOptionTemplate(contact, isSelected) {
     return `
-        <div class="assign-option ${isSelected ? 'assign-option--active' : ''}" onclick="togglePerson('${contact.id}'); event.stopPropagation();">
+        <div class="assign-option ${isSelected ? 'assign-option--active' : ''}" role="checkbox" tabindex="0"
+            aria-checked="${isSelected}" onclick="togglePerson('${contact.id}'); event.stopPropagation();"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();togglePerson('${contact.id}');}">
             <span class="assign-option-left">
                 <span class="avatar-chip" style="background-color:${contact.color}">${avatarInnerHTML(contact)}</span>
                 <span class="assign-option-name">${escapeHtml(contact.name)}</span>

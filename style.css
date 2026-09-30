@@ -25,6 +25,22 @@ button {
     font-family: inherit;
 }
 
+/* No scrolling in the background while a dialog or the task overlay is open (desktop and mobile) */
+html:has(dialog[open]),
+html:has(#board-overlay:not(.d-none)),
+html:has(dialog[open]) body,
+html:has(#board-overlay:not(.d-none)) body {
+    overflow: hidden;
+    overscroll-behavior: none;
+}
+
+dialog,
+.board-overlay,
+.board-modal,
+.edit-task-form {
+    overscroll-behavior: contain;
+}
+
 input,
 textarea {
     border: unset;

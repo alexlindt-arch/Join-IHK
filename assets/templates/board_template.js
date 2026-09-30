@@ -79,9 +79,9 @@ function taskCardTemplate(task) {
     const progress = buildProgressBar(task.subtasks || [], task.id);
     const avatars = buildAvatars(task.assignedTo || []);
     return `
-        <div class="task-card" data-task-id="${task.id}" draggable="true"
-            ondragstart="startDragging(${task.id})"
-            onclick="openTaskDetail(${task.id})">
+        <article class="task-card" data-task-id="${task.id}" draggable="true" tabindex="0"
+            aria-label="Open task: ${escapeHtml(task.title || '')}" ondragstart="startDragging(${task.id})"
+            onclick="openTaskDetail(${task.id})" onkeydown="handleTaskCardKey(event, ${task.id})">
             <span class="task-card-category ${categoryColorClass(task.category)}">${escapeHtml(task.category || '')}</span>
             <div class="task-card-title">${escapeHtml(task.title || '')}</div>
             ${task.description ? `<div class="task-card-desc">${escapeHtml(truncate(task.description, 60))}</div>` : ''}
@@ -90,7 +90,7 @@ function taskCardTemplate(task) {
                 <div class="task-card-avatars">${avatars}</div>
                 <div class="task-card-prio">${prioSvg(task.priority)}</div>
             </div>
-        </div>`;
+        </article>`;
 }
 
 
@@ -105,8 +105,9 @@ function buildProgressBar(subtasks, taskId) {
     const total = subtasks.length;
     if (total === 0) return '';
     return `
-        <div class="card-progress" data-task-id="${taskId}"
-             onclick="toggleProgressDetails(event, ${taskId})"
+        <div class="card-progress" data-task-id="${taskId}" role="button" tabindex="0"
+             aria-label="${done} of ${total} subtasks done" onclick="toggleProgressDetails(event, ${taskId})"
+             onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleProgressDetails(event, ${taskId});}"
              onmouseenter="showProgressTooltip(event, ${taskId})"
              onmouseleave="hideProgressTooltip()">
             <div class="card-progressbar">

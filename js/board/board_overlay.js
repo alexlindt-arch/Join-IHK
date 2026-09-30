@@ -1,9 +1,40 @@
+/** Element that had the focus before the task overlay opened; it gets the focus back on close. */
+let overlayTrigger = null;
+
+
 /**
  * Shows the board overlay.
  * @returns {void}
  */
 function openOverlay() {
+  if (document.getElementById('board-overlay').classList.contains('d-none')) overlayTrigger = document.activeElement;
   document.getElementById('board-overlay').classList.remove('d-none');
+  document.addEventListener('keydown', closeOverlayOnEscape);
+  document.querySelector('#board-overlay .detail-close-btn')?.focus();
+}
+
+
+/**
+ * Closes the task overlay with the Escape key, unless the image viewer is open on top of it.
+ * @param {KeyboardEvent} event - Keydown event.
+ * @returns {void}
+ */
+function closeOverlayOnEscape(event) {
+  if (event.key !== 'Escape' || document.getElementById('image-viewer')?.open) return;
+  closeOverlay();
+}
+
+
+/**
+ * Opens a task with Enter or Space when its card has the keyboard focus.
+ * @param {KeyboardEvent} event - Keydown event on the card.
+ * @param {number|string} taskId - Task id.
+ * @returns {void}
+ */
+function handleTaskCardKey(event, taskId) {
+  if (event.target !== event.currentTarget || !['Enter', ' '].includes(event.key)) return;
+  event.preventDefault();
+  openTaskDetail(taskId);
 }
 
 
@@ -15,6 +46,9 @@ function closeOverlay() {
   document.getElementById('board-overlay').classList.add('d-none');
   clearOverlayContent();
   document.removeEventListener('click', handleEditAssignOutsideClick, true);
+  document.removeEventListener('keydown', closeOverlayOnEscape);
+  overlayTrigger?.focus();
+  overlayTrigger = null;
 }
 
 
