@@ -147,7 +147,7 @@
         margin-bottom: 0px;
     }
 
-    #reg_name {
+    .input-container:has(#reg_name) {
         margin-bottom: 12px;
     }
 }
@@ -191,12 +191,9 @@
     }
 }
 
-#reg_name {
+/* Space below the name field on the container, so the icon stays centered in the input like all other icons */
+.input-container:has(#reg_name) {
     margin-bottom: 16px;
-}
-
-#reg_name img {
-    margin-top: -6px;
 }
 @media (max-width: 1024px) {
     .login-logo-animated {
@@ -268,7 +265,7 @@
     }
 }
 
-/* Mobile footer: Privacy Policy, Legal notice and Report an issue centered in one row, never broken inside a label */
+/* Mobile footer: "Privacy Policy" and "Legal notice" as plain text links in one row, also at 320px */
 @media (max-width: 768px) {
     .login-footer {
         display: flex;
@@ -278,66 +275,11 @@
     }
 
     .login-footer ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 4px 0;
-        max-width: 100%;
+        gap: 32px;
     }
 
     .login-footer a {
-        display: inline-flex;
-        align-items: center;
-        padding: 8px 4px;
-        border-radius: 999px;
-        color: #6B7280;
         white-space: nowrap;
-        transition: color 100ms, background-color 100ms, box-shadow 100ms;
-    }
-
-    .login-footer a:hover,
-    .login-footer a:focus-visible {
-        background: #FFFFFF;
-        color: var(--secondaryColor);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        outline: none;
-    }
-}
-
-/* Mobile footer: one row when all three links fit, otherwise the three links stay side by side
-   and each label breaks into two lines (Privacy / Policy, Legal / notice, Report an / issue) */
-.login-footer a span {
-    white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-    .login-footer {
-        container-type: inline-size;
-    }
-
-    .login-footer ul {
-        flex-wrap: nowrap;
-        align-items: stretch;
-        gap: 0 8px;
-    }
-
-    .login-footer a {
-        height: 100%;
-        box-sizing: border-box;
-        line-height: 1.25;
-        text-align: center;
-    }
-
-    @container (max-width: 339px) {
-        .login-footer a {
-            flex-direction: column;
-            justify-content: center;
-            padding: 8px 12px;
-            border-radius: 12px;
-        }
-
-        .login-footer a span {
-            display: block;
-        }
     }
 }
 

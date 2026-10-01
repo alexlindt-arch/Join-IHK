@@ -66,12 +66,13 @@ async function login() {
 
 
 /**
- * Tests whether an email matches a basic valid format.
+ * Tests whether an email has a valid format: one @, no double dots, no colons or spaces,
+ * and a domain ending such as .de (same rule as in the contact and account forms).
  * @param {string} email - Email string to validate.
  * @returns {boolean} True if the format is valid.
  */
 function validateEmailFormat(email) {
-    return /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(email);
+    return /^[A-Za-z0-9_%+-]+(\.[A-Za-z0-9_%+-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/.test(email);
 }
 
 
@@ -151,14 +152,16 @@ function setPasswordValidity(pw) {
 
 
 /**
- * Shows or hides the email format hint based on input value and touched state.
+ * Updates the email format hint. While typing the hint is only hidden once the address is valid;
+ * it is shown when the field is left (on blur), like the hints of the other fields.
  * @param {string} email - Current email value.
  * @param {boolean} emailValid - Whether the email passes format validation.
+ * @param {boolean} [isBlur=false] - True when called because the email field was left.
  * @returns {void}
  */
-function setEmailValidity(email, emailValid) {
-    const showError = email && !emailValid && isFieldTouched('reg_email');
-    if (showError) { showHint('email_format_hint'); } else { hideHint('email_format_hint'); }
+function setEmailValidity(email, emailValid, isBlur = false) {
+    if (!email || emailValid) hideHint('email_format_hint');
+    else if (isBlur && isFieldTouched('reg_email')) showHint('email_format_hint');
 }
 
 
@@ -174,14 +177,15 @@ function updateSubmitState(isValid) {
 
 /**
  * Runs all registration field validations and updates the submit button state.
+ * @param {boolean} [isEmailBlur=false] - True when the email field was just left.
  * @returns {void}
  */
-function validateRegistrationForm() {
+function validateRegistrationForm(isEmailBlur = false) {
     const { name, email, pw, pwConfirm, privacy } = getRegValues();
     updatePasswordHint(document.getElementById('pw_match_hint'), pw, pwConfirm);
     const emailValid = validateEmailFormat(email);
     const pwHasSpaces = setPasswordValidity(pw);
-    setEmailValidity(email, emailValid);
+    setEmailValidity(email, emailValid, isEmailBlur);
     const isValid = name && email && emailValid && pw && pw.length >= 8 && pw === pwConfirm && privacy && !pwHasSpaces;
     updateSubmitState(isValid);
 }
