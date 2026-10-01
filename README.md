@@ -40,7 +40,7 @@
 Im Rahmen der IHK-Abschlussprüfung wurde Join um einen vollständigen **Dateiupload für Bilder** erweitert – vom Filepicker über Validierung, Kompression und Base64-Speicherung bis zum Bildbetrachter. Umgesetzt nach dem Figma-Design *„Join Version IHK“*.
 
 > **Selbst ausprobieren:** [Live-Demo öffnen](https://alexander-lindt.developerakademie.net/Join-IHK/) → **Guest Log in**.
-> Gäste können alles nutzen; nach 15 Minuten, beim Logout oder beim Schließen der Seite wird alles zurückgesetzt.
+> Gäste können alles nutzen; alle Änderungen bleiben gespeichert. Normale Konten (Sign up) funktionieren genauso.
 
 ---
 
@@ -63,8 +63,8 @@ Im Rahmen der IHK-Abschlussprüfung wurde Join um einen vollständigen **Dateiup
 |---|---|
 | **Hochladen** | Filepicker in *Add Task*, im Add-Task-Dialog des Boards und im Bearbeiten-Dialog – per Klick, Tastatur oder Drag & Drop, mehrere Dateien auf einmal |
 | **Formate** | Nur **JPEG und PNG** – geprüft über `accept`, MIME-Typ, Dateiendung **und Dateisignatur (Magic Bytes)**; eine umbenannte `.txt` wird erkannt |
-| **Upload-Limit** | Max. **1 MB Bilder pro Task** (Firebase-Limit); Warnung mit Balken, wie viel Platz schon belegt ist |
-| **Kompression** | Automatisch auf max. **800 × 800 px** (Canvas); JPEG mit Qualität 0.8, PNG verlustfrei für Transparenz |
+| **Upload-Limit** | Jede Datei wird **vor** der Kompression geprüft: max. **5 MB pro Bild**. Danach max. **1 MB Bilder pro Task** (Firebase-Limit); Warnung mit Balken, wie viel Platz schon belegt ist |
+| **Kompression** | Automatisch auf max. **800 × 800 px** (Canvas); JPEG mit Qualität 0.8, PNG verlustfrei für Transparenz. Ist ein Bild danach noch über 250 KB, wird es schrittweise weiter verkleinert, damit mehrere Bilder in einen Task passen |
 | **Speicherung** | Als Array im Task: `attachments: [{ name, type, size, base64 }]` |
 | **Vorschau** | Vorschaubilder in *Add Task*, im Bearbeiten-Dialog und in der Task-Detailansicht |
 | **Bildbetrachter** | Blättern (Pfeile & Pfeiltasten), Zoom, Download, Anzeige von **Name, Typ und Größe** |
@@ -78,7 +78,9 @@ Im Rahmen der IHK-Abschlussprüfung wurde Join um einen vollständigen **Dateiup
 flowchart LR
     A[Datei wählen<br/>oder ablegen] --> B{Format prüfen<br/>MIME · Endung · Magic Bytes}
     B -- ungültig --> E[Hinweis:<br/>nur JPEG/PNG]
-    B -- gültig --> C[Canvas-Kompression<br/>max. 800 px]
+    B -- gültig --> S{Datei ≤ 5 MB?}
+    S -- nein --> T[Hinweis:<br/>Datei zu groß]
+    S -- ja --> C[Canvas-Kompression<br/>max. 800 px]
     C --> D{Summe ≤ 1 MB?}
     D -- nein --> F[Hinweis mit<br/>Speicher-Balken]
     D -- ja --> G[Base64 + Metadaten<br/>ins Attachments-Array]
@@ -130,7 +132,7 @@ Der Code des Features liegt gebündelt in [`js/attachments/`](js/attachments/):
 - **Task-Detail & Bearbeiten** im zweispaltigen Layout – alle Felder inklusive Kategorie und Anhängen änderbar
 - **Kontakte** alphabetisch gruppiert, mit Profilfoto, Validierung und Bearbeiten/Löschen
 - **Account-Dialog** („My account“ / „Edit account“) mit Profilfoto und *Delete my account* inklusive Sicherheitsabfrage
-- **Gastmodus:** Jeder Gast bekommt eine eigene 15-Minuten-Sitzung und ein eigenes Konto. Vor jeder Änderung wird das Original gesichert – nach Ablauf, beim Logout oder beim Schließen der Seite wird alles wiederhergestellt, Daten registrierter Nutzer bleiben unberührt
+- **Gastmodus:** Jeder Gast bekommt ein eigenes Konto. Optional (Schalter `GUEST_RESET_ENABLED` in `js/guest_session.js`, für die Abgabe aus) werden alle Gast-Änderungen nach 60 Minuten, beim Logout oder beim Schließen der Seite zurückgesetzt
 - **Kein Scrollen im Hintergrund**, solange ein Dialog geöffnet ist (Desktop und Mobil)
 
 ---
@@ -188,7 +190,7 @@ Join-IHK/
 │   ├── profile/                   Account-Dialog, Gast-Konto
 │   ├── login/                     Login, Registrierung, Passwort-Reset
 │   ├── summary/                   Kennzahlen
-│   ├── guest_session.js           15-Minuten-Gastsitzungen mit Rücksetzung
+│   ├── guest_session.js           Gastsitzungen, optionale Rücksetzung
 │   └── config.js                  Datenbank- und EmailJS-Konfiguration
 ├── assets/
 │   ├── css/  templates/  icons/  img/  fonts/

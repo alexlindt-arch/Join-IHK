@@ -6,12 +6,13 @@ const GUEST_NOTICE_MS = 7000;
 
 
 /**
- * Shows the guest notice once right after the guest login.
+ * Shows the guest notice once right after the guest login (only while guest data is reset automatically).
  * @returns {void}
  */
 function initGuestNotice() {
     if (!sessionStorage.getItem(GUEST_NOTICE_KEY)) return;
     sessionStorage.removeItem(GUEST_NOTICE_KEY);
+    if (!GUEST_RESET_ENABLED) return;
     document.body.insertAdjacentHTML('beforeend', guestNoticeTemplate());
     setTimeout(hideGuestNotice, GUEST_NOTICE_MS);
 }
@@ -27,7 +28,7 @@ function guestNoticeTemplate() {
             <span class="guest-notice-icon" aria-hidden="true">i</span>
             <p class="guest-notice-text">
                 <strong>You are using a guest account</strong>
-                All your data will be deleted after 15 minutes, when you log out or when you close the page.
+                All your data will be deleted after ${GUEST_SESSION_MINUTES} minutes, when you log out or when you close the page.
             </p>
             <button type="button" class="guest-notice-close" aria-label="Close notice" onclick="hideGuestNotice()">&#10005;</button>
         </div>`;

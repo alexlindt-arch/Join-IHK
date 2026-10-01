@@ -3,7 +3,7 @@ const USERS_URL = `${FIREBASE_BASE}/users.json`;
 
 
 /**
- * Logs in as a guest with a new 15-minute guest session and redirects to the summary page.
+ * Logs in as a guest with a new guest session (own guest account) and redirects to the summary page.
  * @async
  * @returns {Promise<void>}
  */

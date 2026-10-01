@@ -1,13 +1,20 @@
 /**
- * Guest sessions: every guest login gets its own session that ends after GUEST_SESSION_MINUTES.
+ * Guest sessions: every guest login gets its own session (own account data). With GUEST_RESET_ENABLED
+ * the session ends after GUEST_SESSION_MINUTES.
  * Before a guest changes or deletes a task or contact, its original is saved in the session;
  * new tasks and contacts are marked as created. When the session ends, created entries are deleted,
  * originals are restored and the guest account is removed, so the data of real users stays as it was.
  * Needs js/config.js (JOIN_DB_URL) and script.js (getCurrentUser).
  */
 
-/** Minutes a guest may work before all guest changes are reset. */
-const GUEST_SESSION_MINUTES = 15;
+/**
+ * Switches the automatic reset of guest data on or off. Off for the exam submission,
+ * so testers keep their tasks, contacts and attachments; can be switched on again later.
+ */
+const GUEST_RESET_ENABLED = false;
+
+/** Minutes a guest may work before all guest changes are reset (only when GUEST_RESET_ENABLED). */
+const GUEST_SESSION_MINUTES = 60;
 
 /** Database path of all guest sessions (account, created entries, originals). */
 const GUEST_SESSIONS_URL = `${JOIN_DB_URL}/guestSessions`;
@@ -27,12 +34,13 @@ const GUEST_CHECK_INTERVAL_MS = 30 * 1000;
 
 /**
  * Creates a new guest session and returns the user object for the browser session.
+ * Without automatic reset the session never expires (expiresAt 0).
  * @async
  * @returns {Promise<Object>} Guest user with session id and expiry time.
  */
 async function startGuestSession() {
     const sessionId = crypto.randomUUID().replace(/-/g, '');
-    const expiresAt = Date.now() + GUEST_SESSION_MINUTES * 60 * 1000;
+    const expiresAt = GUEST_RESET_ENABLED ? Date.now() + GUEST_SESSION_MINUTES * 60 * 1000 : 0;
     const account = { name: 'Guest', email: '', phone: '', photo: '' };
     await sendGuestRequest(`${GUEST_SESSIONS_URL}/${sessionId}.json`, 'PUT', { expiresAt, account });
     await sendGuestRequest(`${GUEST_STATUS_URL}/${sessionId}.json`, 'PUT', { expiresAt, lastSeen: Date.now(), closingAt: 0 });
@@ -59,7 +67,7 @@ function getGuestSessionId() {
  */
 async function recordGuestCreate(collection, id) {
     const sessionId = getGuestSessionId();
-    if (!sessionId) return;
+    if (!sessionId || !GUEST_RESET_ENABLED) return;
     await sendGuestRequest(`${GUEST_SESSIONS_URL}/${sessionId}/created/${collection}/${id}.json`, 'PUT', true);
 }
 
@@ -74,7 +82,7 @@ async function recordGuestCreate(collection, id) {
  */
 async function recordGuestChange(collection, id) {
     const sessionId = getGuestSessionId();
-    if (!sessionId) return;
+    if (!sessionId || !GUEST_RESET_ENABLED) return;
     const sessionUrl = `${GUEST_SESSIONS_URL}/${sessionId}`;
     if (await isTrackedByGuest(sessionUrl, collection, id)) return;
     const original = await getGuestJson(`${JOIN_DB_URL}/${collection}/${id}.json`);
@@ -100,7 +108,7 @@ async function isTrackedByGuest(sessionUrl, collection, id) {
 
 
 /**
- * Resets every guest session that has ended: 15 minutes over, page closed or no sign of life.
+ * Resets every guest session that has ended: time over, page closed or no sign of life.
  * @async
  * @returns {Promise<void>}
  */
@@ -215,7 +223,7 @@ function watchGuestSession() {
  */
 async function resetOwnGuestSession() {
     const sessionId = getGuestSessionId();
-    if (!sessionId) return;
+    if (!sessionId || !GUEST_RESET_ENABLED) return;
     const session = await getGuestJson(`${GUEST_SESSIONS_URL}/${sessionId}.json`);
     await resetGuestSession(sessionId, session || {});
 }
@@ -312,9 +320,11 @@ function trackGuestPresence() {
 
 /**
  * On every page: resets ended guest sessions now and every 30 seconds, and watches the own guest session.
+ * Does nothing while the automatic reset is switched off.
  * @returns {void}
  */
 function initGuestSessions() {
+    if (!GUEST_RESET_ENABLED) return;
     trackGuestPresence();
     watchGuestSession();
     cleanupExpiredGuestSessions();
