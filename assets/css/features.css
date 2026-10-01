@@ -307,11 +307,45 @@
     }
 
     #board-detail-box .detail-label {
-        font-family: 'Open Sans', 'Inter', sans-serif;
         font-size: 16px;
+    }
+
+    /* "Subtasks" heading: Open Sans bold (Figma task view mobile) */
+    #board-detail-box .detail-label--subtasks {
+        font-family: 'Open Sans', 'Inter', sans-serif;
         font-weight: 700;
     }
 
+    #board-detail-box .detail-attachments .detail-label {
+        color: #2A3647;
+    }
+
+    /* Assigned To: label and avatars in one row, the name is the tooltip of the avatar */
+    #board-detail-box .detail-assign-section {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #board-detail-box .detail-assignees {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    #board-detail-box .detail-assignee {
+        padding: 0;
+    }
+
+    #board-detail-box .detail-assignee .detail-assignee-name {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
 }
 
 /* ---------- Board layout ---------- */

@@ -166,7 +166,7 @@ function buildDetailAssignees(assignedTo) {
 function detailAssigneeTemplate(assignee) {
     return `
         <div class="detail-assignee">
-            <span class="card-avatar" style="background:${assignee.color || '#ccc'}">${avatarInnerHTML(withContactPhoto(assignee))}</span>
+            <span class="card-avatar" style="background:${assignee.color || '#ccc'}" title="${escapeHtml(assignee.name || '')}">${avatarInnerHTML(withContactPhoto(assignee))}</span>
             ${fitNameHTML('detail-assignee-name', assignee.name || '')}
         </div>`;
 }
@@ -271,7 +271,7 @@ function buildDetailInfo(task, prioLabel) {
 function buildDetailAssignSection(task, assignees) {
     if (!(task.assignedTo || []).length) return '';
     return `
-        <div class="detail-section">
+        <div class="detail-section detail-assign-section">
             <span class="detail-label">Assigned To:</span>
             <div class="detail-assignees">${assignees}</div>
         </div>`;
@@ -288,7 +288,7 @@ function buildDetailSubtaskSection(task, subtaskList) {
     if (!(task.subtasks || []).length) return '';
     return `
         <div class="detail-section">
-            <span class="detail-label">Subtasks</span>
+            <span class="detail-label detail-label--subtasks">Subtasks</span>
             <ul class="detail-subtask-list">${subtaskList}</ul>
         </div>`;
 }
