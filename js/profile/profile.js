@@ -220,6 +220,7 @@ function removeProfilePhoto() {
  * @returns {void}
  */
 function handleProfileInput(key) {
+    if (key === 'phone') allowOnlyPhoneCharacters(document.getElementById('profile-phone'));
     setProfileFieldError(key, '');
     if (key === 'name') renderProfileAvatar();
 }

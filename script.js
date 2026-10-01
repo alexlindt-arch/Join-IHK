@@ -227,3 +227,15 @@ function getDueDateError(dueDate) {
     if (!dueDate) return 'This field is required';
     return isPastDueDate(dueDate) ? 'The due date must not be in the past' : '';
 }
+
+/**
+ * Phone fields: removes every character except digits and a leading "+" while typing,
+ * so letters can not be entered at all.
+ * @param {HTMLInputElement|null} input - The phone input.
+ * @returns {void}
+ */
+function allowOnlyPhoneCharacters(input) {
+    if (!input) return;
+    const cleaned = input.value.replace(/[^0-9+]/g, '').replace(/(?!^)\+/g, '');
+    if (cleaned !== input.value) input.value = cleaned;
+}

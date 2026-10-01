@@ -9,7 +9,7 @@
 /** Validation rules of the account form: rule, text when invalid, and whether the field is required. */
 const PROFILE_RULES = {
     name: { rule: /^[\p{L}'-]+(\s+[\p{L}'-]+)+$/u, required: true, text: 'Please enter first and last name (letters only).' },
-    email: { rule: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, required: true, text: 'Please enter a valid email address.' },
+    email: { rule: /^[A-Za-z0-9_%+-]+(\.[A-Za-z0-9_%+-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/, required: true, text: 'Please enter a valid email address.' },
     phone: { rule: /^\+?[0-9]+$/, required: false, text: 'Only numbers are allowed (optionally starting with +).' }
 };
 

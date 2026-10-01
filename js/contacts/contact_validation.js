@@ -1,7 +1,7 @@
 /**
  * Validation rules for the contact form. Every field is required.
  * name: at least first and last name, letters only (no digits).
- * email: a valid email address.
+ * email: a valid email address (no double @, no double dots, no colons or spaces).
  * phone: digits only, optionally starting with "+".
  * @type {Object<string, {id: string, errorId: string, rule: RegExp, invalidText: string}>}
  */
@@ -11,7 +11,7 @@ const CONTACT_VALIDATION = {
         invalidText: 'Please enter first and last name (letters only, no numbers).'
     },
     email: {
-        id: 'modal-email', errorId: 'email-error', rule: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        id: 'modal-email', errorId: 'email-error', rule: /^[A-Za-z0-9_%+-]+(\.[A-Za-z0-9_%+-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}$/,
         invalidText: 'Please enter a valid email address.'
     },
     phone: {
@@ -76,16 +76,6 @@ function showFieldError(input, errorBox, errorText) {
 function validateContactForm() {
     const results = Object.keys(CONTACT_VALIDATION).map(validateField);
     return results.every(Boolean);
-}
-
-
-/**
- * Removes every character except digits and a leading "+" while typing.
- * @param {HTMLInputElement} input - The phone input.
- * @returns {void}
- */
-function allowOnlyNumbers(input) {
-    input.value = input.value.replace(/[^0-9+]/g, '').replace(/(?!^)\+/g, '');
 }
 
 
