@@ -120,9 +120,10 @@ function renderDialogContact(title, buttonHtml, showTagline) {
                 <button type="button" class="close-dialog dp-hidden-mobile" onclick="closeDialog()" aria-label="Close">×</button>
 
                 <div class="avatar-upload">
-                    <button type="button" class="profile-placeholder" title="Upload photo (JPEG or PNG)"
+                    <div class="profile-placeholder"></div>
+                    <button type="button" class="avatar-upload-hint" title="Upload photo (JPEG or PNG)"
                         aria-label="Upload photo (JPEG or PNG)" onclick="document.getElementById('modal-photo').click()">
-                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                        ${CAMERA_ICON_SVG}
                     </button>
                     <input type="file" id="modal-photo" accept="image/jpeg,image/png" hidden
                         onchange="handleContactPhotoSelect(this)">
@@ -133,21 +134,21 @@ function renderDialogContact(title, buttonHtml, showTagline) {
                 <div class="input-group">
                     <input type="text" id="modal-name" name="name" placeholder="Name" aria-label="Name"
                         aria-describedby="name-error" onblur="validateField('name')" autocomplete="off">
-                    <i class="fa-solid fa-user"></i>
+                    <img class="input-icon" src="../assets/icons/person.svg" alt="" aria-hidden="true">
                 </div>
                 <div id="name-error" class="error-message" aria-live="polite">Please enter first and last name (letters only, no numbers).</div>
 
                 <div class="input-group">
                     <input type="email" id="modal-email" name="email" placeholder="Email" aria-label="Email"
                         aria-describedby="email-error" onblur="validateField('email')" autocomplete="off">
-                    <i class="fa-solid fa-envelope"></i>
+                    <img class="input-icon" src="../assets/icons/mail.svg" alt="" aria-hidden="true">
                 </div>
                 <div id="email-error" class="error-message" aria-live="polite">Please enter a valid email address.</div>
 
                 <div class="input-group">
                     <input type="tel" id="modal-phone" name="phone" placeholder="Phone" aria-label="Phone"
-                        aria-describedby="phone-error" oninput="allowOnlyNumbers(this)" onblur="validateField('phone')" autocomplete="off">
-                    <i class="fa-solid fa-phone"></i>
+                        aria-describedby="phone-error" oninput="allowOnlyPhoneCharacters(this)" onblur="validateField('phone')" autocomplete="off">
+                    <img class="input-icon" src="../assets/icons/call.svg" alt="" aria-hidden="true">
                 </div>
                 <div id="phone-error" class="error-message" aria-live="polite">Only numbers are allowed (optionally starting with +).</div>
 
@@ -165,9 +166,8 @@ function renderDialogContact(title, buttonHtml, showTagline) {
  * @returns {string} The HTML string template for the "Delete" and "Save" buttons.
  */
 function renderDialogContactEditButton(contact) {
-    return `<button type="button" class="btn-cancel" onclick="deleteContact('${imgEscape(contact.id)}')"> Delete <i
-                class="fa-solid fa-xmark"></i></button>
-            <button type="submit" class="btn-submit"> Save <i class="fa-solid fa-check"></i></button>`;
+    return `<button type="button" class="btn-cancel" onclick="deleteContact('${imgEscape(contact.id)}')">Delete</button>
+            <button type="submit" class="btn-submit">Save <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
 }
 
 
@@ -176,7 +176,6 @@ function renderDialogContactEditButton(contact) {
  * @returns {string} The HTML string template for the "Cancel" and "Create contact" buttons.
  */
 function renderDialogCreateContactButton() {
-    return `<button type="button" class="btn-cancel btn-mobile-hide" onclick="closeDialog()"> Cancel <i
-                class="fa-solid fa-xmark"></i></button>
-            <button type="submit" class="btn-submit"> Create contact <i class="fa-solid fa-check"></i></button>`;
+    return `<button type="button" class="btn-cancel btn-mobile-hide" onclick="closeDialog()">Cancel <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+            <button type="submit" class="btn-submit">Create contact <svg class="btn-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12.5L10 17.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
 }
