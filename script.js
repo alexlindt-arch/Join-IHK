@@ -205,12 +205,24 @@ function toEntryList(data) {
 
 
 /**
- * Tells whether a due date in the format dd.mm.yyyy lies before today.
+ * Returns a due date in the display format of the design, dd/mm/yyyy.
+ * Older tasks were saved as dd.mm.yyyy and are converted; other values stay unchanged.
+ * @param {string} dueDate - Stored due date.
+ * @returns {string} Date as dd/mm/yyyy.
+ */
+function toDisplayDate(dueDate) {
+    const match = /^(\d{2})[./](\d{2})[./](\d{4})$/.exec(dueDate || '');
+    return match ? `${match[1]}/${match[2]}/${match[3]}` : (dueDate || '');
+}
+
+
+/**
+ * Tells whether a due date in the format dd/mm/yyyy (or the older dd.mm.yyyy) lies before today.
  * @param {string} dueDate - Date as shown in the date inputs.
  * @returns {boolean} True for dates in the past.
  */
 function isPastDueDate(dueDate) {
-    const [day, month, year] = (dueDate || '').split('.').map(Number);
+    const [day, month, year] = (dueDate || '').split(/[./]/).map(Number);
     if (!day || !month || !year) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);

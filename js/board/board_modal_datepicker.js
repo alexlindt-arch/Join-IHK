@@ -15,7 +15,7 @@ function initModalDatepicker() {
  */
 function getModalDatepickerOptions() {
     return {
-        dateFormat: 'd.m.Y',
+        dateFormat: 'd/m/Y',
         minDate: 'today',
         allowInput: false,
         disableMobile: true,

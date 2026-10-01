@@ -8,7 +8,7 @@ const mo = new MutationObserver(onMutation);
 function buildFlatpickrOptions() {
   return {
     allowInput: true,
-    dateFormat: 'd.m.Y',
+    dateFormat: 'd/m/Y',
     minDate: 'today',
     clickOpens: true,
     disableMobile: true  // prevents native mobile date picker overlay

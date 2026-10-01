@@ -32,7 +32,7 @@ async function initTaskPage() {
  */
 function initDatePicker() {
     flatpickr('#task-due', {
-        dateFormat: 'd.m.Y',
+        dateFormat: 'd/m/Y',
         minDate: 'today',
         allowInput: false,
         disableMobile: true,

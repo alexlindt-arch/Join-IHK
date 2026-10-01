@@ -45,8 +45,8 @@ function buildEditBasicFields(task) {
         <div class="form-group">
             <label class="form-label" for="edit-due">Due date <span class="required">*</span></label>
             <div class="form-input-icon">
-                <input class="form-input date-picker flatpickr-edit" type="text" id="edit-due" placeholder="dd.mm.yyyy"
-                    value="${escapeHtml(task.dueDate || '')}" readonly>
+                <input class="form-input date-picker flatpickr-edit" type="text" id="edit-due" placeholder="dd/mm/yyyy"
+                    value="${escapeHtml(toDisplayDate(task.dueDate))}" readonly>
                 <img class="input-icon" src="../assets/icons/event.svg" alt="">
             </div>
             <span class="field-error d-none" id="edit-error-due">This field is required</span>

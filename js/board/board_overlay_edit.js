@@ -284,7 +284,7 @@ async function saveEditedTask(id) {
  */
 function isEditFormValid(title, task) {
   const dueDate = document.getElementById('edit-due').value;
-  const dueDateError = dueDate === task.dueDate ? '' : getDueDateError(dueDate);
+  const dueDateError = dueDate === toDisplayDate(task.dueDate) ? '' : getDueDateError(dueDate);
   const dueErrorElement = document.getElementById('edit-error-due');
   dueErrorElement.textContent = dueDateError || 'This field is required';
   dueErrorElement.classList.toggle('d-none', !dueDateError);
