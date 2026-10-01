@@ -121,50 +121,72 @@
     min-width: 0;
 }
 
+/* Card01: 112 x 83, the 1px frame is drawn on top like the inside stroke in Figma */
 .attachment-card {
+    position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
     gap: 4px;
     width: 112px;
     height: 83px;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden;
-    border: 1px solid #686868;
+    border: none;
     border-radius: 10px;
     background: #FFFFFF;
     font-family: 'Inter', sans-serif;
     text-align: left;
     cursor: zoom-in;
+}
+
+.attachment-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid #686868;
+    border-radius: 10px;
+    pointer-events: none;
     transition: border-color 100ms;
 }
 
+.attachment-card:hover::after,
+.attachment-card:focus-visible::after {
+    border-color: var(--secondaryColor);
+}
+
+.attachment-card:focus-visible {
+    outline: none;
+}
+
+/* Frame 261: image 112 x 56 */
 .attachment-card-image {
-    flex-shrink: 0;
-    width: 100%;
+    flex: none;
+    align-self: stretch;
+    width: 112px;
     height: 56px;
-    border-radius: 9px 9px 0 0;
+    border-radius: 10px 10px 0 0;
     object-fit: cover;
     transition: filter 100ms;
 }
 
+/* Frame 263: file name row 112 x 23 */
 .attachment-name {
+    flex: none;
+    align-self: stretch;
     display: block;
-    width: 100%;
-    padding: 0 4px 4px;
+    height: 23px;
+    padding: 0 0 4px 4px;
     box-sizing: border-box;
     overflow: hidden;
     color: #686868;
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
+    font-weight: 400;
     line-height: 120%;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.attachment-card:hover,
-.attachment-card:focus-visible {
-    border-color: var(--secondaryColor);
-    outline: none;
 }
 
 .attachment-item:hover .attachment-card-image,
@@ -172,29 +194,24 @@
     filter: brightness(0.6);
 }
 
-/* Delete (add task / edit) or download (task detail) icon in the middle of the image */
+/* Subtasks icons11: 24 x 24 in the middle of the image, hidden until hover
+   (white delete icon in add task / edit, white cloud download icon in the task detail) */
 .attachment-thumb-action {
     position: absolute;
-    top: 12px;
-    left: 40px;
+    top: calc(28px - 24px / 2);
+    left: calc(50% - 24px / 2);
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     padding: 0;
-    border: unset;
-    border-radius: 50%;
+    border: none;
     background: transparent;
     color: #FFFFFF;
     cursor: pointer;
     opacity: 0;
-    transition: opacity 100ms, background-color 100ms;
-}
-
-.attachment-thumb-action svg {
-    width: 24px;
-    height: 24px;
+    transition: opacity 100ms, transform 100ms;
 }
 
 .attachment-item:hover .attachment-thumb-action,
@@ -204,14 +221,15 @@
 
 .attachment-thumb-action:hover,
 .attachment-thumb-action:focus-visible {
-    background: rgba(42, 54, 71, 0.6);
+    outline: none;
+    transform: scale(1.15);
 }
 
-/* Touch screens have no hover: image dimmed and icon always visible */
+/* Touch screens have no hover: icon always visible, with a soft shadow so it stays readable on light images */
 @media (hover: none) {
     .attachment-thumb-action {
         opacity: 1;
-        background: rgba(42, 54, 71, 0.6);
+        filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8));
     }
 }
 
