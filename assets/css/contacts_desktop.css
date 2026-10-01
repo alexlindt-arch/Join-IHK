@@ -17,13 +17,21 @@
         box-shadow: 4px 0 6px rgba(0, 0, 0, 0.08);
     }
 
+    /* The side padding sits on the children, so the white sticky "Add new contact" area spans the
+       whole list width (a narrower sticky area showed thin grey seams at its edges) */
     .contacts-list {
         height: 100%;
-        padding: 0 clamp(16px, calc((100% - 352px) / 2), 52px) 32px;
+        padding: 0 0 32px;
         overflow-y: auto;
         box-sizing: border-box;
         scrollbar-width: thin;
         scrollbar-color: #686868 transparent;
+    }
+
+    .contacts-list > * {
+        padding-right: clamp(16px, calc((100% - 352px) / 2), 52px);
+        padding-left: clamp(16px, calc((100% - 352px) / 2), 52px);
+        box-sizing: border-box;
     }
 
     .btn-add-contact {
@@ -31,7 +39,8 @@
         top: 0;
         z-index: 2;
         margin: 0;
-        padding: 23px 0 22px;
+        padding-top: 23px;
+        padding-bottom: 22px;
         background: #FFFFFF;
     }
 

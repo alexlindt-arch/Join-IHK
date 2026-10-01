@@ -367,3 +367,34 @@
         Display: none;
     }
 }
+
+/* Contact view on phones (Figma "Contact view Anton mobile"): blue line 90 x 3 below the subtitle,
+   80px avatar and the name in 36px bold next to it */
+@media (max-width: 768px) {
+    .brand-title {
+        font-size: 47px;
+    }
+
+    .brand-subtitle {
+        font-size: 20px;
+    }
+
+    .brand-divider {
+        width: 90px;
+        height: 3px;
+        border-radius: 2px;
+        background: #29ABE2;
+    }
+
+    .contact-profile .profile-avatar {
+        width: 80px;
+        height: 80px;
+        font-size: 27px;
+    }
+
+    .contact-profile .profile-name {
+        font-size: 36px;
+        font-weight: 700;
+        line-height: 120%;
+    }
+}
