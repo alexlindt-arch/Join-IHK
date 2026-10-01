@@ -13,14 +13,14 @@ function escapeHtml(str) {
 
 /**
  * Converts various date formats to ISO 8601 (YYYY-MM-DD).
- * @param {string} value - Date string in ISO, European (dd.mm.yyyy), or parseable format.
+ * @param {string} value - Date string in ISO, dd/mm/yyyy, dd.mm.yyyy, or parseable format.
  * @returns {string} ISO date string or empty string if conversion fails.
  */
 function toIsoDate(value) {
     if (!value) return '';
     if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-    if (/^\d{2}\.\d{2}\.\d{4}$/.test(value)) {
-        const parts = value.split('.');
+    if (/^\d{2}[./]\d{2}[./]\d{4}$/.test(value)) {
+        const parts = value.split(/[./]/);
         return `${parts[2]}-${parts[1]}-${parts[0]}`;
     }
     const d = new Date(value);
@@ -113,7 +113,7 @@ function buildProgressBar(subtasks, taskId) {
             <div class="card-progressbar">
                 <div class="card-progressbar-fill" style="width:${Math.round(100 / total * done)}%"></div>
             </div>
-            <span class="card-progress-label" title="${done} of ${total} subtasks done">${done}/${total}</span>
+            <span class="card-progress-label" title="${done} of ${total} subtasks done">${done}/${total} Subtasks</span>
         </div>`;
 }
 
@@ -253,7 +253,7 @@ function buildDetailInfo(task, prioLabel) {
     return `
         <div class="detail-row">
             <span class="detail-label">Due date:</span>
-            <span>${task.dueDate || '–'}</span>
+            <span>${escapeHtml(toDisplayDate(task.dueDate)) || '–'}</span>
         </div>
         <div class="detail-row">
             <span class="detail-label">Priority:</span>

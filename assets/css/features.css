@@ -425,3 +425,49 @@
 .detail-assignee .detail-assignee-name {
     flex: 0 1 auto;
 }
+
+/* ---------- Board header on phones (Figma "Board mobile"): "+" next to the title, search below in full width ---------- */
+@media (max-width: 768px) {
+    .board-main .board-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .board-main .board-controls {
+        display: contents;
+    }
+
+    .board-main .board-header .page-title {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .board-main .btn-add-task {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border-radius: 10px;
+    }
+
+    .board-main .search-wrapper {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Cards of a column stay swipeable, but without a visible scrollbar (as in the design) */
+    .board-columns .board-cards {
+        scrollbar-width: none;
+    }
+
+    .board-columns .board-cards::-webkit-scrollbar {
+        display: none;
+    }
+}
