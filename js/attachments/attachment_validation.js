@@ -4,8 +4,8 @@ const ATTACHMENT_ALLOWED_TYPES = ['image/jpeg', 'image/png'];
 /** Upload limit of the database for all images of one task (1 MB). */
 const ATTACHMENT_MAX_TASK_BYTES = 1024 * 1024;
 
-/** Largest file that is read at all before compressing (protects the browser from huge files). */
-const ATTACHMENT_MAX_INPUT_BYTES = 20 * 1024 * 1024;
+/** Largest original file that is accepted, checked before compressing (5 MB). */
+const ATTACHMENT_MAX_FILE_BYTES = 5 * 1024 * 1024;
 
 
 /**
@@ -18,8 +18,19 @@ async function validateAttachmentFile(file) {
     const formatError = { title: 'This file format is not allowed!', text: `You can only upload JPEG and PNG. "${file.name}" was not added.` };
     if (!isAllowedAttachmentType(file)) return formatError;
     if (!(await hasImageMagicBytes(file))) return formatError;
-    if (file.size > ATTACHMENT_MAX_INPUT_BYTES) return { title: 'This file is too large!', text: `"${file.name}" is larger than 20 MB.` };
+    if (file.size > ATTACHMENT_MAX_FILE_BYTES) return getFileTooLargeError(file);
     return null;
+}
+
+
+/**
+ * Returns the error for a file that is larger than the allowed size before compressing.
+ * @param {File} file - Rejected file.
+ * @returns {{title: string, text: string}} Error.
+ */
+function getFileTooLargeError(file) {
+    const text = `"${file.name}" has ${formatFileSize(file.size)}. Each image may have max. ${formatFileSize(ATTACHMENT_MAX_FILE_BYTES)}.`;
+    return { title: 'This file is too large!', text };
 }
 
 
@@ -76,7 +87,7 @@ function getUploadLimitError(fileName, attachments) {
 function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    return `${parseFloat((bytes / (1024 * 1024)).toFixed(1))} MB`;
 }
 
 

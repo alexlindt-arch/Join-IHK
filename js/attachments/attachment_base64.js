@@ -4,6 +4,12 @@ const ATTACHMENT_MAX_DIMENSION = 800;
 /** JPEG quality used when an image is compressed. */
 const ATTACHMENT_JPEG_QUALITY = 0.8;
 
+/** Size one compressed image should stay below, so several images fit into the 1 MB of a task. */
+const ATTACHMENT_TARGET_BYTES = 250 * 1024;
+
+/** Smallest width and height an image is scaled down to while it is still too large. */
+const ATTACHMENT_MIN_DIMENSION = 320;
+
 
 /**
  * Converts an image file into an attachment object with compressed base64 data and metadata.
@@ -13,9 +19,29 @@ const ATTACHMENT_JPEG_QUALITY = 0.8;
  */
 async function createAttachmentFromFile(file) {
     const image = await loadImageElement(file);
-    const canvas = drawScaledImage(image, ATTACHMENT_MAX_DIMENSION);
-    const base64 = canvasToBase64(canvas, file.type);
+    const base64 = compressAttachmentImage(image, file.type);
+    if (!getSafeImageSource(base64)) throw new Error(`${file.name} could not be encoded`);
     return { name: file.name, type: file.type, size: getBase64ByteSize(base64), base64 };
+}
+
+
+/**
+ * Scales an image down to max. 800 px and keeps compressing it (smaller size, lower JPEG quality)
+ * until it stays below ATTACHMENT_TARGET_BYTES or the minimum size is reached.
+ * @param {HTMLImageElement} image - Loaded image.
+ * @param {string} mimeType - 'image/jpeg' or 'image/png'.
+ * @returns {string} Base64 data URL of the compressed image.
+ */
+function compressAttachmentImage(image, mimeType) {
+    let maxDimension = ATTACHMENT_MAX_DIMENSION;
+    let quality = ATTACHMENT_JPEG_QUALITY;
+    let base64 = canvasToBase64(drawScaledImage(image, maxDimension), mimeType, quality);
+    while (getBase64ByteSize(base64) > ATTACHMENT_TARGET_BYTES && maxDimension > ATTACHMENT_MIN_DIMENSION) {
+        maxDimension = Math.max(ATTACHMENT_MIN_DIMENSION, Math.round(maxDimension * 0.8));
+        quality = Math.max(0.5, quality - 0.1);
+        base64 = canvasToBase64(drawScaledImage(image, maxDimension), mimeType, quality);
+    }
+    return base64;
 }
 
 
@@ -70,14 +96,15 @@ function drawScaledImage(image, maxDimension) {
 
 /**
  * Encodes a canvas as base64 data URL in the original image format.
- * JPEG is compressed with ATTACHMENT_JPEG_QUALITY, PNG stays lossless to keep transparency.
+ * JPEG is compressed with the given quality, PNG stays lossless to keep transparency.
  * @param {HTMLCanvasElement} canvas - Canvas to encode.
  * @param {string} mimeType - 'image/jpeg' or 'image/png'.
+ * @param {number} [quality=ATTACHMENT_JPEG_QUALITY] - JPEG quality between 0 and 1.
  * @returns {string} Base64 data URL.
  */
-function canvasToBase64(canvas, mimeType) {
+function canvasToBase64(canvas, mimeType, quality = ATTACHMENT_JPEG_QUALITY) {
     if (mimeType === 'image/png') return canvas.toDataURL('image/png');
-    return canvas.toDataURL('image/jpeg', ATTACHMENT_JPEG_QUALITY);
+    return canvas.toDataURL('image/jpeg', quality);
 }
 
 
