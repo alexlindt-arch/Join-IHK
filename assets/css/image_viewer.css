@@ -1,4 +1,4 @@
-/* ---------- Image viewer ---------- */
+/* ---------- Image viewer (Figma "Pic view"): dark bar on top, image, dark bar at the bottom ---------- */
 .image-viewer {
     width: 100vw;
     max-width: 100vw;
@@ -7,7 +7,7 @@
     margin: 0;
     padding: 0;
     border: unset;
-    background: transparent;
+    background: #000000;
     color: #FFFFFF;
 }
 
@@ -20,44 +20,57 @@
     flex-direction: column;
 }
 
+/* Top bar: "name / type · size" on the left, download and close on the right */
+.image-viewer-bar,
+.image-viewer-footer {
+    flex-shrink: 0;
+    background: #2A3647;
+}
+
 .image-viewer-bar {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
+    min-height: 64px;
     padding: 12px 24px;
-    background: rgba(42, 54, 71, 0.9);
+    box-sizing: border-box;
 }
 
 .image-viewer-info {
     display: flex;
-    flex-direction: column;
+    align-items: baseline;
+    gap: 6px;
     min-width: 0;
+    margin: 0;
+    font-size: 16px;
+    line-height: 120%;
+    white-space: nowrap;
 }
 
 .image-viewer-name {
     overflow: hidden;
-    font-size: 16px;
-    font-weight: 700;
+    font-weight: 400;
     text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
-.image-viewer-meta,
+.image-viewer-meta {
+    flex-shrink: 0;
+}
+
 .image-viewer-counter {
+    min-width: 48px;
+    color: #FFFFFF;
     font-size: 16px;
-    color: #D1D1D1;
+    text-align: center;
 }
 
-.image-viewer-tools,
-.image-viewer-actions {
+.image-viewer-actions,
+.image-viewer-tools {
     display: flex;
+    flex-shrink: 0;
     align-items: center;
-    gap: 8px;
-}
-
-.image-viewer-actions {
-    justify-content: flex-end;
+    gap: 16px;
 }
 
 .image-viewer-btn {
@@ -71,7 +84,6 @@
     border-radius: 50%;
     background: transparent;
     color: #FFFFFF;
-    font-size: 24px;
     cursor: pointer;
     transition: background-color 100ms, color 100ms;
 }
@@ -80,6 +92,7 @@
 .image-viewer-btn:focus-visible {
     background: rgba(255, 255, 255, 0.15);
     color: var(--secondaryColor);
+    outline: none;
 }
 
 .image-viewer-btn:disabled {
@@ -89,6 +102,7 @@
     color: #FFFFFF;
 }
 
+/* Image */
 .image-viewer-stage {
     position: relative;
     display: flex;
@@ -96,7 +110,7 @@
     align-items: center;
     justify-content: center;
     min-height: 0;
-    padding: 24px 88px;
+    padding: 24px;
     overflow: hidden;
 }
 
@@ -119,14 +133,32 @@
     cursor: move;
 }
 
+/* Bottom bar: previous arrow left, zoom in the middle, next arrow right */
+.image-viewer-footer {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    min-height: 64px;
+    padding: 12px 24px;
+    box-sizing: border-box;
+}
+
+.image-viewer-prev {
+    grid-column: 1;
+}
+
+.image-viewer-tools {
+    grid-column: 2;
+    justify-content: center;
+}
+
+.image-viewer-next {
+    grid-column: 3;
+}
+
 .image-viewer-nav {
-    position: absolute;
-    top: 50%;
-    width: 48px;
-    height: 48px;
     background: #FFFFFF;
     color: #2A3647;
-    transform: translateY(-50%);
 }
 
 .image-viewer-nav:hover,
@@ -135,41 +167,27 @@
     color: #FFFFFF;
 }
 
-.image-viewer-prev {
-    left: 24px;
-}
-
-.image-viewer-next {
-    right: 24px;
-}
-
+/* Phones: full-width image, bars with 16px side padding */
 @media (max-width: 600px) {
-    .image-viewer-bar {
-        grid-template-columns: 1fr auto;
-        padding: 8px 12px;
+    .image-viewer-bar,
+    .image-viewer-footer {
+        padding: 12px 16px;
+    }
+
+    .image-viewer-actions {
+        gap: 4px;
     }
 
     .image-viewer-tools {
-        grid-row: 2;
-        grid-column: 1 / -1;
-        justify-content: center;
+        gap: 8px;
     }
 
     .image-viewer-stage {
-        padding: 16px;
+        padding: 0;
     }
 
-    .image-viewer-nav {
-        top: auto;
-        bottom: 16px;
-        transform: none;
-    }
-
-    .image-viewer-prev {
-        left: 16px;
-    }
-
-    .image-viewer-next {
-        right: 16px;
+    .image-viewer-img {
+        width: 100%;
+        height: auto;
     }
 }

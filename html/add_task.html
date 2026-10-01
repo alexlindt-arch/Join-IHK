@@ -9,13 +9,13 @@
     <link rel="shortcut icon" href="../assets/icons/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/icons/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="../style.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/css/add_task.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/vendor/flatpickr/flatpickr.min.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/css/features.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/css/profile.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/css/attachments.css?v=20261002e">
-    <link rel="stylesheet" href="../assets/css/image_viewer.css?v=20261002e">
+    <link rel="stylesheet" href="../style.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/css/add_task.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/vendor/flatpickr/flatpickr.min.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/css/features.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/css/profile.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/css/attachments.css?v=20261002g">
+    <link rel="stylesheet" href="../assets/css/image_viewer.css?v=20261002g">
     <title>Add Task</title>
 </head>
 
@@ -127,7 +127,7 @@
                         <div class="form-group">
                             <label class="form-label" for="task-due">Due date <span class="required">*</span></label>
                             <div class="form-input-icon">
-                                <input class="form-input" type="text" id="task-due" placeholder="dd.mm.yyyy"
+                                <input class="form-input" type="text" id="task-due" placeholder="dd/mm/yyyy"
                                     onchange="updateCreateButton()" oninput="updateCreateButton()" readonly>
                                 <img class="input-icon" src="../assets/icons/event.svg" alt="">
                             </div>
@@ -266,55 +266,56 @@
     <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer" onclick="handleViewerBackdropClick(event)"
         onkeydown="handleViewerKeydown(event)">
         <header class="image-viewer-bar">
-            <div class="image-viewer-info">
+            <p class="image-viewer-info">
                 <span class="image-viewer-name" id="image-viewer-name"></span>
-                <span class="image-viewer-meta" id="image-viewer-meta"></span>
-            </div>
-            <div class="image-viewer-tools">
-                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-out" aria-label="Zoom out"
-                    onclick="zoomViewerImage(-1)">&minus;</button>
-                <span class="image-viewer-counter" id="image-viewer-counter" aria-live="polite"></span>
-                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-in" aria-label="Zoom in"
-                    onclick="zoomViewerImage(1)">&#43;</button>
-            </div>
+                <span class="image-viewer-meta"><span aria-hidden="true">/</span> <span id="image-viewer-meta"></span></span>
+            </p>
             <div class="image-viewer-actions">
                 <button type="button" class="image-viewer-btn" aria-label="Download image" onclick="downloadViewerImage()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 15.575L7.7 11.3L9.1 9.875L11 11.775V4H13V11.775L14.9 9.875L16.3 11.3L12 15.575ZM6 20C5.45 20 4.979 19.804 4.588 19.413C4.196 19.021 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.804 19.021 19.413 19.413C19.021 19.804 18.55 20 18 20H6Z" fill="currentColor" />
-                    </svg>
+                    <svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M260-160q-91 0-155.5-63T40-377q0-78 47-139t123-78q17-72 85-137t145-65q33 0 56.5 23.5T520-716v242l64-62 56 56-160 160-160-160 56-56 64 62v-242q-76 14-118 73.5T280-520h-20q-58 0-99 41t-41 99q0 58 41 99t99 41h480q42 0 71-29t29-71q0-42-29-71t-71-29h-60v-80q0-48-22-89.5T600-680v-93q74 35 117 103.5T760-520q69 8 114.5 59.5T920-340q0 75-52.5 127.5T740-160H260Z" fill="currentColor"/></svg>
                 </button>
-                <button type="button" class="image-viewer-btn" aria-label="Close image viewer"
-                    onclick="closeImageViewer()">&#x2715;</button>
+                <button type="button" class="image-viewer-btn" aria-label="Close image viewer" onclick="closeImageViewer()">
+                    <svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" fill="currentColor"/></svg>
+                </button>
             </div>
         </header>
         <div class="image-viewer-stage" id="image-viewer-stage">
-            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-prev" id="image-viewer-prev"
-                aria-label="Previous image" onclick="showPreviousViewerImage()">&#8592;</button>
             <img class="image-viewer-img" id="image-viewer-img" src="" alt="">
-            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-next" id="image-viewer-next"
-                aria-label="Next image" onclick="showNextViewerImage()">&#8594;</button>
         </div>
+        <footer class="image-viewer-footer">
+            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-prev" id="image-viewer-prev"
+                aria-label="Previous image" onclick="showPreviousViewerImage()"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" fill="currentColor"/></svg></button>
+            <div class="image-viewer-tools">
+                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-out" aria-label="Zoom out"
+                    onclick="zoomViewerImage(-1)"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400ZM280-540v-80h200v80H280Z" fill="currentColor"/></svg></button>
+                <span class="image-viewer-counter" id="image-viewer-counter" aria-live="polite"></span>
+                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-in" aria-label="Zoom in"
+                    onclick="zoomViewerImage(1)"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Zm-40-60v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z" fill="currentColor"/></svg></button>
+            </div>
+            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-next" id="image-viewer-next"
+                aria-label="Next image" onclick="showNextViewerImage()"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" fill="currentColor"/></svg></button>
+        </footer>
     </dialog>
 
     <div id="notification" class="notification d-none"></div>
-    <script src="../js/config.js?v=20261002e"></script>
-    <script src="../js/attachments/attachment_base64.js?v=20261002e"></script>
-    <script src="../js/attachments/attachment_validation.js?v=20261002e"></script>
-    <script src="../js/attachments/attachment_picker.js?v=20261002e"></script>
-    <script src="../js/attachments/image_viewer.js?v=20261002e"></script>
-    <script src="../assets/templates/attachment_template.js?v=20261002e"></script>
-    <script src="../js/image_utils.js?v=20261002e"></script>
-    <script src="../script.js?v=20261002e"></script>
-    <script src="../js/guest_session.js?v=20261002e"></script>
-    <script src="../assets/templates/add_task_template.js?v=20261002e"></script>
-    <script src="../js/task/add_task.js?v=20261002e"></script>
-    <script src="../js/task/add_task_subtasks.js?v=20261002e"></script>
-    <script src="../js/task/add_task_assign.js?v=20261002e"></script>
-    <script src="../assets/vendor/flatpickr/flatpickr.min.js?v=20261002e"></script>
-    <script src="../assets/templates/profile_template.js?v=20261002e"></script>
-    <script src="../js/profile/profile.js?v=20261002e"></script>
-    <script src="../js/profile/profile_store.js?v=20261002e"></script>
-    <script src="../js/profile/profile_guest.js?v=20261002e"></script>
+    <script src="../js/config.js?v=20261002g"></script>
+    <script src="../js/attachments/attachment_base64.js?v=20261002g"></script>
+    <script src="../js/attachments/attachment_validation.js?v=20261002g"></script>
+    <script src="../js/attachments/attachment_picker.js?v=20261002g"></script>
+    <script src="../js/attachments/image_viewer.js?v=20261002g"></script>
+    <script src="../assets/templates/attachment_template.js?v=20261002g"></script>
+    <script src="../js/image_utils.js?v=20261002g"></script>
+    <script src="../script.js?v=20261002g"></script>
+    <script src="../js/guest_session.js?v=20261002g"></script>
+    <script src="../assets/templates/add_task_template.js?v=20261002g"></script>
+    <script src="../js/task/add_task.js?v=20261002g"></script>
+    <script src="../js/task/add_task_subtasks.js?v=20261002g"></script>
+    <script src="../js/task/add_task_assign.js?v=20261002g"></script>
+    <script src="../assets/vendor/flatpickr/flatpickr.min.js?v=20261002g"></script>
+    <script src="../assets/templates/profile_template.js?v=20261002g"></script>
+    <script src="../js/profile/profile.js?v=20261002g"></script>
+    <script src="../js/profile/profile_store.js?v=20261002g"></script>
+    <script src="../js/profile/profile_guest.js?v=20261002g"></script>
 </body>
 
 </html>
