@@ -103,12 +103,13 @@
 }
 
 
-/* ---------- Previews ---------- */
+/* ---------- Previews (Figma "Gallery": cards 112 x 83 with image and file name) ---------- */
 .attachment-list {
     display: flex;
+    align-items: center;
     gap: 8px;
     margin: 0;
-    padding: 0 0 8px;
+    padding: 0 1px 6px;
     overflow-x: auto;
     list-style: none;
     scrollbar-width: thin;
@@ -116,52 +117,66 @@
 
 .attachment-item {
     position: relative;
-    display: flex;
-    flex: 0 0 96px;
-    flex-direction: column;
-    gap: 4px;
+    flex: 0 0 112px;
     min-width: 0;
 }
 
-.attachment-thumb {
-    display: block;
-    width: 96px;
-    height: 64px;
+.attachment-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 112px;
+    height: 83px;
     padding: 0;
+    box-sizing: border-box;
     overflow: hidden;
-    border: unset;
-    border-radius: 8px;
-    outline: 1px solid #D1D1D1;
-    outline-offset: -1px;
+    border: 1px solid #686868;
+    border-radius: 10px;
     background: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    text-align: left;
     cursor: zoom-in;
-    transition: outline-color 100ms;
+    transition: border-color 100ms;
 }
 
-.attachment-thumb img {
+.attachment-card-image {
+    flex-shrink: 0;
     width: 100%;
-    height: 100%;
+    height: 56px;
+    border-radius: 9px 9px 0 0;
     object-fit: cover;
-}
-
-.attachment-thumb:hover,
-.attachment-thumb:focus-visible {
-    outline: 2px solid var(--secondaryColor);
-    outline-offset: -2px;
+    transition: filter 100ms;
 }
 
 .attachment-name {
+    display: block;
+    width: 100%;
+    padding: 0 4px 4px;
+    box-sizing: border-box;
     overflow: hidden;
-    color: #2A3647;
-    font-size: 14px;
+    color: #686868;
+    font-size: 16px;
+    line-height: 120%;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
+.attachment-card:hover,
+.attachment-card:focus-visible {
+    border-color: var(--secondaryColor);
+    outline: none;
+}
+
+.attachment-item:hover .attachment-card-image,
+.attachment-item:focus-within .attachment-card-image {
+    filter: brightness(0.6);
+}
+
+/* Delete (add task / edit) or download (task detail) icon in the middle of the image */
 .attachment-thumb-action {
     position: absolute;
-    top: 4px;
-    right: 4px;
+    top: 12px;
+    left: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -170,11 +185,16 @@
     padding: 0;
     border: unset;
     border-radius: 50%;
-    background: rgba(42, 54, 71, 0.85);
+    background: transparent;
     color: #FFFFFF;
     cursor: pointer;
     opacity: 0;
     transition: opacity 100ms, background-color 100ms;
+}
+
+.attachment-thumb-action svg {
+    width: 24px;
+    height: 24px;
 }
 
 .attachment-item:hover .attachment-thumb-action,
@@ -182,14 +202,16 @@
     opacity: 1;
 }
 
-.attachment-thumb-action:hover {
-    background: var(--secondaryColor);
+.attachment-thumb-action:hover,
+.attachment-thumb-action:focus-visible {
+    background: rgba(42, 54, 71, 0.6);
 }
 
-/* Touch screens have no hover: the action button stays visible */
+/* Touch screens have no hover: image dimmed and icon always visible */
 @media (hover: none) {
     .attachment-thumb-action {
         opacity: 1;
+        background: rgba(42, 54, 71, 0.6);
     }
 }
 
