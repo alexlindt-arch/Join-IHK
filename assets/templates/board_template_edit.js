@@ -21,7 +21,7 @@ function editTaskTemplate(task) {
                     ${buildEditAssignField()}
                 </div>
             </div>
-            ${buildEditFooter()}
+            ${buildEditFooter(task.id)}
         </form>`;
 }
 
@@ -139,14 +139,18 @@ function buildEditAssignField() {
 
 
 /**
- * Returns the footer of the edit form with the required hint and the OK button.
+ * Returns the footer of the edit form with the required hint, the Cancel button (discards all changes)
+ * and the OK button.
+ * @param {number|string} taskId - Id of the edited task.
  * @returns {string} HTML string.
  */
-function buildEditFooter() {
+function buildEditFooter(taskId) {
     return `
         <div class="form-footer">
             <span class="required-hint"><span class="required">*</span>This field is required</span>
             <div class="form-actions">
+                <button type="button" class="btn-clear" onmousedown="event.stopPropagation();"
+                    onclick="cancelEditTask(${taskId})">Cancel <span class="btn-x">✕</span></button>
                 <button type="submit" class="btn-create" onmousedown="event.stopPropagation();">
                     Ok <img src="../assets/icons/done.svg" alt="" class="btn-icon">
                 </button>

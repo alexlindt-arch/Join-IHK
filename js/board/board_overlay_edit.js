@@ -366,6 +366,17 @@ async function updateTaskRemote(id, updates) {
 
 
 /**
+ * Discards all changes of the edit form and shows the unchanged task again.
+ * @param {number|string} id - Id of the edited task.
+ * @returns {void}
+ */
+function cancelEditTask(id) {
+  resetEditState();
+  openTaskDetail(id);
+}
+
+
+/**
  * Resets all module-level edit state variables to their defaults.
  * @returns {void}
  */
