@@ -1,4 +1,3 @@
-/* ---------- Image viewer (Figma "Pic view"): dark bar on top, image, dark bar at the bottom ---------- */
 .image-viewer {
     width: 100vw;
     max-width: 100vw;
@@ -20,7 +19,6 @@
     flex-direction: column;
 }
 
-/* Top bar: "name / type · size" on the left, download and close on the right */
 .image-viewer-bar,
 .image-viewer-footer {
     flex-shrink: 0;
@@ -102,7 +100,6 @@
     color: #FFFFFF;
 }
 
-/* Image */
 .image-viewer-stage {
     position: relative;
     display: flex;
@@ -133,7 +130,6 @@
     cursor: move;
 }
 
-/* Bottom bar: previous arrow left, zoom in the middle, next arrow right */
 .image-viewer-footer {
     display: grid;
     grid-template-columns: 40px 1fr 40px;
@@ -167,7 +163,6 @@
     color: #FFFFFF;
 }
 
-/* Phones: full-width image, bars with 16px side padding */
 @media (max-width: 600px) {
     .image-viewer-bar,
     .image-viewer-footer {

@@ -172,3 +172,15 @@ function handleViewerKeydown(event) {
     event.preventDefault();
     actions[event.key]();
 }
+
+
+/**
+ * Adds the image viewer dialog to the page.
+ * @returns {void}
+ */
+function addImageViewerToPage() {
+    document.body.insertAdjacentHTML('beforeend', imageViewerTemplate());
+}
+
+
+document.addEventListener('DOMContentLoaded', addImageViewerToPage);

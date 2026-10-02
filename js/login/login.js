@@ -123,7 +123,7 @@ function clearFieldValue(id) {
  * @returns {void}
  */
 function clearRegFields() {
-    ['reg_name', 'reg_email', 'reg_passwort', 'reg_password_confirm'].forEach(clearFieldValue);
+    ['reg_name', 'reg_email', 'reg_password', 'reg_password_confirm'].forEach(clearFieldValue);
 }
 
 
@@ -143,7 +143,7 @@ function clearRegHints() {
 function clearRegistrationForm() {
     clearRegFields();
     clearRegHints();
-    const checkbox = document.getElementById('reg_datenschutz');
+    const checkbox = document.getElementById('reg_privacy');
     if (checkbox) checkbox.checked = false;
     const submitBtn = document.getElementById('reg_submit_btn');
     if (submitBtn) submitBtn.disabled = true;
@@ -155,7 +155,7 @@ function clearRegistrationForm() {
  * @returns {void}
  */
 function clearLoginFields() {
-    ['login_email', 'login_passwort'].forEach(clearFieldValue);
+    ['login_email', 'login_password'].forEach(clearFieldValue);
 }
 
 
@@ -270,7 +270,8 @@ async function saveContactToFirebase(id, contact) {
  * @returns {void}
  */
 function clearAllForms() {
-    try { clearRegistrationForm(); clearLoginForm(); } catch (e) { /* ignore */ }
+    clearRegistrationForm();
+    clearLoginForm();
 }
 
 

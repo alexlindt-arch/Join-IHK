@@ -14,6 +14,20 @@ const ATTACHMENT_DOWNLOAD_ICON = `<svg width="24" height="24" viewBox="0 -960 96
 function attachmentPickerTemplate(pickerId) {
     return `
         <section class="form-group attachment-field" aria-labelledby="attachment-label-${pickerId}">
+            ${attachmentHeaderTemplate(pickerId)}
+            ${attachmentDropzoneTemplate(pickerId)}
+            <ul class="attachment-list d-none" id="attachment-list-${pickerId}" aria-label="Selected images"></ul>
+        </section>`;
+}
+
+
+/**
+ * Returns the label, the hint and the "Delete all" button of a file picker.
+ * @param {string} pickerId - Picker id.
+ * @returns {string} HTML string.
+ */
+function attachmentHeaderTemplate(pickerId) {
+    return `
             <div class="attachment-header">
                 <div>
                     <h3 class="form-label attachment-label" id="attachment-label-${pickerId}">Attachments</h3>
@@ -21,7 +35,17 @@ function attachmentPickerTemplate(pickerId) {
                 </div>
                 <button type="button" class="attachment-delete-all d-none" id="attachment-delete-all-${pickerId}"
                     onclick="removeAllAttachments('${pickerId}')">${ATTACHMENT_DELETE_ICON} Delete all</button>
-            </div>
+            </div>`;
+}
+
+
+/**
+ * Returns the hidden file input and the drop zone button of a file picker.
+ * @param {string} pickerId - Picker id.
+ * @returns {string} HTML string.
+ */
+function attachmentDropzoneTemplate(pickerId) {
+    return `
             <input type="file" class="attachment-input" id="attachment-input-${pickerId}" accept="image/jpeg,image/png"
                 multiple tabindex="-1" aria-hidden="true" onchange="handleAttachmentInput(event, '${pickerId}')">
             <button type="button" class="attachment-dropzone" id="attachment-dropzone-${pickerId}"
@@ -29,9 +53,7 @@ function attachmentPickerTemplate(pickerId) {
                 onclick="openAttachmentDialog('${pickerId}')" ondragover="handleAttachmentDragOver(event)"
                 ondragleave="handleAttachmentDragLeave(event)" ondrop="handleAttachmentDrop(event, '${pickerId}')">
                 Drag a file or browse <span class="attachment-plus" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 0V15" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round"/><path d="M15 7.64L0 7.64" stroke="#A8A8A8" stroke-width="2" stroke-linecap="round"/></svg></span>
-            </button>
-            <ul class="attachment-list d-none" id="attachment-list-${pickerId}" aria-label="Selected images"></ul>
-        </section>`;
+            </button>`;
 }
 
 
@@ -93,4 +115,64 @@ function detailAttachmentTemplate(taskId, attachment, index) {
             <button type="button" class="attachment-thumb-action" onclick="downloadTaskAttachment(${taskId}, ${index})"
                 aria-label="Download ${name}">${ATTACHMENT_DOWNLOAD_ICON}</button>
         </li>`;
+}
+
+
+/**
+ * Returns the image viewer dialog (Figma "Pic view"); it is added once to every page with attachments.
+ * @returns {string} HTML string.
+ */
+function imageViewerTemplate() {
+    return `
+    <dialog class="image-viewer" id="image-viewer" aria-label="Image viewer" onclick="handleViewerBackdropClick(event)"
+        onkeydown="handleViewerKeydown(event)">
+        ${imageViewerBarTemplate()}
+        <div class="image-viewer-stage" id="image-viewer-stage">
+            <img class="image-viewer-img" id="image-viewer-img" src="" alt="">
+        </div>
+        ${imageViewerFooterTemplate()}
+    </dialog>`;
+}
+
+
+/**
+ * Returns the top bar of the image viewer with name, type, size, download and close.
+ * @returns {string} HTML string.
+ */
+function imageViewerBarTemplate() {
+    return `
+        <header class="image-viewer-bar">
+            <p class="image-viewer-info">
+                <span class="image-viewer-name" id="image-viewer-name"></span>
+                <span class="image-viewer-meta"><span aria-hidden="true">/</span> <span id="image-viewer-meta"></span></span>
+            </p>
+            <div class="image-viewer-actions">
+                <button type="button" class="image-viewer-btn" aria-label="Download image" onclick="downloadViewerImage()">${ATTACHMENT_DOWNLOAD_ICON}</button>
+                <button type="button" class="image-viewer-btn" aria-label="Close image viewer" onclick="closeImageViewer()">
+                    <svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" fill="currentColor"/></svg>
+                </button>
+            </div>
+        </header>`;
+}
+
+
+/**
+ * Returns the bottom bar of the image viewer with the previous arrow, zoom and the next arrow.
+ * @returns {string} HTML string.
+ */
+function imageViewerFooterTemplate() {
+    return `
+        <footer class="image-viewer-footer">
+            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-prev" id="image-viewer-prev"
+                aria-label="Previous image" onclick="showPreviousViewerImage()"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m313-440 224 224-57 56-320-320 320-320 57 56-224 224h487v80H313Z" fill="currentColor"/></svg></button>
+            <div class="image-viewer-tools">
+                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-out" aria-label="Zoom out"
+                    onclick="zoomViewerImage(-1)"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400ZM280-540v-80h200v80H280Z" fill="currentColor"/></svg></button>
+                <span class="image-viewer-counter" id="image-viewer-counter" aria-live="polite"></span>
+                <button type="button" class="image-viewer-btn" id="image-viewer-zoom-in" aria-label="Zoom in"
+                    onclick="zoomViewerImage(1)"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Zm-40-60v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z" fill="currentColor"/></svg></button>
+            </div>
+            <button type="button" class="image-viewer-btn image-viewer-nav image-viewer-next" id="image-viewer-next"
+                aria-label="Next image" onclick="showNextViewerImage()"><svg width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" fill="currentColor"/></svg></button>
+        </footer>`;
 }

@@ -9,9 +9,9 @@
     <link rel="shortcut icon" href="./assets/icons/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="./assets/icons/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="style.css?v=20261002h" />
-    <link rel="stylesheet" href="./assets/css/login_form.css?v=20261002h" />
-    <link rel="stylesheet" href="./assets/css/login_responsive.css?v=20261002h" />
+    <link rel="stylesheet" href="style.css?v=20261002i" />
+    <link rel="stylesheet" href="./assets/css/login_form.css?v=20261002i" />
+    <link rel="stylesheet" href="./assets/css/login_responsive.css?v=20261002i" />
     <title>Login</title>
 </head>
 
@@ -42,7 +42,7 @@
                         <img src="./assets/icons/mail.svg" class="input-field-icon" alt="">
                     </div>
                     <div class="input-container">
-                        <input type="password" id="login_passwort" class="input-field" placeholder="Password"
+                        <input type="password" id="login_password" class="input-field" placeholder="Password"
                             aria-label="Password" autocomplete="current-password" oninput="clearLoginError()">
                         <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
                     </div>
@@ -82,9 +82,9 @@
                     </div>
                     <span id="email_format_hint" class="field-hint">Please enter a valid email address</span>
                     <div class="input-container">
-                        <input type="password" id="reg_passwort" class="input-field" placeholder="Password" aria-label="Password"
+                        <input type="password" id="reg_password" class="input-field" placeholder="Password" aria-label="Password"
                             autocomplete="new-password" oninput="validateRegistrationForm()"
-                            onblur="markTouched('reg_passwort'); validateRegistrationForm();">
+                            onblur="markTouched('reg_password'); validateRegistrationForm();">
                         <img src="./assets/icons/lock.svg" class="input-field-icon" alt="">
                     </div>
                     <span id="pw_hint" class="field-hint"></span>
@@ -97,8 +97,8 @@
                     </div>
                     <span id="pw_match_hint" class="field-hint">Passwords don't match</span>
                     <div class="login-privacy-row">
-                        <input type="checkbox" id="reg_datenschutz" onchange="validateRegistrationForm()">
-                        <label for="reg_datenschutz">
+                        <input type="checkbox" id="reg_privacy" onchange="validateRegistrationForm()">
+                        <label for="reg_privacy">
                             I accept the
                             <a href="./html/privacy_policy.html" target="_blank">Privacy Policy</a>
                         </label>
@@ -178,13 +178,13 @@
 
     </div>
     <div id="notification" class="notification d-none"></div>
-    <script src="./js/config.js?v=20261002h"></script>
-    <script src="script.js?v=20261002h"></script>
-    <script src="js/guest_session.js?v=20261002h"></script>
-    <script src="./js/login/login.js?v=20261002h"></script>
-    <script src="./js/login/password_reset.js?v=20261002h"></script>
-    <script src="./js/login/password_reset_store.js?v=20261002h"></script>
-    <script src="./js/login/login_auth.js?v=20261002h"></script>
+    <script src="./js/config.js?v=20261002i"></script>
+    <script src="script.js?v=20261002i"></script>
+    <script src="js/guest_session.js?v=20261002i"></script>
+    <script src="./js/login/login.js?v=20261002i"></script>
+    <script src="./js/login/password_reset.js?v=20261002i"></script>
+    <script src="./js/login/password_reset_store.js?v=20261002i"></script>
+    <script src="./js/login/login_auth.js?v=20261002i"></script>
 
 </body>
 

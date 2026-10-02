@@ -1,0 +1,245 @@
+.board-modal:has(> #board-detail-box:not(.d-none)) {
+    max-width: 525px;
+    max-height: calc(100vh - 32px);
+    padding: 48px 40px;
+    border-radius: 30px;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.16);
+    box-sizing: border-box;
+}
+
+#board-detail-box {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-height: 0;
+}
+
+#board-detail-box .detail-header {
+    gap: 10px;
+    margin: 0;
+}
+
+#board-detail-box .detail-header-labels {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+#board-detail-box .detail-header .task-card-category {
+    padding: 4px 24px;
+    font-size: 23px;
+    line-height: 120%;
+}
+
+#board-detail-box .detail-close-btn {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 56px;
+    color: #2A3647;
+}
+
+#board-detail-box .detail-close-btn:hover {
+    background: #EEEEEE;
+    color: var(--secondaryColor);
+}
+
+#board-detail-box .show-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: calc(100vh - 290px);
+}
+
+#board-detail-box .detail-title {
+    margin: 0;
+    color: #000000;
+    font-size: 61px;
+    font-weight: 700;
+    line-height: 120%;
+    overflow-wrap: anywhere;
+}
+
+#board-detail-box .detail-desc {
+    margin: 0;
+    color: #000000;
+    font-size: 20px;
+    line-height: 120%;
+    white-space: pre-line;
+}
+
+#board-detail-box .detail-label {
+    min-width: 0;
+    color: #42526E;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 120%;
+}
+
+#board-detail-box .detail-row {
+    gap: 25px;
+    color: #000000;
+    font-family: 'Open Sans', 'Inter', sans-serif;
+    font-size: 19px;
+}
+
+#board-detail-box .detail-prio {
+    gap: 10px;
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+}
+
+#board-detail-box .detail-section {
+    gap: 8px;
+    margin: 0;
+}
+
+#board-detail-box .detail-assignees {
+    gap: 4px;
+    padding: 0;
+}
+
+#board-detail-box .detail-assignee {
+    gap: 16px;
+    padding: 7px 16px;
+    border-radius: 10px;
+}
+
+#board-detail-box .detail-assignee .card-avatar {
+    width: 42px;
+    height: 42px;
+    border: 2px solid #FFFFFF;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#board-detail-box .detail-assignee-name {
+    color: #000000;
+    font-size: 20px;
+}
+
+#board-detail-box .detail-subtask-list {
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+#board-detail-box .detail-subtask-item {
+    gap: 16px;
+    padding: 6px 16px;
+    color: #000000;
+}
+
+#board-detail-box .detail-subtask-item input[type="checkbox"] {
+    appearance: none;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin: 4px;
+    border: 2px solid #2A3647;
+    border-radius: 3px;
+    background: #FFFFFF;
+    cursor: pointer;
+}
+
+#board-detail-box .detail-subtask-item input[type="checkbox"]:checked {
+    background: #FFFFFF url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 3' fill='none' stroke='%232A3647' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat;
+}
+
+#board-detail-box .detail-actions {
+    justify-content: flex-end;
+    margin: 0;
+    padding-top: 0;
+    border-top: none;
+}
+
+@media (max-width: 600px) {
+    .board-modal:has(> #board-detail-box:not(.d-none)) {
+        max-width: 396px;
+        padding: 32px 24px;
+    }
+
+    #board-detail-box,
+    #board-detail-box .show-detail {
+        gap: 16px;
+    }
+
+    #board-detail-box .show-detail {
+        max-height: calc(100vh - 230px);
+    }
+
+    #board-detail-box .detail-header .task-card-category {
+        padding: 4px 16px;
+        font-size: 16px;
+    }
+
+    #board-detail-box .detail-title {
+        font-size: 36px;
+    }
+
+    #board-detail-box .detail-desc,
+    #board-detail-box .detail-row,
+    #board-detail-box .detail-prio,
+    #board-detail-box .detail-assignee-name {
+        font-size: 16px;
+    }
+
+    #board-detail-box .detail-label {
+        font-size: 16px;
+    }
+
+    #board-detail-box .detail-label--subtasks {
+        font-family: 'Open Sans', 'Inter', sans-serif;
+        font-weight: 700;
+    }
+
+    #board-detail-box .detail-attachments .detail-label {
+        color: #2A3647;
+    }
+
+    #board-detail-box .detail-assign-section {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    #board-detail-box .detail-assignees {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    #board-detail-box .detail-assignee {
+        padding: 0;
+    }
+
+    #board-detail-box .detail-assignee .detail-assignee-name {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+}
+
+
+@media (max-width: 600px) {
+    #board-detail-box .detail-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 4px;
+    }
+
+    #board-detail-box .detail-actions .detail-btn {
+        gap: 4px;
+        padding: 8px 6px;
+    }
+}

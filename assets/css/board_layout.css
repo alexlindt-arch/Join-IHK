@@ -1,0 +1,91 @@
+.task-card {
+    -webkit-touch-callout: none;
+}
+
+@media (max-width: 1024px) {
+    .board-columns {
+        grid-template-columns: minmax(0, 1fr);
+        min-width: 0;
+    }
+
+    .board-columns .board-cards {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: flex-start;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x proximity;
+        margin: 0 -4px;
+        padding: 4px 4px 16px;
+        scrollbar-width: thin;
+    }
+
+    .board-columns .board-cards > .task-card {
+        flex: 0 0 min(252px, 78vw);
+        max-width: none;
+        scroll-snap-align: start;
+    }
+
+    .board-columns .board-cards > .drag-highlight-box {
+        flex: 0 0 0;
+        min-width: 0;
+        margin-left: -16px;
+        border-width: 0;
+    }
+
+    .board-columns .board-cards > .drag-highlight-box.drag-active {
+        flex: 0 0 min(252px, 78vw);
+        margin-left: 0;
+        border-width: 2px;
+    }
+
+    .board-columns .board-cards > .board-empty {
+        flex: 1 0 100%;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .board-main .board-header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .board-main .board-controls {
+        display: contents;
+    }
+
+    .board-main .board-header .page-title {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    .board-main .btn-add-task {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        padding: 0;
+        border-radius: 10px;
+    }
+
+    .board-main .search-wrapper {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .board-columns .board-cards {
+        scrollbar-width: none;
+    }
+
+    .board-columns .board-cards::-webkit-scrollbar {
+        display: none;
+    }
+}

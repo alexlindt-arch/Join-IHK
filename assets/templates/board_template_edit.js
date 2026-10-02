@@ -9,17 +9,9 @@ function editTaskTemplate(task) {
             onmousedown="event.stopPropagation(); event.preventDefault();" onclick="closeOverlay(); event.stopPropagation();">&#x2715;</button>
         <form class="task-form edit-task-form" novalidate onsubmit="event.preventDefault(); saveEditedTask(${task.id})">
             <div class="form-columns">
-                <div class="form-col">
-                    ${buildEditBasicFields(task)}
-                    ${buildEditPrioField(task.priority)}
-                    ${buildEditCategoryField(task.category)}
-                </div>
+                <div class="form-col">${buildEditBasicFields(task)}${buildEditPrioField(task.priority)}${buildEditCategoryField(task.category)}</div>
                 <div class="form-divider-vertical"></div>
-                <div class="form-col">
-                    ${attachmentPickerTemplate('edit')}
-                    ${buildEditSubtaskField()}
-                    ${buildEditAssignField()}
-                </div>
+                <div class="form-col">${attachmentPickerTemplate('edit')}${buildEditSubtaskField()}${buildEditAssignField()}</div>
             </div>
             ${buildEditFooter(task.id)}
         </form>`;
@@ -42,11 +34,22 @@ function buildEditBasicFields(task) {
             <label class="form-label" for="edit-desc">Description</label>
             <textarea class="form-input form-textarea" id="edit-desc" placeholder="Enter a description">${escapeHtml(task.description || '')}</textarea>
         </div>
+        ${buildEditDueDateField(task.dueDate)}`;
+}
+
+
+/**
+ * Returns the due date field of the edit form.
+ * @param {string} dueDate - Stored due date of the task.
+ * @returns {string} HTML string.
+ */
+function buildEditDueDateField(dueDate) {
+    return `
         <div class="form-group">
             <label class="form-label" for="edit-due">Due date <span class="required">*</span></label>
             <div class="form-input-icon">
                 <input class="form-input date-picker flatpickr-edit" type="text" id="edit-due" placeholder="dd/mm/yyyy"
-                    value="${escapeHtml(toDisplayDate(task.dueDate))}" readonly>
+                    value="${escapeHtml(toDisplayDate(dueDate))}" readonly>
                 <img class="input-icon" src="../assets/icons/event.svg" alt="">
             </div>
             <span class="field-error d-none" id="edit-error-due">This field is required</span>
@@ -88,12 +91,19 @@ function buildEditCategoryField(category) {
                     <span id="edit-category-selected">${escapeHtml(category || 'Select task category')}</span>
                     <span class="select-caret" aria-hidden="true">&#9662;</span>
                 </button>
-                <div class="select-options d-none" id="edit-category-options" role="listbox" aria-labelledby="edit-category-label">
-                    <button type="button" class="select-option" role="option" onclick="selectEditCategory('Technical Task')">Technical Task</button>
-                    <button type="button" class="select-option" role="option" onclick="selectEditCategory('User Story')">User Story</button>
-                </div>
+                <div class="select-options d-none" id="edit-category-options" role="listbox" aria-labelledby="edit-category-label">${editCategoryOptions()}</div>
             </div>
         </div>`;
+}
+
+
+/**
+ * Returns the two category options of the edit form.
+ * @returns {string} HTML string.
+ */
+function editCategoryOptions() {
+    return ['Technical Task', 'User Story'].map(option => `
+        <button type="button" class="select-option" role="option" onclick="selectEditCategory('${option}')">${option}</button>`).join('');
 }
 
 

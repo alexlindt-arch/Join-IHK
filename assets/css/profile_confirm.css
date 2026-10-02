@@ -1,7 +1,3 @@
-/* "Delete my account" confirmation dialog and the account toast */
-
-/* ---------- Delete confirmation ---------- */
-
 .account-confirm {
     position: fixed;
     inset: 0;
@@ -80,8 +76,6 @@
     min-width: 96px;
     height: 48px;
 }
-
-/* ---------- Toast (shown as popover, so it appears above open dialogs) ---------- */
 
 .profile-toast {
     position: fixed;

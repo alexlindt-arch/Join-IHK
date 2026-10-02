@@ -1,9 +1,8 @@
-
 .header {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0; 
+    right: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,7 +22,7 @@
     box-shadow: 0 2px 8px var(--shadow-2);
 }
 
-.header-titel {
+.header-tagline {
     font-size: 20px;
     font-weight: 400;
     color: var(--primaryColor);
@@ -37,7 +36,7 @@
 .header-account {
     display: flex;
     align-items: center;
-    gap: 24px;  
+    gap: 24px;
     margin-right: 24px;
 }
 
@@ -125,7 +124,6 @@
   color: #ffffff;
 }
 
-/* Links in the dropdown keep the grey menu colour of .avatar-menu-btn */
 a.avatar-menu-btn {
   text-decoration: none;
   box-sizing: border-box;
@@ -146,7 +144,7 @@ a.avatar-menu-btn {
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    /* Spacing shrinks on low screens so the footer links always stay at the bottom */
+
     padding-top: clamp(24px, 6.25vh, 64px);
     padding-bottom: clamp(16px, 4.7vh, 48px);
     overflow: hidden;
@@ -207,7 +205,7 @@ a.avatar-menu-btn {
     background-color: var(--hoverColor);
 }
 
-.nav-link.aktiv {
+.nav-link.active {
     background-color: var(--primary-darkblue);
     color: #ffffff;
 }
@@ -239,12 +237,12 @@ a.avatar-menu-btn {
     color: var(--secondaryColor);
 }
 
-.nav-bottom-link.aktiv {
+.nav-bottom-link.active {
     color: var(--white);
 }
 
-.mobil-navigation {
-    display: none; 
+.mobile-navigation {
+    display: none;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -259,7 +257,7 @@ a.avatar-menu-btn {
     box-shadow: 0 -2px 8px var(--shadow-2);
 }
 
-.mobil-nav-link {
+.mobile-nav-link {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -275,11 +273,11 @@ a.avatar-menu-btn {
     transition: background 100ms;
 }
 
-.mobil-nav-link.aktiv {
+.mobile-nav-link.active {
     background-color: var(--primary-darkblue);
 }
 
-.mobil-nav-link img {
+.mobile-nav-link img {
     width: 24px;
     height: 24px;
 }

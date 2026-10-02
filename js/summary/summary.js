@@ -96,7 +96,6 @@ function getNextDeadline(tasks) {
     return tasks
         .filter(task => task.dueDate)
         .map(task => {
-            // dd/mm/yyyy or dd.mm.yyyy → yyyy-mm-dd
             const iso = /^\d{2}[./]\d{2}[./]\d{4}$/.test(task.dueDate)
                 ? task.dueDate.split(/[./]/).reverse().join('-')
                 : task.dueDate;

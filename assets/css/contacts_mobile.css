@@ -30,7 +30,6 @@
     }
 }
 
-/* ── Mobile ── */
 @media (max-width: 768px) {
     .contacts-main {
         flex-direction: column;
@@ -41,7 +40,6 @@
         background: #ffffff;
     }
 
-    /* Only .contacts-main scrolls on mobile, the list inside grows with its content */
     .contacts-split-left {
         max-width: none;
         flex: none;
@@ -128,7 +126,6 @@
         line-height: 120%;
     }
 
-    /* Grey separator line below each letter, 8px away from the title */
     .letter-group-title::after {
         content: '';
         position: absolute;
@@ -194,8 +191,7 @@
         border-radius: 110px;
         border: 2px solid #ffffff;
         line-height: 110px;
-        /* font-size: 40px; */
-    }
+
 
     .contact-info .name {
         font-size: 20px;
@@ -282,8 +278,7 @@
         height: 120px;
         border: 4px solid #ffffff;
         border-radius: 50%;
-
-    }
+
 
     .modal-footer {
         justify-content: center;
@@ -368,8 +363,6 @@
     }
 }
 
-/* Contact view on phones (Figma "Contact view Anton mobile"): blue line 90 x 3 below the subtitle,
-   80px avatar and the name in 36px bold next to it */
 @media (max-width: 768px) {
     .brand-title {
         font-size: 47px;

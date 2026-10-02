@@ -15,18 +15,13 @@ async function openAddTaskModal(status = 'todo') {
 
 
 /**
- * Shows the add-task overlay, preferring the native <dialog> API when available.
+ * Opens the add-task dialog; Escape closes it through the cancel event.
  * @returns {void}
  */
 function showModalOverlay() {
   const overlay = document.getElementById('add-task-overlay');
-  if (!overlay) return;
-  if (typeof overlay.showModal === 'function') {
-    try { overlay.showModal(); } catch (e) { /* ignore if already open */ }
-    overlay.addEventListener('cancel', closeAddTaskModal);
-  } else {
-    overlay.classList.remove('d-none');
-  }
+  if (!overlay.open) overlay.showModal();
+  overlay.addEventListener('cancel', closeAddTaskModal);
 }
 
 
@@ -39,23 +34,18 @@ function closeAddTaskModal(event) {
   if (event && event.target.id !== 'add-task-overlay') return;
   closeModalOverlay();
   clearModalTaskForm();
-  try { document.removeEventListener('click', handleModalOutsideClick, true); } catch (e) { /* ignore */ }
+  document.removeEventListener('click', handleModalOutsideClick, true);
 }
 
 
 /**
- * Hides the add-task overlay and restores body scroll.
+ * Closes the add-task dialog.
  * @returns {void}
  */
 function closeModalOverlay() {
   const overlay = document.getElementById('add-task-overlay');
-  if (!overlay) return;
-  if (typeof overlay.close === 'function') {
-    try { overlay.close(); } catch (e) { /* ignore */ }
-    try { overlay.removeEventListener('cancel', closeAddTaskModal); } catch (e) { /* ignore */ }
-  } else {
-    overlay.classList.add('d-none');
-  }
+  overlay.close();
+  overlay.removeEventListener('cancel', closeAddTaskModal);
 }
 
 

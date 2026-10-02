@@ -43,7 +43,7 @@ async function loadUserPhoto(email) {
 function getLoginCredentials() {
     return {
         email: document.getElementById('login_email').value.trim(),
-        password: document.getElementById('login_passwort').value
+        password: document.getElementById('login_password').value
     };
 }
 
@@ -96,9 +96,9 @@ function getRegValues() {
     return {
         name: document.getElementById('reg_name').value.trim(),
         email: document.getElementById('reg_email').value.trim(),
-        pw: document.getElementById('reg_passwort').value,
+        pw: document.getElementById('reg_password').value,
         pwConfirm: document.getElementById('reg_password_confirm').value,
-        privacy: document.getElementById('reg_datenschutz').checked
+        privacy: document.getElementById('reg_privacy').checked
     };
 }
 
@@ -137,7 +137,7 @@ function updatePasswordHint(hint, pw, pwConfirm) {
 function setPasswordValidity(pw) {
     const hint = document.getElementById('pw_hint');
     const hasSpaces = /\s/.test(pw);
-    const tooShort = pw.length > 0 && pw.length < 8 && isFieldTouched('reg_passwort');
+    const tooShort = pw.length > 0 && pw.length < 8 && isFieldTouched('reg_password');
     if (pw && hasSpaces) {
         hint.textContent = 'Passwords must not contain spaces.';
         showHint('pw_hint');
@@ -293,7 +293,7 @@ function getRegFormValues() {
     return {
         name: document.getElementById('reg_name').value.trim(),
         email: document.getElementById('reg_email').value.trim(),
-        password: document.getElementById('reg_passwort').value
+        password: document.getElementById('reg_password').value
     };
 }
 

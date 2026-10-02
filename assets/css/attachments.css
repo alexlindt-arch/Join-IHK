@@ -1,4 +1,3 @@
-/* ---------- File picker ---------- */
 .attachment-field {
     gap: 8px;
     min-width: 0;
@@ -102,8 +101,6 @@
     border-radius: 10px;
 }
 
-
-/* ---------- Previews (Figma "Gallery": cards 112 x 83 with image and file name) ---------- */
 .attachment-list {
     display: flex;
     align-items: center;
@@ -121,7 +118,6 @@
     min-width: 0;
 }
 
-/* Card01: 112 x 83, the 1px frame is drawn on top like the inside stroke in Figma */
 .attachment-card {
     position: relative;
     display: flex;
@@ -160,7 +156,6 @@
     outline: none;
 }
 
-/* Frame 261: image 112 x 56 */
 .attachment-card-image {
     flex: none;
     align-self: stretch;
@@ -171,7 +166,6 @@
     transition: filter 100ms;
 }
 
-/* Frame 263: file name row 112 x 23 */
 .attachment-name {
     flex: none;
     align-self: stretch;
@@ -194,8 +188,6 @@
     filter: brightness(0.6);
 }
 
-/* Subtasks icons11: 24 x 24 in the middle of the image, hidden until hover
-   (white delete icon in add task / edit, white cloud download icon in the task detail) */
 .attachment-thumb-action {
     position: absolute;
     top: calc(28px - 24px / 2);
@@ -225,7 +217,6 @@
     transform: scale(1.15);
 }
 
-/* Touch screens have no hover: icon always visible, with a soft shadow so it stays readable on light images */
 @media (hover: none) {
     .attachment-thumb-action {
         opacity: 1;
@@ -233,7 +224,6 @@
     }
 }
 
-/* ---------- Upload error message: card with warning icon, above the mobile navigation ---------- */
 .attachment-toast {
     inset: auto 32px 32px auto;
     width: min(440px, calc(100vw - 64px));
@@ -334,7 +324,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Phones: full width with 16px margin, clearly above the bottom navigation */
 @media (max-width: 768px) {
     .attachment-toast {
         inset: auto 16px 100px 16px;

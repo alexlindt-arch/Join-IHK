@@ -1,5 +1,4 @@
 @keyframes backgroundMobileAnimation {
-
     0%,
     65% {
         background-color: var(--primaryColor);
@@ -44,7 +43,6 @@
 }
 
 @keyframes logoColorChange {
-
     0%,
     65% {
         filter: brightness(0) invert(1);
@@ -128,7 +126,6 @@
 }
 
 .login-error {
-    /* Immer im Flow — kein display:none, damit kein Layout-Shift */
     display: block;
     visibility: hidden;
     color: #ff4d4d;
@@ -140,9 +137,6 @@
 .login-error.visible {
     visibility: visible;
 }
-
-/* ── Validation Hints ──────────────────────────────────────────────────────── */
-/* visibility statt display:none → reserviert Platz, verhindert Layout-Shift   */
 
 .field-hint {
     display: block;
@@ -156,8 +150,6 @@
 .field-hint.visible {
     visibility: visible;
 }
-
-/* ── Rest ──────────────────────────────────────────────────────────────────── */
 
 .login-card .login-title {
     margin: 0;
@@ -221,7 +213,6 @@
     margin-bottom: 16px;
 }
 
-/* The container has the width, the input fills it: the icon always sits inside the input */
 .input-field {
     width: 100%;
     box-sizing: border-box;
@@ -303,9 +294,6 @@
     color: var(--primaryColor);
 }
 
-
-
-/* ── Forgot / reset password ───────────────────────────────────────────────── */
 .login-forgot-link {
     align-self: center;
     padding: 2px 4px;

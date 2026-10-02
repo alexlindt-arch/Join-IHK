@@ -67,7 +67,6 @@
 }
 
 @media (max-width: 425px) {
-
     .login-topbar>div {
         flex-direction: row;
         gap: 16px;
@@ -90,7 +89,6 @@
         transform: none;
     }
 
-    /* Space for the back arrow on both sides, so a long title never runs under it */
     .login-headline-section {
         width: 100%;
         justify-content: center;
@@ -135,7 +133,7 @@
 
     .field-hint {
         display: block;
-        /* visibility: hidden; */
+
         color: #ff4d4d;
         font-size: 14px;
         margin-top: -8px;
@@ -191,7 +189,6 @@
     }
 }
 
-/* Space below the name field on the container, so the icon stays centered in the input like all other icons */
 .input-container:has(#reg_name) {
     margin-bottom: 16px;
 }
@@ -237,7 +234,6 @@
         height: auto;
     }
 
-    /* login and sign-up card always start 24px below the logo */
     .login-fullscreen {
         justify-content: flex-start;
         height: auto;
@@ -265,7 +261,6 @@
     }
 }
 
-/* Mobile footer: "Privacy Policy" and "Legal notice" as plain text links in one row, also at 320px */
 @media (max-width: 768px) {
     .login-footer {
         display: flex;
@@ -283,7 +278,6 @@
     }
 }
 
-/* ≤320px: the form (fixed at 280px) sits exactly in the middle of the card */
 @media (max-width: 320px) {
     .login-card .login-form {
         width: 100%;

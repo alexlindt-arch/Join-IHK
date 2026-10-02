@@ -1,6 +1,3 @@
-/* ---------- Add / edit contact dialog (Figma "Overlay add contact" 1212 x 592, mobile 396 x 760) ---------- */
-/* Loaded last on contacts.html, so these rules replace the older dialog styles. */
-
 #add-contact-dialog {
     width: min(1212px, calc(100vw - 64px));
     max-width: none;
@@ -18,7 +15,6 @@
     height: auto;
 }
 
-/* Left: dark panel with logo, title, tagline and blue line */
 #add-contact-dialog .modal-left {
     flex: 0 0 38%;
     width: auto;
@@ -61,7 +57,6 @@
     background: #29ABE2;
 }
 
-/* Right: avatar on the left, fields and buttons on the right */
 #add-contact-dialog .modal-right {
     flex: 1;
     display: grid;
@@ -89,7 +84,6 @@
     width: 120px;
 }
 
-/* Avatar: only shows the photo, initials or the default person; it is not clickable */
 #add-contact-dialog .profile-placeholder {
     position: static;
     display: flex;
@@ -126,7 +120,6 @@
     line-height: 1;
 }
 
-/* Camera button: the only element that opens the photo selection, with its own hover effect */
 #add-contact-dialog .avatar-upload-hint {
     position: absolute;
     top: 78px;
@@ -171,7 +164,6 @@
     display: none;
 }
 
-/* Fields: 422 x 50, icon on the right */
 #add-contact-dialog .input-group {
     position: relative;
     width: 100%;
@@ -225,7 +217,6 @@
     line-height: 120%;
 }
 
-/* Buttons: Cancel (outline) and Create contact (dark), icons as SVG */
 #add-contact-dialog .modal-footer {
     justify-content: flex-start;
     gap: 24px;
@@ -280,7 +271,6 @@
     flex-shrink: 0;
 }
 
-/* Close buttons: the desktop one sits on the white side, the mobile one on the dark panel */
 #add-contact-dialog .close-dialog {
     top: 48px;
     right: 48px;
@@ -306,144 +296,4 @@
 
 #add-contact-dialog .close-dialog.dp-show-mobile {
     display: none;
-}
-
-/* Laptops: a bit smaller, so the dialog fits next to the sidebar */
-@media (max-width: 1200px) and (min-width: 769px) {
-    #add-contact-dialog .modal-left {
-        padding: 48px 32px;
-    }
-
-    #add-contact-dialog .modal-left h2 {
-        font-size: 47px;
-    }
-
-    #add-contact-dialog .modal-tagline {
-        font-size: 20px;
-    }
-
-    #add-contact-dialog .modal-right {
-        grid-template-columns: 120px minmax(0, 1fr);
-        column-gap: 32px;
-        padding: 48px 32px;
-    }
-}
-
-/* Mobile (Figma 396 x 760): dark header, avatar on the edge, fields below; scrolls on short screens */
-@media (max-width: 768px) {
-    #add-contact-dialog {
-        width: min(396px, calc(100vw - 32px));
-    }
-
-    #add-contact-dialog .modal-content {
-        flex-direction: column;
-        justify-content: flex-start;
-        min-height: 0;
-        height: auto;
-    }
-
-    #add-contact-dialog .modal-left {
-        flex: none;
-        width: 100%;
-        min-height: 0;
-        padding: 66px 24px 96px;
-    }
-
-    #add-contact-dialog .modal-left h2 {
-        margin-bottom: 8px;
-        font-size: 47px;
-    }
-
-    #add-contact-dialog .modal-tagline {
-        font-size: 20px;
-    }
-
-    #add-contact-dialog .modal-right {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        justify-content: flex-start;
-        padding: 80px 24px 32px;
-    }
-
-    #add-contact-dialog .avatar-upload {
-        position: absolute;
-        top: -60px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    #add-contact-dialog .avatar-remove-btn {
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        width: max-content;
-        margin-top: 4px;
-        transform: translateX(-50%);
-    }
-
-    #add-contact-dialog .input-group input {
-        height: 48px;
-        font-size: 16px;
-    }
-
-    #add-contact-dialog .modal-footer {
-        justify-content: center;
-        margin-top: 8px;
-    }
-
-    #add-contact-dialog .btn-mobile-hide {
-        display: none;
-    }
-
-    #add-contact-dialog .btn-submit {
-        height: 57px;
-        font-size: 20px;
-    }
-
-    #add-contact-dialog .close-dialog.dp-hidden-mobile {
-        display: none;
-    }
-
-    #add-contact-dialog .close-dialog.dp-show-mobile {
-        top: 16px;
-        right: 16px;
-        display: flex;
-        color: #FFFFFF;
-    }
-
-    #add-contact-dialog .close-dialog.dp-show-mobile:hover,
-    #add-contact-dialog .close-dialog.dp-show-mobile:focus-visible {
-        background: rgba(255, 255, 255, 0.15);
-        color: #FFFFFF;
-    }
-}
-
-/* Very short phones (e.g. 320 x 658): tighter header so the button stays reachable */
-@media (max-width: 768px) and (max-height: 700px) {
-    #add-contact-dialog {
-        max-height: calc(100dvh - 16px);
-    }
-
-    #add-contact-dialog .modal-left {
-        padding: 40px 24px 76px;
-    }
-
-    #add-contact-dialog .modal-left h2 {
-        font-size: 36px;
-    }
-
-    #add-contact-dialog .modal-right {
-        padding-top: 68px;
-        padding-bottom: 16px;
-    }
-
-    #add-contact-dialog .error-message {
-        min-height: 16px;
-        padding-top: 2px;
-    }
-
-    #add-contact-dialog .modal-footer {
-        margin-top: 4px;
-    }
 }

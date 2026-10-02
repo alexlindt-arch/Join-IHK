@@ -21,7 +21,7 @@ const CONTACT_VALIDATION = {
 };
 
 
-/** @type {string} Hint shown when a required field is left empty. */
+/** Hint shown when a required field is left empty. */
 const CONTACT_REQUIRED_TEXT = 'This field is required.';
 
 

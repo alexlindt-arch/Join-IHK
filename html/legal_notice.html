@@ -9,16 +9,16 @@
     <link rel="shortcut icon" href="../assets/icons/favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="../assets/icons/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="../style.css?v=20261002h">
-    <link rel="stylesheet" href="../assets/css/legal.css?v=20261002h">
-    <link rel="stylesheet" href="../assets/css/profile.css?v=20261002h">
+    <link rel="stylesheet" href="../style.css?v=20261002i">
+    <link rel="stylesheet" href="../assets/css/legal.css?v=20261002i">
+    <link rel="stylesheet" href="../assets/css/profile.css?v=20261002i">
     <title>Legal Notice</title>
 </head>
 
 <body class="app-page" id="body">
     <div class="header-background" id="header-section">
         <header class="header">
-            <span class="header-titel">Kanban Project Management Tool</span>
+            <span class="header-tagline">Kanban Project Management Tool</span>
             <img src="../assets/img/logo_big.svg" class="header-logo-mobil" alt="Join">
 
             <div class="header-account" id="header-account-logged-in" style="display:none;">
@@ -42,7 +42,6 @@
         </header>
     </div>
 
-    <!-- Sidebar for logged-in users -->
     <nav class="sidebar" id="sidebar-logged-in" style="display:none;">
         <a href="../html/summary.html" class="sidebar-logo-link">
             <img src="../assets/img/logo_white.svg" alt="Join Logo" class="sidebar-logo">
@@ -71,7 +70,6 @@
         </div>
     </nav>
 
-    <!-- Sidebar for external (not logged in) users -->
     <nav class="sidebar" id="sidebar-external">
         <a href="../index.html" class="sidebar-logo-link">
             <img src="../assets/img/logo_white.svg" alt="Join Logo" class="sidebar-logo">
@@ -88,36 +86,34 @@
         </div>
     </nav>
 
-    <!-- Mobile nav for logged-in users -->
-    <nav class="mobil-navigation" id="mobile-nav-logged-in" style="display:none;">
-        <a href="../html/summary.html" class="mobil-nav-link">
-            <img src="../assets/icons/summary.svg" alt="" class="mobil-nav-icon">
+    <nav class="mobile-navigation" id="mobile-nav-logged-in" style="display:none;">
+        <a href="../html/summary.html" class="mobile-nav-link">
+            <img src="../assets/icons/summary.svg" alt="" class="mobile-nav-icon">
             <span>Summary</span>
         </a>
-        <a href="../html/add_task.html" class="mobil-nav-link">
-            <img src="../assets/icons/add_task.svg" alt="" class="mobil-nav-icon">
+        <a href="../html/add_task.html" class="mobile-nav-link">
+            <img src="../assets/icons/add_task.svg" alt="" class="mobile-nav-icon">
             <span>Add Task</span>
         </a>
-        <a href="../html/board.html" class="mobil-nav-link">
-            <img src="../assets/icons/board.svg" alt="" class="mobil-nav-icon">
+        <a href="../html/board.html" class="mobile-nav-link">
+            <img src="../assets/icons/board.svg" alt="" class="mobile-nav-icon">
             <span>Board</span>
         </a>
-        <a href="../html/contacts.html" class="mobil-nav-link">
-            <img src="../assets/icons/contacts.svg" alt="" class="mobil-nav-icon">
+        <a href="../html/contacts.html" class="mobile-nav-link">
+            <img src="../assets/icons/contacts.svg" alt="" class="mobile-nav-icon">
             <span>Contacts</span>
         </a>
     </nav>
 
-    <!-- Mobile nav for external (not logged in) users -->
-    <nav class="mobil-navigation" id="mobile-nav-external">
-        <a href="../login.html" class="mobil-nav-link">
-            <img src="../assets/icons/login.svg" alt="" class="mobil-nav-icon">
+    <nav class="mobile-navigation" id="mobile-nav-external">
+        <a href="../login.html" class="mobile-nav-link">
+            <img src="../assets/icons/login.svg" alt="" class="mobile-nav-icon">
             <span>Log In</span>
         </a>
-        <a href="../html/privacy_policy.html" class="mobil-nav-link">
+        <a href="../html/privacy_policy.html" class="mobile-nav-link">
             <span>Privacy Policy</span>
         </a>
-        <a href="../html/legal_notice.html" class="mobil-nav-link aktiv">
+        <a href="../html/legal_notice.html" class="mobile-nav-link active">
             <span>Legal Notice</span>
         </a>
     </nav>
@@ -163,9 +159,9 @@
         </div>
     </main>
 
-    <script src="../script.js?v=20261002h"></script>
-    <script src="../js/config.js?v=20261002h"></script>
-    <script src="../js/guest_session.js?v=20261002h"></script>
+    <script src="../script.js?v=20261002i"></script>
+    <script src="../js/config.js?v=20261002i"></script>
+    <script src="../js/guest_session.js?v=20261002i"></script>
     <script>
         (function () {
             const user = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
@@ -178,11 +174,11 @@
             }
         })();
     </script>
-    <script src="../js/image_utils.js?v=20261002h"></script>
-    <script src="../assets/templates/profile_template.js?v=20261002h"></script>
-    <script src="../js/profile/profile.js?v=20261002h"></script>
-    <script src="../js/profile/profile_store.js?v=20261002h"></script>
-    <script src="../js/profile/profile_guest.js?v=20261002h"></script>
+    <script src="../js/image_utils.js?v=20261002i"></script>
+    <script src="../assets/templates/profile_template.js?v=20261002i"></script>
+    <script src="../js/profile/profile.js?v=20261002i"></script>
+    <script src="../js/profile/profile_store.js?v=20261002i"></script>
+    <script src="../js/profile/profile_guest.js?v=20261002i"></script>
 </body>
 
 </html>

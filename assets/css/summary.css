@@ -88,7 +88,7 @@ body.app-page { max-width: none; }
   align-items: center;
   padding: 28px 48px;
   gap: 24px;
-  justify-content: center;   /* Icon-/Datum-Gruppe zentriert statt ganz links */
+  justify-content: center;
   cursor: pointer;
   transition: background 100ms ease, box-shadow 100ms, transform 100ms;
   text-decoration: none;
@@ -169,7 +169,7 @@ body.app-page { max-width: none; }
 .greeting-name { font-size: 64px; font-weight: 700; color: var(--secondaryColor); line-height: 1.2; }
 
 @media (max-width: 1024px) {
-  .summary-main { flex-direction: column; padding: 180px 40px 48px 24px; }   /* etwas Bottom-Abstand, damit die letzte Reihe nicht abgehackt wirkt */
+  .summary-main { flex-direction: column; padding: 180px 40px 48px 24px; }
   .summary-heading { justify-content: flex-start; }
   .urgency-card { max-width: 100%; }
 }
@@ -228,7 +228,7 @@ body.app-page { max-width: none; }
   .urgency-card {
     width: 100%;
     height: 116px;
-    padding: 28px 16px;   /* etwas Innenabstand, damit das Icon nicht am linken Rand klebt */
+    padding: 28px 16px;
     gap: 20px;
     border-radius: 20px;
     justify-content: center;
@@ -257,7 +257,6 @@ body.app-page { max-width: none; }
   .summary-main { overflow: visible; }
   .summary-main { padding: 108px 20px 24px 20px; }
 
-  /* Kästchen größer + großzügigere Abstände */
   .summary-cards { gap: 24px; }
   .cards-row { gap: 24px; }
   .stat-card { height: 144px; padding: 0 19px; gap: 18px; }
@@ -265,7 +264,6 @@ body.app-page { max-width: none; }
   .cards-row-sm { gap: 16px; }
   .stat-card-sm { height: 144px; padding: 25px 4px; gap: 13px; }
 
-  /* Label immer 2-zeilig -> alle Zahlen auf gleicher Höhe */
   .stat-card-sm .stat-label {
     font-size: 16px;
     line-height: 1.2;
@@ -277,7 +275,6 @@ body.app-page { max-width: none; }
     padding: 0 2px;
   }
 }
-
 
 @media (max-width: 320px) {
   .summary-heading { margin-bottom: 28px; }

@@ -1,4 +1,3 @@
-/* ── Laptop (design 1440 × 1024) ── */
 @media (min-width: 1025px) {
     .contacts-main {
         padding: 96px 40px 0 0;
@@ -6,7 +5,6 @@
         box-sizing: border-box;
     }
 
-    /* White list panel, 456px wide; only the list inside scrolls */
     .contacts-split-left {
         flex: none;
         width: clamp(340px, 31.7vw, 456px);
@@ -17,8 +15,6 @@
         box-shadow: 4px 0 6px rgba(0, 0, 0, 0.08);
     }
 
-    /* The side padding sits on the children, so the white sticky "Add new contact" area spans the
-       whole list width (a narrower sticky area showed thin grey seams at its edges) */
     .contacts-list {
         height: 100%;
         padding: 0 0 32px;
@@ -67,7 +63,6 @@
         box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
     }
 
-    /* No browser focus ring after closing the dialog; keyboard users get a soft glow instead */
     .btn-add-contact button:focus {
         outline: none;
     }
@@ -179,7 +174,6 @@
         color: #007CEE;
     }
 
-    /* Right side: "Contacts | Better with a team" and the selected contact */
     .contacts-split-right {
         flex: 1;
         min-width: 0;
@@ -187,7 +181,6 @@
         margin: 14px 0 0 clamp(24px, 3.8vw, 55px);
     }
 
-    /* "Better with a team" moves below the title when there is not enough room */
     .brand-header {
         flex-wrap: wrap;
         gap: 8px 30px;
@@ -309,7 +302,7 @@
         color: #007CEE;
     }
 }
-/* Low laptop screens: tighten the right side so the whole contact stays visible */
+
 @media (min-width: 1025px) and (max-height: 720px) {
     .contacts-split-right {
         gap: 16px;

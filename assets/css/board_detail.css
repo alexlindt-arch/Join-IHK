@@ -9,7 +9,6 @@
   padding: 16px;
 }
 
-/* Dialog-specific reset to remove UA chrome and use our overlay styling */
 dialog.board-overlay {
   border: none;
   padding: 0;
@@ -18,12 +17,10 @@ dialog.board-overlay {
   appearance: none;
 }
 
-/* Backdrop styling for browsers that support ::backdrop */
 dialog.board-overlay::backdrop {
   background: rgba(0, 0, 0, 0.4);
 }
 
-/* Ensure dialog uses our fixed positioning and centering when open */
 dialog[open].board-overlay {
   position: fixed;
   inset: 0;
@@ -34,12 +31,10 @@ dialog[open].board-overlay {
   min-height: 100vh;
 }
 
-/* Keep scrolling confined to the dialog content if needed */
 dialog[open].board-overlay {
   overflow: auto;
 }
 
-/* Ensure dialog is hidden by default unless it has the open attribute */
 dialog.board-overlay {
   display: none;
 }

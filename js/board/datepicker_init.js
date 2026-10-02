@@ -11,7 +11,7 @@ function buildFlatpickrOptions() {
     dateFormat: 'd/m/Y',
     minDate: 'today',
     clickOpens: true,
-    disableMobile: true  // prevents native mobile date picker overlay
+    disableMobile: true
   };
 }
 
@@ -22,12 +22,8 @@ function buildFlatpickrOptions() {
  * @returns {void}
  */
 function initFor(el) {
-  if (!el || el._flatpickr) return;
-  try {
-    if (typeof flatpickr === 'function') {
-      flatpickr(el, buildFlatpickrOptions());
-    }
-  } catch (e) { /* ignore */ }
+  if (!el || el._flatpickr || typeof flatpickr !== 'function') return;
+  flatpickr(el, buildFlatpickrOptions());
 }
 
 

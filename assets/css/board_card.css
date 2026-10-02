@@ -117,14 +117,12 @@
   cursor: grabbing;
 }
 
-/* Keyboard focus on task cards and the subtask progress */
 .task-card:focus-visible,
 .card-progress:focus-visible {
   outline: 2px solid #29ABE2;
   outline-offset: 2px;
 }
 
-/* ---------- "Move to" button and menu (touch screens, tablets and phones; desktop uses drag & drop) ---------- */
 .task-card {
   position: relative;
 }

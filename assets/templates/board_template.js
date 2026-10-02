@@ -1,32 +1,4 @@
-/**
- * Escapes special HTML characters in a string to prevent XSS.
- * @param {string} str - The string to escape.
- * @returns {string} HTML-safe string.
- */
-function escapeHtml(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
 
-
-/**
- * Converts various date formats to ISO 8601 (YYYY-MM-DD).
- * @param {string} value - Date string in ISO, dd/mm/yyyy, dd.mm.yyyy, or parseable format.
- * @returns {string} ISO date string or empty string if conversion fails.
- */
-function toIsoDate(value) {
-    if (!value) return '';
-    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
-    if (/^\d{2}[./]\d{2}[./]\d{4}$/.test(value)) {
-        const parts = value.split(/[./]/);
-        return `${parts[2]}-${parts[1]}-${parts[0]}`;
-    }
-    const d = new Date(value);
-    if (!isNaN(d)) return d.toISOString().slice(0, 10);
-    return '';
-}
 
 
 /**
@@ -76,18 +48,16 @@ function prioSvg(prio) {
  * @returns {string} HTML string.
  */
 function taskCardTemplate(task) {
-    const progress = buildProgressBar(task.subtasks || [], task.id);
-    const avatars = buildAvatars(task.assignedTo || []);
+    const description = task.description ? `<div class="task-card-desc">${escapeHtml(truncate(task.description, 60))}</div>` : '';
     return `
         <article class="task-card" data-task-id="${task.id}" draggable="true" tabindex="0"
             aria-label="Open task: ${escapeHtml(task.title || '')}" ondragstart="startDragging(${task.id})"
             onclick="openTaskDetail(${task.id})" onkeydown="handleTaskCardKey(event, ${task.id})">
             <span class="task-card-category ${categoryColorClass(task.category)}">${escapeHtml(task.category || '')}</span>${moveButtonTemplate(task.id)}
             <div class="task-card-title">${escapeHtml(task.title || '')}</div>
-            ${task.description ? `<div class="task-card-desc">${escapeHtml(truncate(task.description, 60))}</div>` : ''}
-            ${progress}
+            ${description}${buildProgressBar(task.subtasks || [], task.id)}
             <div class="task-card-footer">
-                <div class="task-card-avatars">${avatars}</div>
+                <div class="task-card-avatars">${buildAvatars(task.assignedTo || [])}</div>
                 <div class="task-card-prio">${prioSvg(task.priority)}</div>
             </div>
         </article>`;

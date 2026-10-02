@@ -1,4 +1,7 @@
-/** @type {?function(SubmitEvent): Promise<void>} Action executed after the contact form is valid. */
+/**
+ * Action executed after the contact form is valid.
+ * @type {?function(SubmitEvent): Promise<void>}
+ */
 let contactSubmitAction = null;
 
 

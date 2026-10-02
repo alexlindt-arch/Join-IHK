@@ -13,7 +13,19 @@ function profileDialogTemplate() {
                     <span class="account-dialog-bar" aria-hidden="true"></span>
                 </section>
                 <form class="account-dialog-main" id="profile-form" onsubmit="saveProfile(event)" novalidate>
-                    ${profileAvatarTemplate()}
+                    ${profileAvatarTemplate()}${profileFieldsTemplate()}
+                </form>
+            </div>
+        </dialog>`;
+}
+
+
+/**
+ * Markup of the name, email and phone fields of the account dialog with the error text and both buttons.
+ * @returns {string} HTML string.
+ */
+function profileFieldsTemplate() {
+    return `
                     <div class="account-dialog-fields">
                         ${profileFieldTemplate('name', 'Name', 'text', 'name', profilePersonIcon())}
                         ${profileFieldTemplate('email', 'Email', 'email', 'email', profileMailIcon())}
@@ -24,10 +36,7 @@ function profileDialogTemplate() {
                                 onclick="openDeleteAccountDialog()">Delete my account</button>
                             <button type="submit" class="account-btn account-btn--filled" id="profile-save">Edit</button>
                         </div>
-                    </div>
-                </form>
-            </div>
-        </dialog>`;
+                    </div>`;
 }
 
 

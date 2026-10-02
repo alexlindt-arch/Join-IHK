@@ -46,54 +46,72 @@ function renderEmptyContactsTemplate() {
  * @returns {string} The HTML string template for the detailed profile view.
  */
 function renderContactDetails(contact) {
-    return `<div class="profile-header">
-                        <div class="profile-avatar" style="background-color: ${imgEscape(contact.color)};">${avatarInnerHTML(contact)}</div>
-                        <div class="profile-meta">
-                            <h2 class="profile-name">${imgEscape(contact.name)}</h2>
-                            <div class="profile-actions for-mobile-hide" id="profile">
-                                <button type="button" class="profile-btn" onclick="editContact('${imgEscape(contact.id)}')">
-                                <img src="../assets/icons/edit_contacts.svg" alt=""> Edit
-                                </button>
-                                <button type="button" class="profile-btn" onclick="deleteContact('${imgEscape(contact.id)}')">
-                                <img src="../assets/icons/delete.svg" alt=""> Delete
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+    return `
+        <div class="profile-header">
+            <div class="profile-avatar" style="background-color: ${imgEscape(contact.color)};">${avatarInnerHTML(contact)}</div>
+            <div class="profile-meta">
+                <h2 class="profile-name">${imgEscape(contact.name)}</h2>
+                <div class="profile-actions for-mobile-hide" id="profile">${contactActionButtons(contact.id, 'profile-btn')}</div>
+            </div>
+        </div>
+        <div class="profile-body">
+            <h3 class="section-title">Contact Information</h3>
+            ${contactInfoTemplate(contact)}
+            ${contactMobileOptionsTemplate(contact.id)}
+        </div>`;
+}
 
-                    <div class="profile-body">
-                        <h3 class="section-title">Contact Information</h3>
 
-                        <div class="info-group">
-                            <span class="info-label">Email</span>
-                            <a class="info-value email-link" href="mailto:${imgEscape(contact.email)}">${imgEscape(contact.email)}</a>
-                        </div>
+/**
+ * Returns the email and phone rows of the contact details.
+ * @param {Contact} contact - Contact to show.
+ * @returns {string} HTML string.
+ */
+function contactInfoTemplate(contact) {
+    return `
+        <div class="info-group">
+            <span class="info-label">Email</span>
+            <a class="info-value email-link" href="mailto:${imgEscape(contact.email)}">${imgEscape(contact.email)}</a>
+        </div>
+        <div class="info-group">
+            <span class="info-label">Phone</span>
+            <a class="info-value phone-link" href="tel:${imgEscape(contact.phone)}">${imgEscape(contact.phone)}</a>
+        </div>`;
+}
 
-                        <div class="info-group">
-                            <span class="info-label">Phone</span>
-                            <a class="info-value phone-link" href="tel:${imgEscape(contact.phone)}">${imgEscape(contact.phone)}</a>
-                        </div>
 
-                        <button type="button" class="btn-options-mobile" onclick="toggleMobileOptions(event)"
-                            aria-label="More options" aria-haspopup="true" aria-expanded="false" aria-controls="mobile-options-menu">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <circle cx="12" cy="5" r="2" fill="white"/>
-                                <circle cx="12" cy="12" r="2" fill="white"/>
-                                <circle cx="12" cy="19" r="2" fill="white"/>
-                            </svg>
-                        </button>
+/**
+ * Returns the Edit and Delete buttons of a contact.
+ * @param {string} contactId - Contact id.
+ * @param {string} className - CSS class of the buttons ('profile-btn' on desktop, 'menu-item' in the mobile menu).
+ * @returns {string} HTML string.
+ */
+function contactActionButtons(contactId, className) {
+    const id = imgEscape(contactId);
+    return `
+        <button type="button" class="${className}" onclick="editContact('${id}')">
+            <img src="../assets/icons/edit_contacts.svg" alt=""> <span>Edit</span>
+        </button>
+        <button type="button" class="${className}" onclick="deleteContact('${id}')">
+            <img src="../assets/icons/delete.svg" alt=""> <span>Delete</span>
+        </button>`;
+}
 
-                        <div id="mobile-options-menu" class="mobile-options-popup">
-                            <button type="button" class="menu-item" onclick="editContact('${imgEscape(contact.id)}')">
-                                <img src="../assets/icons/edit_contacts.svg" alt="">
-                                <span>Edit</span>
-                            </button>
-                            <button type="button" class="menu-item" onclick="deleteContact('${imgEscape(contact.id)}')">
-                                <img src="../assets/icons/delete.svg" alt="">
-                                <span>Delete</span>
-                            </button>
-                        </div>
-                    </div>`;
+
+/**
+ * Returns the round options button of the mobile contact view and its Edit / Delete menu.
+ * @param {string} contactId - Contact id.
+ * @returns {string} HTML string.
+ */
+function contactMobileOptionsTemplate(contactId) {
+    return `
+        <button type="button" class="btn-options-mobile" onclick="toggleMobileOptions(event)"
+            aria-label="More options" aria-haspopup="true" aria-expanded="false" aria-controls="mobile-options-menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="5" r="2" fill="white"/><circle cx="12" cy="12" r="2" fill="white"/><circle cx="12" cy="19" r="2" fill="white"/>
+            </svg>
+        </button>
+        <div id="mobile-options-menu" class="mobile-options-popup">${contactActionButtons(contactId, 'menu-item')}</div>`;
 }
 
 
@@ -106,57 +124,75 @@ function renderContactDetails(contact) {
  * @returns {string} The HTML string template for the modal dialog.
  */
 function renderDialogContact(title, buttonHtml, showTagline) {
-    const taglineClass = showTagline ? 'modal-tagline' : 'modal-tagline d-none';
     return `<div class="modal-content">
+            ${contactDialogSideTemplate(title, showTagline)}
+            <form class="modal-right" novalidate onsubmit="handleContactSubmit(event)">
+                <button type="button" class="close-dialog dp-hidden-mobile" onclick="closeDialog()" aria-label="Close">×</button>
+                ${contactDialogAvatarTemplate()}
+                ${contactFieldTemplate('name', 'text', 'Name', 'person.svg', 'Please enter first and last name (letters only, no numbers).')}
+                ${contactFieldTemplate('email', 'email', 'Email', 'mail.svg', 'Please enter a valid email address.')}
+                ${contactFieldTemplate('phone', 'tel', 'Phone', 'call.svg', 'Only numbers are allowed (optionally starting with +).')}
+                <div class="modal-footer">${buttonHtml}</div>
+            </form>
+        </div>`;
+}
+
+
+/**
+ * Returns the dark side of the contact dialog with logo, title, tagline and the mobile close button.
+ * @param {string} title - Dialog title.
+ * @param {boolean} showTagline - Whether the tagline is shown.
+ * @returns {string} HTML string.
+ */
+function contactDialogSideTemplate(title, showTagline) {
+    return `
             <div class="modal-left">
                 <button type="button" class="close-dialog dp-show-mobile" onclick="closeDialog()" aria-label="Close">×</button>
                 <div class="modal-logo for-mobile-hide"><img src="../assets/img/logo_white.svg" alt="Join logo"></div>
                 <h2 id="contact-dialog-title">${title}</h2>
-                <p class="${taglineClass}">Tasks are better with a team!</p>
+                <p class="${showTagline ? 'modal-tagline' : 'modal-tagline d-none'}">Tasks are better with a team!</p>
                 <div class="modal-divider"></div>
-            </div>
+            </div>`;
+}
 
-            <form class="modal-right" novalidate onsubmit="handleContactSubmit(event)">
-                <button type="button" class="close-dialog dp-hidden-mobile" onclick="closeDialog()" aria-label="Close">×</button>
 
+/**
+ * Returns the avatar of the contact dialog with the camera button, the hidden file input and "Remove photo".
+ * @returns {string} HTML string.
+ */
+function contactDialogAvatarTemplate() {
+    return `
                 <div class="avatar-upload">
                     <div class="profile-placeholder"></div>
                     <button type="button" class="avatar-upload-hint" title="Upload photo (JPEG or PNG)"
                         aria-label="Upload photo (JPEG or PNG)" onclick="document.getElementById('modal-photo').click()">
                         ${CAMERA_ICON_SVG}
                     </button>
-                    <input type="file" id="modal-photo" accept="image/jpeg,image/png" hidden
-                        onchange="handleContactPhotoSelect(this)">
-                    <button type="button" class="avatar-remove-btn d-none" id="avatar-remove-btn"
-                        onclick="removeContactPhoto()">Remove photo</button>
-                </div>
+                    <input type="file" id="modal-photo" accept="image/jpeg,image/png" hidden onchange="handleContactPhotoSelect(this)">
+                    <button type="button" class="avatar-remove-btn d-none" id="avatar-remove-btn" onclick="removeContactPhoto()">Remove photo</button>
+                </div>`;
+}
 
+
+/**
+ * Returns one input of the contact dialog with its icon and the error text below.
+ * Phone input only accepts digits and a leading "+".
+ * @param {string} field - Field name ('name', 'email' or 'phone').
+ * @param {string} type - Input type.
+ * @param {string} label - Placeholder and accessible name.
+ * @param {string} icon - Icon file in assets/icons.
+ * @param {string} errorText - Default error text.
+ * @returns {string} HTML string.
+ */
+function contactFieldTemplate(field, type, label, icon, errorText) {
+    const phoneFilter = field === 'phone' ? 'oninput="allowOnlyPhoneCharacters(this)"' : '';
+    return `
                 <div class="input-group">
-                    <input type="text" id="modal-name" name="name" placeholder="Name" aria-label="Name"
-                        aria-describedby="name-error" onblur="validateField('name')" autocomplete="off">
-                    <img class="input-icon" src="../assets/icons/person.svg" alt="" aria-hidden="true">
+                    <input type="${type}" id="modal-${field}" name="${field}" placeholder="${label}" aria-label="${label}"
+                        aria-describedby="${field}-error" ${phoneFilter} onblur="validateField('${field}')" autocomplete="off">
+                    <img class="input-icon" src="../assets/icons/${icon}" alt="" aria-hidden="true">
                 </div>
-                <div id="name-error" class="error-message" aria-live="polite">Please enter first and last name (letters only, no numbers).</div>
-
-                <div class="input-group">
-                    <input type="email" id="modal-email" name="email" placeholder="Email" aria-label="Email"
-                        aria-describedby="email-error" onblur="validateField('email')" autocomplete="off">
-                    <img class="input-icon" src="../assets/icons/mail.svg" alt="" aria-hidden="true">
-                </div>
-                <div id="email-error" class="error-message" aria-live="polite">Please enter a valid email address.</div>
-
-                <div class="input-group">
-                    <input type="tel" id="modal-phone" name="phone" placeholder="Phone" aria-label="Phone"
-                        aria-describedby="phone-error" oninput="allowOnlyPhoneCharacters(this)" onblur="validateField('phone')" autocomplete="off">
-                    <img class="input-icon" src="../assets/icons/call.svg" alt="" aria-hidden="true">
-                </div>
-                <div id="phone-error" class="error-message" aria-live="polite">Only numbers are allowed (optionally starting with +).</div>
-
-                <div class="modal-footer">
-                    ${buttonHtml}
-                </div>
-            </form>
-        </div>`;
+                <div id="${field}-error" class="error-message" aria-live="polite">${errorText}</div>`;
 }
 
 

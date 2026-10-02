@@ -1,10 +1,9 @@
-/* Add Task Modal */
 .add-task-modal {
   background: #ffffff;
   border-radius: 24px;
   box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.2);
   padding: 48px;
-  /* use a responsive width that keeps the modal centered */
+
   width: min(1100px, calc(100% - 64px));
   max-width: 1100px;
   max-height: 90vh;
@@ -14,18 +13,16 @@
   margin: 0 auto;
 }
 
-/* Strong centering: ensure modal is visually centered even if page layout interferes */
 dialog[open].board-overlay>.add-task-modal {
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  /* keep responsive sizing */
+
   width: min(1100px, calc(100% - 64px));
   max-height: 100vh;
 }
 
-/* Progress popover (tooltip / detail) */
 .progress-popover {
   position: absolute;
   background: #ffffff;
@@ -182,7 +179,7 @@ button.btn-add-task:active {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    /* keep responsive sizing */
+
     width: min(1100px, calc(100% - 20px));
     max-height: 100vh;
   }
@@ -220,8 +217,6 @@ button.btn-add-task:active {
   z-index: 9999;
 }
 
-
-/* Add-task modal: title and footer stay visible, only the form fields scroll (with a visible scrollbar) */
 dialog[open].board-overlay > .add-task-modal {
   display: flex;
   flex-direction: column;

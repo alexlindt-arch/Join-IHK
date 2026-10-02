@@ -1,41 +1,33 @@
 :root {
-    /* --- Hauptfarben des Designs --- */
-    --primaryColor: #2A3647;       /* Hauptfarbe für Hintergrund Sidebar und Buttons */
-    --secondaryColor: #29ABE2;         /* Akzentfarbe für Hover-Effekte und Links */
-    --primary-darkblue: #091931;      /* Dunkelste Farbe für aktive Menüpunkte */
-    --activeColor: #091931;            /* Aktive Nav-Items und Hover-Zustände */
-    --hoverColor: #2A3D59;            /* Aktive Nav-Items und Hover-Zustände */
+    --primaryColor: #2A3647;
+    --secondaryColor: #29ABE2;
+    --primary-darkblue: #091931;
+    --activeColor: #091931;
+    --hoverColor: #2A3D59;
 
-    /* --- Hintergrundfarbe --- */
-    --background: #F6F7F8;            /* Hellgrauer Seitenhintergrund */
+    --background: #F6F7F8;
 
-    /* --- Schwarz und Weiß --- */
     --black: #000000;
-    --black-transparent: rgba(0, 0, 0, 0.12); /* Halbtransparentes Schwarz für Overlays */
+    --black-transparent: rgba(0, 0, 0, 0.12);
     --white: #FFFFFF;
 
-    /* --- Grautöne --- */
-    --light-gray-1: #F4F4F4;            /* Sehr helles Grau */
-    --light-gray-2: #CDCDCD;            /* Mittleres Grau für Scrollbars */
-    --light-gray-3: #D1D1D1;            /* Helleres Grau für Rahmen */
-    --light-gray-4: #A8A8A8;            /* Grau für Platzhaltertexte und Icons */
+    --light-gray-1: #F4F4F4;
+    --light-gray-2: #CDCDCD;
+    --light-gray-3: #D1D1D1;
+    --light-gray-4: #A8A8A8;
 
-    /* --- Prioritätsfarben --- */
-    --priority-urgent: #FF3D00;    /* Rot für dringende Aufgaben */
-    --medium-priority: #FFA800;      /* Orange für mittlere Priorität */
-    --low-priority: #7AE229;     /* Grün für niedrige Priorität */
+    --priority-urgent: #FF3D00;
+    --medium-priority: #FFA800;
+    --low-priority: #7AE229;
 
-    /* --- Statusfarben für Kategorien --- */
-    --category-orange: #FF7A00;       /* Design-Kategorie */
-    --category-green: #7AE229;        /* Entwicklung-Kategorie */
-    --category-blue: #0190E0;         /* Qualität-Kategorie */
+    --category-orange: #FF7A00;
+    --category-green: #7AE229;
+    --category-blue: #0190E0;
 
-    /* --- Schatten --- */
-    --shadow-1: rgba(0, 0, 0, 0.10); /* Leichter Schatten */
-    --shadow-2: rgba(0, 0, 0, 0.08); /* Mittlerer Schatten */
-    --shadow-3: rgba(0, 0, 0, 0.04); /* Sehr leichter Schatten */
+    --shadow-1: rgba(0, 0, 0, 0.10);
+    --shadow-2: rgba(0, 0, 0, 0.08);
+    --shadow-3: rgba(0, 0, 0, 0.04);
 
-    /* --- Sonstige Farben --- */
     --yellow: #FFC701;
     --red: #ff0000;
     --dark-green: #02CF2F;

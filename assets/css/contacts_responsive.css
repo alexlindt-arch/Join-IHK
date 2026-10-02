@@ -22,7 +22,6 @@
         margin-top: 64px;
     }
 
-    /* 428px wide: 38px side padding -> 352px wide cards like in the design */
     .contacts-list {
         padding: 24px clamp(12px, 9vw, 38px) 96px;
     }
@@ -52,9 +51,7 @@
     }
 }
 
-/* ── Tablet: keep the right side inside the screen ── */
 @media (min-width: 769px) and (max-width: 1024px) {
-    /* Compact sizes so the whole contact fits below the header without scrolling */
     .contacts-split-right {
         flex: 1;
         min-width: 0;
@@ -109,8 +106,6 @@
         overflow-wrap: anywhere;
     }
 
-    /* Narrow tablets: the list gets a fixed width and the contact is shown in one column,
-       so name, Edit and Delete never run out of the detail area */
     .contacts-split-left {
         flex: 0 0 clamp(240px, 32vw, 320px);
         min-width: 0;

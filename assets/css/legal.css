@@ -107,9 +107,9 @@
 }
 
 .number {
-  font-size: 2rem;    /* sehr groß */
-  font-weight: bold;    /* fett */
-  margin-right: 16px;   /* Abstand zur Überschrift */
+  font-size: 2rem;
+  font-weight: bold;
+  margin-right: 16px;
   display: inline-block;
   vertical-align: middle;
 }
@@ -127,7 +127,6 @@
   }
 }
 
-/* ── Tablet ── */
 @media (max-width: 768px) {
   .legal-main {
     padding: 40px 32px 40px 32px;
@@ -148,7 +147,6 @@
   }
 }
 
-/* ── Mobile ── */
 @media (max-width: 480px) {
   .legal-main {
     padding: 32px 16px 24px;
@@ -186,8 +184,6 @@
   }
 }
 
-/* ── Mobile (Figma "Legal Notice" / "Privacy Policy" 428px): plain text on the page background,
-   title 47px with the back arrow on the right, headings 27px, text 16px ── */
 @media (max-width: 768px) {
   .legal-content {
     align-items: stretch;
@@ -211,7 +207,6 @@
     overflow-wrap: anywhere;
   }
 
-  /* Back arrow: 32px button without a background, like the arrow in the design */
   .back-link {
     flex-shrink: 0;
     width: 32px;
@@ -268,7 +263,6 @@
   }
 }
 
-/* 320px: the long titles stay inside the screen */
 @media (max-width: 360px) {
   .legal-header-row .page-title {
     font-size: 36px;

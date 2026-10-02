@@ -196,7 +196,7 @@ async function deleteGuestCreations(created) {
  * Returns the [key, value] pairs of a stored collection without empty slots.
  * Firebase returns objects with numeric keys as arrays with null gaps; those gaps must never be deleted.
  * @param {Object|Array|null} entries - Stored collection.
- * @returns {Array<[string, *]>} Keys with their values.
+ * @returns {Array<Array>} [key, value] pairs.
  */
 function storedEntries(entries) {
     return Object.entries(entries || {}).filter(([, value]) => value !== null && value !== undefined);

@@ -1,4 +1,3 @@
-/* ---------- Short notice for guests right after the guest login ---------- */
 .guest-notice {
     position: fixed;
     right: 32px;
@@ -81,7 +80,6 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Phones: full width with 16px margin, above the 72px bottom navigation */
 @media (max-width: 768px) {
     .guest-notice {
         right: 16px;

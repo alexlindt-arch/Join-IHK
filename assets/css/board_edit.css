@@ -196,8 +196,6 @@
   font-size: 16px;
 }
 
-
-/* ---------- Edit overlay in two columns (Figma "Edit task Overlay", 1072px) ---------- */
 .board-modal:has(> #board-edit-box:not(.d-none)) {
   position: relative;
   max-width: 1072px;

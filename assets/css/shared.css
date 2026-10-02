@@ -6,10 +6,6 @@ body.app-page {
   max-width: 1440px;
 }
 
-/* ──────────────── Sidebar ──────────────── */
-
-
-/* ──────────────── Main wrapper ──────────────── */
 .main-wrapper {
   margin-left: 232px;
   flex: 1;
@@ -20,7 +16,6 @@ body.app-page {
   overflow-y: auto;
 }
 
-/* ──────────────── Header ──────────────── */
 .main-header {
   height: 96px;
   background: #ffffff;
@@ -55,8 +50,6 @@ body.app-page {
   }
 }
 
-
-/* ── Tablet: Icon-only Sidebar ── */
 @media (max-width: 768px) {
   body.app-page {
     height: auto;
@@ -109,7 +102,6 @@ body.app-page {
   }
 }
 
-/* ── Mobile: Sidebar → Bottom Navigation ── */
 @media (max-width: 480px) {
   body.app-page {
     height: auto;
@@ -234,7 +226,6 @@ body.app-page {
     display: block;
   }
 
-  /* Legal / Privacy pages: 5-item bottom nav */
   .nav-item--legal-link {
     display: flex;
     width: auto;
@@ -255,7 +246,6 @@ body.app-page {
   }
 }
 
-/* ── Landscape-Warnung (Mobile) ── */
 .landscape-warning {
   display: none;
   position: fixed;

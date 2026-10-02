@@ -164,27 +164,26 @@ function redirectIfUnauthorized() {
 
 redirectIfUnauthorized();
 
+/** Sidebar and mobile nav links that belong to each page. */
+const NAV_LINK_SELECTORS = {
+    'summary.html': '[id="nav_overview"], .mobile-nav-link:nth-child(1)',
+    'add_task.html': '[id="nav_addtask"], .mobile-nav-link:nth-child(2)',
+    'board.html': '[id="nav_board"], .mobile-nav-link:nth-child(3)',
+    'contacts.html': '[id="nav_contacts"], .mobile-nav-link:nth-child(4)',
+    'privacy_policy.html': '[id="nav_privacy"], .nav-bottom-left .nav-link:nth-child(1)',
+    'legal_notice.html': '[id="nav_legal"], .nav-bottom-left .nav-link:nth-child(2)'
+};
+
+
 /**
  * Highlights the nav link that matches the current page URL
- * by adding the 'aktiv' class to both sidebar and mobile nav links.
+ * by adding the 'active' class to both sidebar and mobile nav links.
  * @returns {void}
  */
 function setActiveNavLink() {
-    const currentPage = window.location.pathname.split('/').pop();
-
-    const navMap = {
-        'summary.html': '[id="nav_overview"], .mobil-nav-link:nth-child(1)',
-        'add_task.html': '[id="nav_addtask"],  .mobil-nav-link:nth-child(2)',
-        'board.html': '[id="nav_board"],    .mobil-nav-link:nth-child(3)',
-        'contacts.html': '[id="nav_contacts"], .mobil-nav-link:nth-child(4)',
-        'privacy_policy.html': '[id="nav_privacy"], .nav-bottom-left .nav-link:nth-child(1)',
-        'legal_notice.html': '[id="nav_legal"], .nav-bottom-left .nav-link:nth-child(2)',
-    };
-
-    const selector = navMap[currentPage];
+    const selector = NAV_LINK_SELECTORS[window.location.pathname.split('/').pop()];
     if (!selector) return;
-
-    document.querySelectorAll(selector).forEach(link => link.classList.add('aktiv'));
+    document.querySelectorAll(selector).forEach(link => link.classList.add('active'));
 }
 
 
@@ -300,6 +299,21 @@ function watchDialogsForScrollLock() {
     const observer = new MutationObserver(updatePageScrollLock);
     observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open', 'class'] });
     updatePageScrollLock();
+}
+
+
+
+
+/**
+ * Escapes special HTML characters in a string to prevent XSS.
+ * @param {string} str - The string to escape.
+ * @returns {string} HTML-safe string.
+ */
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }
 
 
