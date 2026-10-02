@@ -34,11 +34,6 @@ dialog[open].board-overlay {
   min-height: 100vh;
 }
 
-/* When a dialog is open, prevent the page behind from scrolling */
-body.dialog-open {
-  overflow: hidden;
-}
-
 /* Keep scrolling confined to the dialog content if needed */
 dialog[open].board-overlay {
   overflow: auto;

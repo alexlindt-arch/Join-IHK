@@ -3,7 +3,6 @@ body.app-page {
   flex-direction: row;
   align-items: stretch;
   background: #F6F7F8;
-  overflow: auto;
   max-width: 1440px;
 }
 
@@ -60,7 +59,6 @@ body.app-page {
 /* ── Tablet: Icon-only Sidebar ── */
 @media (max-width: 768px) {
   body.app-page {
-    overflow-y: visible;
     height: auto;
   }
 
@@ -114,7 +112,6 @@ body.app-page {
 /* ── Mobile: Sidebar → Bottom Navigation ── */
 @media (max-width: 480px) {
   body.app-page {
-    overflow-y: visible;
     height: auto;
   }
 

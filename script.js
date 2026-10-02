@@ -251,3 +251,56 @@ function allowOnlyPhoneCharacters(input) {
     const cleaned = input.value.replace(/[^0-9+]/g, '').replace(/(?!^)\+/g, '');
     if (cleaned !== input.value) input.value = cleaned;
 }
+
+
+/** Scroll position of the page while it is fixed behind an open dialog, null while nothing is open. */
+let lockedPageScrollY = null;
+
+
+/**
+ * Fixes the page while a dialog or the task overlay is open, so the background never scrolls,
+ * and releases it again afterwards. Works without any overflow rule on html or body.
+ * @returns {void}
+ */
+function updatePageScrollLock() {
+    const shouldLock = Boolean(document.querySelector('dialog[open], #board-overlay:not(.d-none)'));
+    if (shouldLock === (lockedPageScrollY !== null)) return;
+    if (shouldLock) fixPageBehindDialog();
+    else releasePageBehindDialog();
+}
+
+
+/**
+ * Pins the body at its current scroll position.
+ * @returns {void}
+ */
+function fixPageBehindDialog() {
+    lockedPageScrollY = window.scrollY;
+    Object.assign(document.body.style, { position: 'fixed', top: `-${lockedPageScrollY}px`, left: '0', right: '0' });
+}
+
+
+/**
+ * Unpins the body and restores the scroll position it had before the dialog was opened.
+ * @returns {void}
+ */
+function releasePageBehindDialog() {
+    const scrollY = lockedPageScrollY;
+    lockedPageScrollY = null;
+    Object.assign(document.body.style, { position: '', top: '', left: '', right: '' });
+    window.scrollTo({ top: scrollY, behavior: 'instant' });
+}
+
+
+/**
+ * Watches every dialog and the task overlay for opening and closing.
+ * @returns {void}
+ */
+function watchDialogsForScrollLock() {
+    const observer = new MutationObserver(updatePageScrollLock);
+    observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['open', 'class'] });
+    updatePageScrollLock();
+}
+
+
+document.addEventListener('DOMContentLoaded', watchDialogsForScrollLock);

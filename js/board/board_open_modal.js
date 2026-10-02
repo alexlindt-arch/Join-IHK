@@ -11,7 +11,6 @@ async function openAddTaskModal(status = 'todo') {
   clearModalTaskForm();
   setMinModalDueDate();
   document.addEventListener('click', handleModalOutsideClick, true);
-  try { document.body.classList.add('dialog-open'); } catch (e) { /* ignore */ }
 }
 
 
@@ -57,7 +56,6 @@ function closeModalOverlay() {
   } else {
     overlay.classList.add('d-none');
   }
-  try { document.body.classList.remove('dialog-open'); } catch (e) { /* ignore */ }
 }
 
 

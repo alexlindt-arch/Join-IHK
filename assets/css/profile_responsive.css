@@ -105,14 +105,4 @@
     }
 }
 
-/* ---------- Page behind the open dialog does not scroll ---------- */
 
-html.profile-dialog-open,
-body.profile-dialog-open {
-    overflow: hidden;
-}
-
-body.profile-dialog-open main,
-body.profile-dialog-open main * {
-    overflow: hidden;
-}

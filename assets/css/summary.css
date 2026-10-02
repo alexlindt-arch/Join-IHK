@@ -1,5 +1,4 @@
-html, body { overflow-x: hidden; }
-body.app-page { max-width: none; overflow-x: hidden; }
+body.app-page { max-width: none; }
 
 .summary-main {
   display: flex;

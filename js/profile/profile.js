@@ -61,7 +61,6 @@ async function openProfileDialog() {
     fillProfileForm(user);
     if (user.isGuest) await fillGuestAccount(user);
     setProfileMode(false);
-    lockPageScroll(true);
     dialog.showModal();
     document.getElementById('profile-save').focus({ preventScroll: true });
     scrollProfileToTop();
@@ -97,19 +96,7 @@ function getProfileDialog() {
  * @returns {void}
  */
 function handleProfileDialogClosed() {
-    lockPageScroll(false);
     document.getElementById('user-avatar')?.focus();
-}
-
-
-/**
- * Stops the page behind the dialog from scrolling while the dialog is open.
- * @param {boolean} locked - True while the dialog is open.
- * @returns {void}
- */
-function lockPageScroll(locked) {
-    document.documentElement.classList.toggle('profile-dialog-open', locked);
-    document.body.classList.toggle('profile-dialog-open', locked);
 }
 
 
@@ -283,5 +270,4 @@ function clearProfileErrors() {
  */
 function closeProfileDialog() {
     document.getElementById('profile-dialog')?.close();
-    lockPageScroll(false);
 }
