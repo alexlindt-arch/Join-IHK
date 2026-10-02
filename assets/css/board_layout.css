@@ -2,7 +2,7 @@
     -webkit-touch-callout: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1279px) {
     .board-columns {
         grid-template-columns: minmax(0, 1fr);
         min-width: 0;
