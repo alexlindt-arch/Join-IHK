@@ -1,5 +1,3 @@
-const ADDTASK_BASE_URL = JOIN_DB_URL;
-const ADDTASK_CONTACTS_URL = `${ADDTASK_BASE_URL}/contacts.json`;
 
 let modalSelectedPriority = 'medium';
 let modalSelectedCategory = '';
@@ -8,39 +6,6 @@ let modalSubtasks = [];
 let modalContacts = [];
 let modalDefaultStatus = 'todo';
 
-
-/**
- * Loads all contacts from the database for the assign dropdown of the modal.
- * @async
- * @returns {Promise<Array>} Normalised contacts.
- */
-async function loadAssignContacts() {
-    try {
-        const response = await fetch(ADDTASK_CONTACTS_URL);
-        return normalizeContacts(toEntryList(await response.json()));
-    } catch (error) {
-        notify('Contacts could not be loaded.', true);
-        return [];
-    }
-}
-
-
-/**
- * Normalizes raw contacts: filters nulls, maps to consistent shape, sorts by name.
- * @param {Array} raw - Raw contact objects.
- * @returns {Array} Sorted, normalized contacts.
- */
-function normalizeContacts(raw) {
-    return raw
-        .map(contact => ({
-            id: String(contact.id),
-            name: contact.name,
-            color: contact.color || (typeof getRandomColor === 'function' ? getRandomColor() : '#ccc'),
-            avatar: getInitials(contact.name),
-            photo: contact.photo || ''
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-}
 
 /**
  * Activates the clicked priority button and stores the selection.

@@ -1,6 +1,4 @@
-const ADDTASK_BASE_URL = JOIN_DB_URL;
 const ADDTASK_TASKS_URL = `${ADDTASK_BASE_URL}/tasks.json`;
-const ADDTASK_CONTACTS_URL = `${ADDTASK_BASE_URL}/contacts.json`;
 
 let selectedPriority = 'medium';
 let selectedCategory = '';
@@ -291,31 +289,6 @@ function setMinDueDate() {
 
 
 /**
- * Shows the logged-in user's initials in the header avatar.
- * @returns {void}
- */
-function setHeaderAvatar() {
-    const avatar = document.getElementById('user-avatar');
-    if (!avatar) return;
-    let user = null;
-    try { user = JSON.parse(sessionStorage.getItem('currentUser')); } catch (error) { user = null; }
-    avatar.textContent = user ? getInitials(user.name) : 'G';
-}
-
-
-/**
- * Returns a random hex color (used as a fallback avatar color).
- * @returns {string} Hex color string.
- */
-function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
-    return color;
-}
-
-
-/**
  * Shows or hides a field error element.
  * @param {string} id - Error element id.
  * @param {boolean} show - Whether to show the error.
@@ -335,32 +308,4 @@ function hideError(id) {
     document.getElementById(id).classList.add('d-none');
 }
 
-
-/**
- * Shows a temporary toast notification.
- * @param {string} message - Message to display.
- * @param {boolean} [isError=false] - Whether the toast is an error.
- * @returns {void}
- */
-function showTaskNotification(message, isError = false) {
-    const notification = document.getElementById('notification');
-    if (!notification) return;
-    notification.textContent = message;
-    notification.className = 'notification';
-    if (isError) notification.classList.add('notification--error');
-    notification.classList.remove('d-none');
-    setTimeout(() => notification.classList.add('d-none'), 3000);
-}
-
-
-/**
- * Escapes HTML special characters to prevent markup injection.
- * @param {string} str - Raw string.
- * @returns {string} Escaped string.
- */
-function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
 

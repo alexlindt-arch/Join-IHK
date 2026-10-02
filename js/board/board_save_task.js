@@ -55,18 +55,3 @@ async function getNextModalTaskId() {
 }
 
 
-/**
- * Displays a temporary notification banner.
- * @param {string} message
- * @param {boolean} [isError=false]
- * @returns {void}
- */
-function showTaskNotification(message, isError = false) {
-  const notification = document.getElementById('notification');
-  if (!notification) return;
-  notification.textContent = message;
-  notification.className = 'notification';
-  if (isError) notification.classList.add('notification--error');
-  notification.classList.remove('d-none');
-  setTimeout(() => notification.classList.add('d-none'), 3000);
-}

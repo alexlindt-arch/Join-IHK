@@ -1,35 +1,4 @@
-/**
- * Loads all contacts from the database for the assign dropdown.
- * @async
- * @returns {Promise<Object[]>} Normalized contacts (empty if unreachable).
- */
-async function loadAssignContacts() {
-    try {
-        const response = await fetch(ADDTASK_CONTACTS_URL);
-        return normalizeContacts(toEntryList(await response.json()));
-    } catch (error) {
-        showTaskNotification('Contacts could not be loaded.', true);
-        return [];
-    }
-}
 
-
-/**
- * Maps raw contact entries into a consistent shape with id, name, color, avatar.
- * @param {Object[]} raw - Raw contacts from Firebase.
- * @returns {Object[]} Normalized, name-sorted contacts.
- */
-function normalizeContacts(raw) {
-    return raw
-        .map(contact => ({
-            id: String(contact.id),
-            name: contact.name,
-            color: contact.color || getRandomColor(),
-            avatar: getInitials(contact.name),
-            photo: contact.photo || ''
-        }))
-        .sort((a, b) => a.name.localeCompare(b.name));
-}
 
 
 /**
@@ -83,16 +52,6 @@ function canAssignMorePersons() {
         return false;
     }
     return true;
-}
-
-
-/**
- * Returns the HTML for a single avatar chip.
- * @param {Object} contact - Contact with color and avatar properties.
- * @returns {string} HTML string for one avatar chip.
- */
-function avatarChipTemplate(contact) {
-    return `<span class="avatar-chip" style="background-color:${contact.color}">${avatarInnerHTML(contact)}</span>`;
 }
 
 

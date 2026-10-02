@@ -13,8 +13,7 @@ let dialogContactBase = {};
  * @async
  * @returns {Promise<void>}
  */
-async function init() {
-    initMain();
+async function initContacts() {
     loadedContacts = [];
     await loadAndPrepareContacts();
     renderContacts();
@@ -115,7 +114,7 @@ function getContactDisplayName(contact) {
 /**
  * Renders the HTML markup for a single letter group (e.g. all contacts
  * starting with "A"), including the group header and its contact items.
- * @param {[string, Array<Object>]} entry - A `[letter, contacts]` pair from `Object.entries`.
+ * @param {Array} entry - A `[letter, contacts]` pair from `Object.entries`.
  * @returns {string} HTML markup for the letter group.
  */
 function renderLetterGroup([letter, contactsInGroup]) {

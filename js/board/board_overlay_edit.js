@@ -128,7 +128,7 @@ function toggleEditPerson(id) {
   if (editAssignedIds.includes(sid)) {
     editAssignedIds = editAssignedIds.filter(x => x !== sid);
   } else {
-    if (!canAssignMorePersons()) return;
+    if (!canAssignMoreEditPersons()) return;
     editAssignedIds.push(sid);
   }
   renderEditAssignOptions();
@@ -139,7 +139,7 @@ function toggleEditPerson(id) {
 /** Returns true when another person may be assigned; notifies user otherwise. 
  * @returns {boolean} 
  * */
-function canAssignMorePersons() {
+function canAssignMoreEditPersons() {
   if (editAssignedIds.length >= 99) {
     notify('A maximum of 99 contacts can be assigned.', true);
     return false;

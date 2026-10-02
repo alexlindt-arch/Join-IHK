@@ -10,15 +10,6 @@ let boardContacts = [];
 
 
 /**
- * Initialises the board page.
- * @returns {void}
- */
-function init() {
-    initMain();
-}
-
-
-/**
  * Loads all tasks and renders them onto the board.
  * @returns {Promise<void>}
  */
@@ -246,14 +237,3 @@ function hideNoResultsMessage() {
 }
 
 
-/**
- * Closes the edit assign dropdown when a click occurs outside the assign wrapper.
- * @param {MouseEvent} event - The document click event.
- * @returns {void}
- */
-function handleEditOutsideClick(event) {
-    if (!event.target.closest('.edit-assign-wrapper')) {
-        const opts = document.getElementById('edit-assign-options');
-        if (opts) opts.classList.add('d-none');
-    }
-}
