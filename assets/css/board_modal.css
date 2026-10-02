@@ -201,7 +201,7 @@ button.btn-add-task:active {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-height: 50px;
+  max-height: calc(3 * 36px + 2 * 4px);
   overflow: auto;
 }
 
