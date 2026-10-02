@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/board/board.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/board/board.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const BOARD_BASE_URL = JOIN_DB_URL;
+
+let allTasks = [];
+let currentDraggedTaskId = null;
+let editSelectedPrio = null;
+let editSelectedCategory = '';
+let editAssignedIds = [];
+let editSubtasks = [];
+let boardContacts = [];
+
+
+/**
+ * Loads all tasks and renders them onto the board.
+ * @returns {Promise&lt;void>}
+ */
+async function initTasks() {
+    boardContacts = await loadBoardContacts();
+    allTasks = await loadRemoteTasks();
+    displayTasks(allTasks);
+}
+
+
+/**
+ * Fetches tasks from the remote Firebase database.
+ * @returns {Promise&lt;Array>} Array of task objects or empty array on error.
+ */
+async function loadRemoteTasks() {
+    try {
+        const response = await fetch(`${BOARD_BASE_URL}/tasks.json`);
+        return toEntryList(await response.json());
+    } catch (error) {
+        notify('Tasks could not be loaded.', true);
+        return [];
+    }
+}
+
+
+/**
+ * Clears all columns, renders every task card, adds placeholders and drag boxes.
+ * @param {Array} tasks - Tasks to display.
+ * @returns {void}
+ */
+function displayTasks(tasks) {
+    clearBoardColumns();
+    tasks.forEach(task => renderTaskCard(task));
+    showEmptyPlaceholders();
+    addDragHighlightBoxes();
+}
+
+
+/**
+ * Empties the inner HTML of all board columns.
+ * @returns {void}
+ */
+function clearBoardColumns() {
+    COLUMN_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '';
+    });
+}
+
+
+/**
+ * Inserts a task card into the matching column and attaches touch listeners.
+ * @param {Object} task - Task object with a status and id property.
+ * @returns {void}
+ */
+function renderTaskCard(task) {
+    const col = document.getElementById(task.status);
+    if (!col) return;
+    col.insertAdjacentHTML('beforeend', taskCardTemplate(task));
+    const card = col.querySelector(`.task-card[data-task-id="${task.id}"]`);
+    attachTouchListenersToCard(card, task.id);
+}
+
+
+/**
+ * Attaches touch drag event listeners to a task card element.
+ * @param {HTMLElement} card - The task card DOM element.
+ * @param {string|number} id - The task id used during drag operations.
+ * @returns {void}
+ */
+function attachTouchListenersToCard(card, id) {
+    if (!card) return;
+    card.addEventListener('touchstart', event => touchDragStart(event, id), { passive: true });
+    card.addEventListener('touchmove', touchDragMove, { passive: false });
+    card.addEventListener('touchend', touchDragEnd, { passive: true });
+    card.addEventListener('touchcancel', () => handleTouchCancel(card), { passive: true });
+}
+
+
+/**
+ * Stops a long press or a touch drag that the browser cancelled.
+ * @param {HTMLElement} card - Task card.
+ * @returns {void}
+ */
+function handleTouchCancel(card) {
+    cancelTouchPress();
+    cleanupTouchDrag(card);
+}
+
+
+/**
+ * Shows an empty-state placeholder in any column that has no task cards.
+ * Skips rendering if a no-results message is already present.
+ * @returns {void}
+ */
+function showEmptyPlaceholders() {
+    if (document.getElementById('board-no-results')) return;
+    getEmptyColumnTexts().forEach(([id, text]) => renderEmptyPlaceholder(id, text));
+}
+
+
+/**
+ * Returns column id / placeholder text pairs for all board columns.
+ * @returns {Array} Array of [id, text] tuples.
+ */
+function getEmptyColumnTexts() {
+    return Object.entries({
+        todo: 'No tasks To do',
+        inProgress: 'No tasks progress',
+        awaitFeedback: 'No tasks feedback',
+        done: 'No tasks done'
+    });
+}
+
+
+/**
+ * Inserts an empty-state div into a column if the column is empty.
+ * @param {string} id - Column element id.
+ * @param {string} text - Placeholder text to display.
+ * @returns {void}
+ */
+function renderEmptyPlaceholder(id, text) {
+    const el = document.getElementById(id);
+    if (el &amp;&amp; el.innerHTML.trim() === '') {
+        el.innerHTML = `&lt;div class="board-empty">${text}&lt;/div>`;
+    }
+}
+
+
+/**
+ * Appends a drag-highlight box to each board column.
+ * @returns {void}
+ */
+function addDragHighlightBoxes() {
+    COLUMN_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.insertAdjacentHTML('beforeend', `&lt;div id="drag-hl-${id}" class="drag-highlight-box">&lt;/div>`);
+    });
+}
+
+
+/**
+ * Reads the search input and filters tasks, or resets the board if empty.
+ * @returns {void}
+ */
+function filterTasks() {
+    const term = getSearchTerm();
+    if (!term) { resetFilter(); return; }
+    const filtered = filterTasksByTerm(term);
+    renderFilterResults(filtered);
+}
+
+
+/**
+ * Reads and lowercases the board search input value.
+ * @returns {string} The current search term.
+ */
+function getSearchTerm() {
+    return (document.getElementById('board-search')?.value || '').toLowerCase();
+}
+
+
+/**
+ * Hides the no-results message and re-renders all tasks.
+ * @returns {void}
+ */
+function resetFilter() {
+    hideNoResultsMessage();
+    displayTasks(allTasks);
+}
+
+
+/**
+ * Filters tasks whose title or description contains the search term.
+ * @param {string} term - Lowercased search term.
+ * @returns {Array} Matching task objects.
+ */
+function filterTasksByTerm(term) {
+    return allTasks.filter(t =>
+        (t.title || '').toLowerCase().includes(term) ||
+        (t.description || '').toLowerCase().includes(term)
+    );
+}
+
+
+/**
+ * Renders filtered tasks or shows a no-results message if none match.
+ * @param {Array} filtered - Array of matching task objects.
+ * @returns {void}
+ */
+function renderFilterResults(filtered) {
+    if (filtered.length === 0) {
+        displayTasks([]);
+        showNoResultsMessage();
+    } else {
+        hideNoResultsMessage();
+        displayTasks(filtered);
+    }
+}
+
+
+/**
+ * Creates and appends a no-results message element to the board columns container.
+ * @returns {void}
+ */
+function showNoResultsMessage() {
+    hideNoResultsMessage();
+    const container = document.querySelector('.board-columns');
+    if (!container) return;
+    const el = document.createElement('div');
+    el.id = 'board-no-results';
+    el.className = 'board-no-results';
+    el.innerHTML = `&lt;div class="board-empty">No results found&lt;/div>`;
+    container.appendChild(el);
+}
+
+
+/**
+ * Removes the no-results message element from the DOM if present.
+ * @returns {void}
+ */
+function hideNoResultsMessage() {
+    const existing = document.getElementById('board-no-results');
+    if (existing &amp;&amp; existing.parentNode) existing.parentNode.removeChild(existing);
+}
+
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#ADDTASK_BASE_URL">ADDTASK_BASE_URL</a></li><li><a href="global.html#ATTACHMENT_ALLOWED_TYPES">ATTACHMENT_ALLOWED_TYPES</a></li><li><a href="global.html#ATTACHMENT_DELETE_ICON">ATTACHMENT_DELETE_ICON</a></li><li><a href="global.html#ATTACHMENT_DOWNLOAD_ICON">ATTACHMENT_DOWNLOAD_ICON</a></li><li><a href="global.html#ATTACHMENT_JPEG_QUALITY">ATTACHMENT_JPEG_QUALITY</a></li><li><a href="global.html#ATTACHMENT_MAX_DIMENSION">ATTACHMENT_MAX_DIMENSION</a></li><li><a href="global.html#ATTACHMENT_MAX_FILE_BYTES">ATTACHMENT_MAX_FILE_BYTES</a></li><li><a href="global.html#ATTACHMENT_MAX_TASK_BYTES">ATTACHMENT_MAX_TASK_BYTES</a></li><li><a href="global.html#ATTACHMENT_MIN_DIMENSION">ATTACHMENT_MIN_DIMENSION</a></li><li><a href="global.html#ATTACHMENT_TARGET_BYTES">ATTACHMENT_TARGET_BYTES</a></li><li><a href="global.html#BOARD_COLUMNS">BOARD_COLUMNS</a></li><li><a href="global.html#CAMERA_ICON_SVG">CAMERA_ICON_SVG</a></li><li><a href="global.html#CONTACT_REQUIRED_TEXT">CONTACT_REQUIRED_TEXT</a></li><li><a href="global.html#CONTACT_VALIDATION">CONTACT_VALIDATION</a></li><li><a href="global.html#EMAILJS_CONFIG">EMAILJS_CONFIG</a></li><li><a href="global.html#EMAILJS_SEND_URL">EMAILJS_SEND_URL</a></li><li><a href="global.html#GUEST_CHECK_INTERVAL_MS">GUEST_CHECK_INTERVAL_MS</a></li><li><a href="global.html#GUEST_CLOSE_GRACE_MS">GUEST_CLOSE_GRACE_MS</a></li><li><a href="global.html#GUEST_IDLE_MS">GUEST_IDLE_MS</a></li><li><a href="global.html#GUEST_NOTICE_KEY">GUEST_NOTICE_KEY</a></li><li><a href="global.html#GUEST_NOTICE_MS">GUEST_NOTICE_MS</a></li><li><a href="global.html#GUEST_PROFILE_RULES">GUEST_PROFILE_RULES</a></li><li><a href="global.html#GUEST_RESET_ENABLED">GUEST_RESET_ENABLED</a></li><li><a href="global.html#GUEST_SESSIONS_URL">GUEST_SESSIONS_URL</a></li><li><a href="global.html#GUEST_SESSION_MINUTES">GUEST_SESSION_MINUTES</a></li><li><a href="global.html#GUEST_STATUS_URL">GUEST_STATUS_URL</a></li><li><a href="global.html#JOIN_DB_URL">JOIN_DB_URL</a></li><li><a href="global.html#NAV_LINK_SELECTORS">NAV_LINK_SELECTORS</a></li><li><a href="global.html#PASSWORD_RESETS_URL">PASSWORD_RESETS_URL</a></li><li><a href="global.html#PASSWORD_RESET_VALID_MINUTES">PASSWORD_RESET_VALID_MINUTES</a></li><li><a href="global.html#PROFILE_DB_URL">PROFILE_DB_URL</a></li><li><a href="global.html#PROFILE_RULES">PROFILE_RULES</a></li><li><a href="global.html#TOUCH_DRAG_DELAY">TOUCH_DRAG_DELAY</a></li><li><a href="global.html#TOUCH_SCROLL_TOLERANCE">TOUCH_SCROLL_TOLERANCE</a></li><li><a href="global.html#VIEWER_ZOOM_MIN">VIEWER_ZOOM_MIN</a></li><li><a href="global.html#activeResetToken">activeResetToken</a></li><li><a href="global.html#addAttachmentFile">addAttachmentFile</a></li><li><a href="global.html#addAttachmentFiles">addAttachmentFiles</a></li><li><a href="global.html#addContactsToLoaded">addContactsToLoaded</a></li><li><a href="global.html#addDragHighlightBoxes">addDragHighlightBoxes</a></li><li><a href="global.html#addEditSubtask">addEditSubtask</a></li><li><a href="global.html#addImageViewerToPage">addImageViewerToPage</a></li><li><a href="global.html#addModalSubtask">addModalSubtask</a></li><li><a href="global.html#addSubtask">addSubtask</a></li><li><a href="global.html#allowDrop">allowDrop</a></li><li><a href="global.html#allowOnlyPhoneCharacters">allowOnlyPhoneCharacters</a></li><li><a href="global.html#applyGuestRestrictions">applyGuestRestrictions</a></li><li><a href="global.html#assignOptionTemplate">assignOptionTemplate</a></li><li><a href="global.html#attachEditModalListeners">attachEditModalListeners</a></li><li><a href="global.html#attachTouchListenersToCard">attachTouchListenersToCard</a></li><li><a href="global.html#attachmentDropzoneTemplate">attachmentDropzoneTemplate</a></li><li><a href="global.html#attachmentHeaderTemplate">attachmentHeaderTemplate</a></li><li><a href="global.html#attachmentPickerTemplate">attachmentPickerTemplate</a></li><li><a href="global.html#attachmentPreviewTemplate">attachmentPreviewTemplate</a></li><li><a href="global.html#attachmentStore">attachmentStore</a></li><li><a href="global.html#attachmentToastTimer">attachmentToastTimer</a></li><li><a href="global.html#avatarChipTemplate">avatarChipTemplate</a></li><li><a href="global.html#avatarInnerHTML">avatarInnerHTML</a></li><li><a href="global.html#avatarOverflowTemplate">avatarOverflowTemplate</a></li><li><a href="global.html#base64ToBlob">base64ToBlob</a></li><li><a href="global.html#beginTouchDrag">beginTouchDrag</a></li><li><a href="global.html#buildAssignedTo">buildAssignedTo</a></li><li><a href="global.html#buildAvatars">buildAvatars</a></li><li><a href="global.html#buildDetailActions">buildDetailActions</a></li><li><a href="global.html#buildDetailAssignSection">buildDetailAssignSection</a></li><li><a href="global.html#buildDetailAssignees">buildDetailAssignees</a></li><li><a href="global.html#buildDetailHTML">buildDetailHTML</a></li><li><a href="global.html#buildDetailHeader">buildDetailHeader</a></li><li><a href="global.html#buildDetailInfo">buildDetailInfo</a></li><li><a href="global.html#buildDetailSubtaskSection">buildDetailSubtaskSection</a></li><li><a href="global.html#buildDetailSubtasks">buildDetailSubtasks</a></li><li><a href="global.html#buildEditAssignField">buildEditAssignField</a></li><li><a href="global.html#buildEditBasicFields">buildEditBasicFields</a></li><li><a href="global.html#buildEditCategoryField">buildEditCategoryField</a></li><li><a href="global.html#buildEditDueDateField">buildEditDueDateField</a></li><li><a href="global.html#buildEditFooter">buildEditFooter</a></li><li><a href="global.html#buildEditPrioField">buildEditPrioField</a></li><li><a href="global.html#buildEditSubtaskField">buildEditSubtaskField</a></li><li><a href="global.html#buildFlatpickrOptions">buildFlatpickrOptions</a></li><li><a href="global.html#buildNewUserAndContact">buildNewUserAndContact</a></li><li><a href="global.html#buildPatchOptions">buildPatchOptions</a></li><li><a href="global.html#buildProgressBar">buildProgressBar</a></li><li><a href="global.html#buildPutOptions">buildPutOptions</a></li><li><a href="global.html#buildResetLink">buildResetLink</a></li><li><a href="global.html#buildTaskUpdates">buildTaskUpdates</a></li><li><a href="global.html#calcMaxId">calcMaxId</a></li><li><a href="global.html#canAssignMoreEditPersons">canAssignMoreEditPersons</a></li><li><a href="global.html#canAssignMoreModalPersons">canAssignMoreModalPersons</a></li><li><a href="global.html#canAssignMorePersons">canAssignMorePersons</a></li><li><a href="global.html#cancelEditTask">cancelEditTask</a></li><li><a href="global.html#cancelPasswordReset">cancelPasswordReset</a></li><li><a href="global.html#cancelPressWhenScrolling">cancelPressWhenScrolling</a></li><li><a href="global.html#cancelTouchPress">cancelTouchPress</a></li><li><a href="global.html#canvasToBase64">canvasToBase64</a></li><li><a href="global.html#categoryColorClass">categoryColorClass</a></li><li><a href="global.html#checkDropZone">checkDropZone</a></li><li><a href="global.html#checkIsGuest">checkIsGuest</a></li><li><a href="global.html#cleanupExpiredGuestSessions">cleanupExpiredGuestSessions</a></li><li><a href="global.html#cleanupTouchDrag">cleanupTouchDrag</a></li><li><a href="global.html#clearActiveContact">clearActiveContact</a></li><li><a href="global.html#clearAllForms">clearAllForms</a></li><li><a href="global.html#clearBoardColumns">clearBoardColumns</a></li><li><a href="global.html#clearFieldValue">clearFieldValue</a></li><li><a href="global.html#clearLoginError">clearLoginError</a></li><li><a href="global.html#clearLoginFields">clearLoginFields</a></li><li><a href="global.html#clearLoginForm">clearLoginForm</a></li><li><a href="global.html#clearModalSubtaskInput">clearModalSubtaskInput</a></li><li><a href="global.html#clearModalTaskForm">clearModalTaskForm</a></li><li><a href="global.html#clearModalTextFields">clearModalTextFields</a></li><li><a href="global.html#clearOverlayContent">clearOverlayContent</a></li><li><a href="global.html#clearProfileErrors">clearProfileErrors</a></li><li><a href="global.html#clearRegFields">clearRegFields</a></li><li><a href="global.html#clearRegHints">clearRegHints</a></li><li><a href="global.html#clearRegistrationForm">clearRegistrationForm</a></li><li><a href="global.html#clearResetError">clearResetError</a></li><li><a href="global.html#clearSubtaskInput">clearSubtaskInput</a></li><li><a href="global.html#clearTaskForm">clearTaskForm</a></li><li><a href="global.html#closeAddTaskModal">closeAddTaskModal</a></li><li><a href="global.html#closeAssignDropdown">closeAssignDropdown</a></li><li><a href="global.html#closeAvatarMenuOnOutsideClick">closeAvatarMenuOnOutsideClick</a></li><li><a href="global.html#closeCategoryDropdown">closeCategoryDropdown</a></li><li><a href="global.html#closeDeleteAccountDialog">closeDeleteAccountDialog</a></li><li><a href="global.html#closeDialog">closeDialog</a></li><li><a href="global.html#closeDialogOnBackdrop">closeDialogOnBackdrop</a></li><li><a href="global.html#closeImageViewer">closeImageViewer</a></li><li><a href="global.html#closeMobileOptionsOutside">closeMobileOptionsOutside</a></li><li><a href="global.html#closeModalAssignDropdown">closeModalAssignDropdown</a></li><li><a href="global.html#closeModalCategoryDropdown">closeModalCategoryDropdown</a></li><li><a href="global.html#closeModalOverlay">closeModalOverlay</a></li><li><a href="global.html#closeMoveMenu">closeMoveMenu</a></li><li><a href="global.html#closeOverlay">closeOverlay</a></li><li><a href="global.html#closeOverlayOnEscape">closeOverlayOnEscape</a></li><li><a href="global.html#closeProfileDialog">closeProfileDialog</a></li><li><a href="global.html#collectModalAssignedTo">collectModalAssignedTo</a></li><li><a href="global.html#collectModalTask">collectModalTask</a></li><li><a href="global.html#collectTask">collectTask</a></li><li><a href="global.html#compressAttachmentImage">compressAttachmentImage</a></li><li><a href="global.html#compressImage">compressImage</a></li><li><a href="global.html#confirmDeleteAccount">confirmDeleteAccount</a></li><li><a href="global.html#contactActionButtons">contactActionButtons</a></li><li><a href="global.html#contactDialogAvatarTemplate">contactDialogAvatarTemplate</a></li><li><a href="global.html#contactDialogSideTemplate">contactDialogSideTemplate</a></li><li><a href="global.html#contactFieldTemplate">contactFieldTemplate</a></li><li><a href="global.html#contactInfoTemplate">contactInfoTemplate</a></li><li><a href="global.html#contactMobileOptionsTemplate">contactMobileOptionsTemplate</a></li><li><a href="global.html#contactSubmitAction">contactSubmitAction</a></li><li><a href="global.html#countTasks">countTasks</a></li><li><a href="global.html#createAttachmentFromFile">createAttachmentFromFile</a></li><li><a href="global.html#createMoveMenu">createMoveMenu</a></li><li><a href="global.html#createNewContact">createNewContact</a></li><li><a href="global.html#createProgressPopover">createProgressPopover</a></li><li><a href="global.html#createResetToken">createResetToken</a></li><li><a href="global.html#createTask">createTask</a></li><li><a href="global.html#createTaskFromModal">createTaskFromModal</a></li><li><a href="global.html#createTouchClone">createTouchClone</a></li><li><a href="global.html#deleteAccountData">deleteAccountData</a></li><li><a href="global.html#deleteAccountDialogTemplate">deleteAccountDialogTemplate</a></li><li><a href="global.html#deleteContact">deleteContact</a></li><li><a href="global.html#deleteEditSubtask">deleteEditSubtask</a></li><li><a href="global.html#deleteFromDatabase">deleteFromDatabase</a></li><li><a href="global.html#deleteGuestCreations">deleteGuestCreations</a></li><li><a href="global.html#deleteModalSubtask">deleteModalSubtask</a></li><li><a href="global.html#deleteSubtask">deleteSubtask</a></li><li><a href="global.html#deleteTask">deleteTask</a></li><li><a href="global.html#deleteTaskRemote">deleteTaskRemote</a></li><li><a href="global.html#detailAssigneeTemplate">detailAssigneeTemplate</a></li><li><a href="global.html#detailAttachmentSectionTemplate">detailAttachmentSectionTemplate</a></li><li><a href="global.html#detailAttachmentTemplate">detailAttachmentTemplate</a></li><li><a href="global.html#detailMoreAssigneesTemplate">detailMoreAssigneesTemplate</a></li><li><a href="global.html#displayTasks">displayTasks</a></li><li><a href="global.html#downloadAttachment">downloadAttachment</a></li><li><a href="global.html#downloadTaskAttachment">downloadTaskAttachment</a></li><li><a href="global.html#downloadViewerImage">downloadViewerImage</a></li><li><a href="global.html#drawScaledImage">drawScaledImage</a></li><li><a href="global.html#editCategoryOptions">editCategoryOptions</a></li><li><a href="global.html#editContact">editContact</a></li><li><a href="global.html#editModalSubtask">editModalSubtask</a></li><li><a href="global.html#editSubtask">editSubtask</a></li><li><a href="global.html#editTaskTemplate">editTaskTemplate</a></li><li><a href="global.html#endGuestSession">endGuestSession</a></li><li><a href="global.html#escapeAttachmentText">escapeAttachmentText</a></li><li><a href="global.html#escapeHtml">escapeHtml</a></li><li><a href="global.html#escapedTitle">escapedTitle</a></li><li><a href="global.html#exceedsTaskUploadLimit">exceedsTaskUploadLimit</a></li><li><a href="global.html#fileToAvatar">fileToAvatar</a></li><li><a href="global.html#fillEditForm">fillEditForm</a></li><li><a href="global.html#fillGuestAccount">fillGuestAccount</a></li><li><a href="global.html#fillProfileForm">fillProfileForm</a></li><li><a href="global.html#filterTasks">filterTasks</a></li><li><a href="global.html#filterTasksByTerm">filterTasksByTerm</a></li><li><a href="global.html#finalizeDelete">finalizeDelete</a></li><li><a href="global.html#finalizeUpdate">finalizeUpdate</a></li><li><a href="global.html#findContactByEmail">findContactByEmail</a></li><li><a href="global.html#findEndedSessionsWithoutStatus">findEndedSessionsWithoutStatus</a></li><li><a href="global.html#finishPasswordReset">finishPasswordReset</a></li><li><a href="global.html#finishResetRequest">finishResetRequest</a></li><li><a href="global.html#fitNameHTML">fitNameHTML</a></li><li><a href="global.html#fitNames">fitNames</a></li><li><a href="global.html#fitNamesFrame">fitNamesFrame</a></li><li><a href="global.html#fixPageBehindDialog">fixPageBehindDialog</a></li><li><a href="global.html#focusAttachmentDropzone">focusAttachmentDropzone</a></li><li><a href="global.html#focusSubtaskInput">focusSubtaskInput</a></li><li><a href="global.html#formatFileSize">formatFileSize</a></li><li><a href="global.html#formatFileType">formatFileType</a></li><li><a href="global.html#getAssignedContacts">getAssignedContacts</a></li><li><a href="global.html#getAttachments">getAttachments</a></li><li><a href="global.html#getBase64ByteSize">getBase64ByteSize</a></li><li><a href="global.html#getContactDisplayName">getContactDisplayName</a></li><li><a href="global.html#getContactUrl">getContactUrl</a></li><li><a href="global.html#getCurrentPage">getCurrentPage</a></li><li><a href="global.html#getCurrentUser">getCurrentUser</a></li><li><a href="global.html#getDaytimeGreeting">getDaytimeGreeting</a></li><li><a href="global.html#getDeleteAccountDialog">getDeleteAccountDialog</a></li><li><a href="global.html#getDueDateError">getDueDateError</a></li><li><a href="global.html#getEmptyColumnTexts">getEmptyColumnTexts</a></li><li><a href="global.html#getFieldErrorText">getFieldErrorText</a></li><li><a href="global.html#getFileTooLargeError">getFileTooLargeError</a></li><li><a href="global.html#getGuestAccountUrl">getGuestAccountUrl</a></li><li><a href="global.html#getGuestJson">getGuestJson</a></li><li><a href="global.html#getGuestSessionId">getGuestSessionId</a></li><li><a href="global.html#getInitials">getInitials</a></li><li><a href="global.html#getLoginCredentials">getLoginCredentials</a></li><li><a href="global.html#getModalDatepickerOptions">getModalDatepickerOptions</a></li><li><a href="global.html#getNewPasswordError">getNewPasswordError</a></li><li><a href="global.html#getNextContactId">getNextContactId</a></li><li><a href="global.html#getNextDeadline">getNextDeadline</a></li><li><a href="global.html#getNextModalTaskId">getNextModalTaskId</a></li><li><a href="global.html#getNextTaskId">getNextTaskId</a></li><li><a href="global.html#getNextUserId">getNextUserId</a></li><li><a href="global.html#getPopoverPosition">getPopoverPosition</a></li><li><a href="global.html#getProfileDialog">getProfileDialog</a></li><li><a href="global.html#getProfileFieldError">getProfileFieldError</a></li><li><a href="global.html#getRandomColor">getRandomColor</a></li><li><a href="global.html#getRegFormValues">getRegFormValues</a></li><li><a href="global.html#getRegValues">getRegValues</a></li><li><a href="global.html#getSafeImageSource">getSafeImageSource</a></li><li><a href="global.html#getScaledSize">getScaledSize</a></li><li><a href="global.html#getSearchTerm">getSearchTerm</a></li><li><a href="global.html#getSubtaskStats">getSubtaskStats</a></li><li><a href="global.html#getTotalAttachmentBytes">getTotalAttachmentBytes</a></li><li><a href="global.html#getUploadLimitError">getUploadLimitError</a></li><li><a href="global.html#groupContactsByLetter">groupContactsByLetter</a></li><li><a href="global.html#guestLogin">guestLogin</a></li><li><a href="global.html#guestNoticeTemplate">guestNoticeTemplate</a></li><li><a href="global.html#handleAttachmentDragLeave">handleAttachmentDragLeave</a></li><li><a href="global.html#handleAttachmentDragOver">handleAttachmentDragOver</a></li><li><a href="global.html#handleAttachmentDrop">handleAttachmentDrop</a></li><li><a href="global.html#handleAttachmentInput">handleAttachmentInput</a></li><li><a href="global.html#handleContactPhotoSelect">handleContactPhotoSelect</a></li><li><a href="global.html#handleContactSubmit">handleContactSubmit</a></li><li><a href="global.html#handleEditAssignOutsideClick">handleEditAssignOutsideClick</a></li><li><a href="global.html#handleModalOutsideClick">handleModalOutsideClick</a></li><li><a href="global.html#handleModalSubtaskKey">handleModalSubtaskKey</a></li><li><a href="global.html#handleMoveMenuKeydown">handleMoveMenuKeydown</a></li><li><a href="global.html#handleMoveMenuOutsideClick">handleMoveMenuOutsideClick</a></li><li><a href="global.html#handleOutsideClick">handleOutsideClick</a></li><li><a href="global.html#handleOverlayClick">handleOverlayClick</a></li><li><a href="global.html#handleProfileDialogClosed">handleProfileDialogClosed</a></li><li><a href="global.html#handleProfileInput">handleProfileInput</a></li><li><a href="global.html#handleProfilePhotoSelect">handleProfilePhotoSelect</a></li><li><a href="global.html#handleSubtaskKey">handleSubtaskKey</a></li><li><a href="global.html#handleTaskCardKey">handleTaskCardKey</a></li><li><a href="global.html#handleTaskSaveError">handleTaskSaveError</a></li><li><a href="global.html#handleTaskSaveSuccess">handleTaskSaveSuccess</a></li><li><a href="global.html#handleTouchCancel">handleTouchCancel</a></li><li><a href="global.html#handleViewerBackdropClick">handleViewerBackdropClick</a></li><li><a href="global.html#handleViewerKeydown">handleViewerKeydown</a></li><li><a href="global.html#hasImageMagicBytes">hasImageMagicBytes</a></li><li><a href="global.html#hideAttachmentToast">hideAttachmentToast</a></li><li><a href="global.html#hideError">hideError</a></li><li><a href="global.html#hideForm">hideForm</a></li><li><a href="global.html#hideGuestNotice">hideGuestNotice</a></li><li><a href="global.html#hideHint">hideHint</a></li><li><a href="global.html#hideModalFieldErrors">hideModalFieldErrors</a></li><li><a href="global.html#hideNoResultsMessage">hideNoResultsMessage</a></li><li><a href="global.html#hideProgressTooltip">hideProgressTooltip</a></li><li><a href="global.html#highlight">highlight</a></li><li><a href="global.html#imageViewerBarTemplate">imageViewerBarTemplate</a></li><li><a href="global.html#imageViewerFooterTemplate">imageViewerFooterTemplate</a></li><li><a href="global.html#imageViewerTemplate">imageViewerTemplate</a></li><li><a href="global.html#imgEscape">imgEscape</a></li><li><a href="global.html#initAddTaskModal">initAddTaskModal</a></li><li><a href="global.html#initContacts">initContacts</a></li><li><a href="global.html#initDatePicker">initDatePicker</a></li><li><a href="global.html#initEditState">initEditState</a></li><li><a href="global.html#initFor">initFor</a></li><li><a href="global.html#initGuestNotice">initGuestNotice</a></li><li><a href="global.html#initGuestSessions">initGuestSessions</a></li><li><a href="global.html#initMain">initMain</a></li><li><a href="global.html#initModalDatepicker">initModalDatepicker</a></li><li><a href="global.html#initPage">initPage</a></li><li><a href="global.html#initProfileMenu">initProfileMenu</a></li><li><a href="global.html#initSummary">initSummary</a></li><li><a href="global.html#initTaskPage">initTaskPage</a></li><li><a href="global.html#initTasks">initTasks</a></li><li><a href="global.html#isAllowedAttachmentType">isAllowedAttachmentType</a></li><li><a href="global.html#isAssignedToTask">isAssignedToTask</a></li><li><a href="global.html#isEditFormValid">isEditFormValid</a></li><li><a href="global.html#isEmailServiceConfigured">isEmailServiceConfigured</a></li><li><a href="global.html#isEmailTakenByOtherUser">isEmailTakenByOtherUser</a></li><li><a href="global.html#isFieldTouched">isFieldTouched</a></li><li><a href="global.html#isGuestProfile">isGuestProfile</a></li><li><a href="global.html#isGuestSessionOver">isGuestSessionOver</a></li><li><a href="global.html#isOwnContact">isOwnContact</a></li><li><a href="global.html#isPastDueDate">isPastDueDate</a></li><li><a href="global.html#isPopoverVisibleForTask">isPopoverVisibleForTask</a></li><li><a href="global.html#isTouchInsideColumn">isTouchInsideColumn</a></li><li><a href="global.html#isTrackedByGuest">isTrackedByGuest</a></li><li><a href="global.html#isValidReset">isValidReset</a></li><li><a href="global.html#loadAndPrepareContacts">loadAndPrepareContacts</a></li><li><a href="global.html#loadAssignContacts">loadAssignContacts</a></li><li><a href="global.html#loadBoardContacts">loadBoardContacts</a></li><li><a href="global.html#loadContactEntries">loadContactEntries</a></li><li><a href="global.html#loadImageElement">loadImageElement</a></li><li><a href="global.html#loadImageFromFile">loadImageFromFile</a></li><li><a href="global.html#loadPasswordReset">loadPasswordReset</a></li><li><a href="global.html#loadProfileContact">loadProfileContact</a></li><li><a href="global.html#loadRemoteTasks">loadRemoteTasks</a></li><li><a href="global.html#loadTasks">loadTasks</a></li><li><a href="global.html#loadUserPhoto">loadUserPhoto</a></li><li><a href="global.html#loadUsers">loadUsers</a></li><li><a href="global.html#lockedPageScrollY">lockedPageScrollY</a></li><li><a href="global.html#login">login</a></li><li><a href="global.html#logout">logout</a></li><li><a href="global.html#mapContacts">mapContacts</a></li><li><a href="global.html#markGuestSessionActive">markGuestSessionActive</a></li><li><a href="global.html#markGuestSessionClosing">markGuestSessionClosing</a></li><li><a href="global.html#markTouched">markTouched</a></li><li><a href="global.html#modalAssignOptionTemplate">modalAssignOptionTemplate</a></li><li><a href="global.html#modalSubtaskEditTemplate">modalSubtaskEditTemplate</a></li><li><a href="global.html#modalSubtaskItemTemplate">modalSubtaskItemTemplate</a></li><li><a href="global.html#moveArrowIcon">moveArrowIcon</a></li><li><a href="global.html#moveButtonTemplate">moveButtonTemplate</a></li><li><a href="global.html#moveMenuTemplate">moveMenuTemplate</a></li><li><a href="global.html#moveTaskToColumn">moveTaskToColumn</a></li><li><a href="global.html#moveTo">moveTo</a></li><li><a href="global.html#moveTouchClone">moveTouchClone</a></li><li><a href="global.html#normalizeContacts">normalizeContacts</a></li><li><a href="global.html#notify">notify</a></li><li><a href="global.html#onDomReady">onDomReady</a></li><li><a href="global.html#onMutation">onMutation</a></li><li><a href="global.html#openAddContactModal">openAddContactModal</a></li><li><a href="global.html#openAddTaskModal">openAddTaskModal</a></li><li><a href="global.html#openAttachmentDialog">openAttachmentDialog</a></li><li><a href="global.html#openDeleteAccountDialog">openDeleteAccountDialog</a></li><li><a href="global.html#openDialog">openDialog</a></li><li><a href="global.html#openEditModal">openEditModal</a></li><li><a href="global.html#openImageViewer">openImageViewer</a></li><li><a href="global.html#openMoveMenu">openMoveMenu</a></li><li><a href="global.html#openOverlay">openOverlay</a></li><li><a href="global.html#openPickerAttachment">openPickerAttachment</a></li><li><a href="global.html#openProfileDialog">openProfileDialog</a></li><li><a href="global.html#openResetFromLink">openResetFromLink</a></li><li><a href="global.html#openSignupFromHash">openSignupFromHash</a></li><li><a href="global.html#openTaskAttachment">openTaskAttachment</a></li><li><a href="global.html#openTaskDetail">openTaskDetail</a></li><li><a href="global.html#overlayTrigger">overlayTrigger</a></li><li><a href="global.html#patchProfile">patchProfile</a></li><li><a href="global.html#positionMoveMenu">positionMoveMenu</a></li><li><a href="global.html#positionPopover">positionPopover</a></li><li><a href="global.html#prioSvg">prioSvg</a></li><li><a href="global.html#profileAvatarTemplate">profileAvatarTemplate</a></li><li><a href="global.html#profileContactKey">profileContactKey</a></li><li><a href="global.html#profileDialogTemplate">profileDialogTemplate</a></li><li><a href="global.html#profileEditMode">profileEditMode</a></li><li><a href="global.html#profileFieldTemplate">profileFieldTemplate</a></li><li><a href="global.html#profileFieldsTemplate">profileFieldsTemplate</a></li><li><a href="global.html#profileMailIcon">profileMailIcon</a></li><li><a href="global.html#profilePendingPhoto">profilePendingPhoto</a></li><li><a href="global.html#profilePersonIcon">profilePersonIcon</a></li><li><a href="global.html#profilePhoneIcon">profilePhoneIcon</a></li><li><a href="global.html#raiseDatepickerLayer">raiseDatepickerLayer</a></li><li><a href="global.html#readContactForm">readContactForm</a></li><li><a href="global.html#readProfileForm">readProfileForm</a></li><li><a href="global.html#recordGuestChange">recordGuestChange</a></li><li><a href="global.html#recordGuestCreate">recordGuestCreate</a></li><li><a href="global.html#redirectIfUnauthorized">redirectIfUnauthorized</a></li><li><a href="global.html#refreshPageAfterProfileSave">refreshPageAfterProfileSave</a></li><li><a href="global.html#refreshSubtaskChecks">refreshSubtaskChecks</a></li><li><a href="global.html#refreshTaskCard">refreshTaskCard</a></li><li><a href="global.html#register">register</a></li><li><a href="global.html#releasePageBehindDialog">releasePageBehindDialog</a></li><li><a href="global.html#reloadContacts">reloadContacts</a></li><li><a href="global.html#removeAccountFromTasks">removeAccountFromTasks</a></li><li><a href="global.html#removeAllAttachments">removeAllAttachments</a></li><li><a href="global.html#removeAttachment">removeAttachment</a></li><li><a href="global.html#removeContactFromTasks">removeContactFromTasks</a></li><li><a href="global.html#removeContactPhoto">removeContactPhoto</a></li><li><a href="global.html#removeHighlight">removeHighlight</a></li><li><a href="global.html#removeProfilePhoto">removeProfilePhoto</a></li><li><a href="global.html#removeResetParameter">removeResetParameter</a></li><li><a href="global.html#removeToastFeedback">removeToastFeedback</a></li><li><a href="global.html#renderAssignOptions">renderAssignOptions</a></li><li><a href="global.html#renderAssignedAvatars">renderAssignedAvatars</a></li><li><a href="global.html#renderAttachmentPicker">renderAttachmentPicker</a></li><li><a href="global.html#renderContactDetails">renderContactDetails</a></li><li><a href="global.html#renderContactlist">renderContactlist</a></li><li><a href="global.html#renderContacts">renderContacts</a></li><li><a href="global.html#renderDeadline">renderDeadline</a></li><li><a href="global.html#renderDialogAvatar">renderDialogAvatar</a></li><li><a href="global.html#renderDialogContact">renderDialogContact</a></li><li><a href="global.html#renderDialogContactEditButton">renderDialogContactEditButton</a></li><li><a href="global.html#renderDialogCreateContactButton">renderDialogCreateContactButton</a></li><li><a href="global.html#renderEditAssignOptions">renderEditAssignOptions</a></li><li><a href="global.html#renderEditAssignOptionsHTML">renderEditAssignOptionsHTML</a></li><li><a href="global.html#renderEditAssignedAvatars">renderEditAssignedAvatars</a></li><li><a href="global.html#renderEditAssignedAvatarsHTML">renderEditAssignedAvatarsHTML</a></li><li><a href="global.html#renderEditModal">renderEditModal</a></li><li><a href="global.html#renderEditSubtaskInputHTML">renderEditSubtaskInputHTML</a></li><li><a href="global.html#renderEditSubtasks">renderEditSubtasks</a></li><li><a href="global.html#renderEditSubtasksHTML">renderEditSubtasksHTML</a></li><li><a href="global.html#renderEmptyContactsTemplate">renderEmptyContactsTemplate</a></li><li><a href="global.html#renderEmptyPlaceholder">renderEmptyPlaceholder</a></li><li><a href="global.html#renderFilterResults">renderFilterResults</a></li><li><a href="global.html#renderGreeting">renderGreeting</a></li><li><a href="global.html#renderLetterGroup">renderLetterGroup</a></li><li><a href="global.html#renderLetterGroupTemplate">renderLetterGroupTemplate</a></li><li><a href="global.html#renderModalAssignOptions">renderModalAssignOptions</a></li><li><a href="global.html#renderModalAssignedAvatars">renderModalAssignedAvatars</a></li><li><a href="global.html#renderModalSubtasks">renderModalSubtasks</a></li><li><a href="global.html#renderPopoverHeader">renderPopoverHeader</a></li><li><a href="global.html#renderPopoverList">renderPopoverList</a></li><li><a href="global.html#renderProfileAvatar">renderProfileAvatar</a></li><li><a href="global.html#renderStats">renderStats</a></li><li><a href="global.html#renderSubtaskItem">renderSubtaskItem</a></li><li><a href="global.html#renderSubtasks">renderSubtasks</a></li><li><a href="global.html#renderTaskCard">renderTaskCard</a></li><li><a href="global.html#renderViewerImage">renderViewerImage</a></li><li><a href="global.html#requestPasswordReset">requestPasswordReset</a></li><li><a href="global.html#resetCategoryLabel">resetCategoryLabel</a></li><li><a href="global.html#resetEditState">resetEditState</a></li><li><a href="global.html#resetFilter">resetFilter</a></li><li><a href="global.html#resetGuestSession">resetGuestSession</a></li><li><a href="global.html#resetMobileContactView">resetMobileContactView</a></li><li><a href="global.html#resetModalAssignAndSubtasks">resetModalAssignAndSubtasks</a></li><li><a href="global.html#resetModalCategory">resetModalCategory</a></li><li><a href="global.html#resetModalPriority">resetModalPriority</a></li><li><a href="global.html#resetOwnGuestSession">resetOwnGuestSession</a></li><li><a href="global.html#resetPassword">resetPassword</a></li><li><a href="global.html#resetSplitViewOnResize">resetSplitViewOnResize</a></li><li><a href="global.html#restoreGuestOriginals">restoreGuestOriginals</a></li><li><a href="global.html#runAttach">runAttach</a></li><li><a href="global.html#saveContactToDB">saveContactToDB</a></li><li><a href="global.html#saveContactToFirebase">saveContactToFirebase</a></li><li><a href="global.html#saveEditSubtask">saveEditSubtask</a></li><li><a href="global.html#saveEditedTask">saveEditedTask</a></li><li><a href="global.html#saveModalSubtaskEdit">saveModalSubtaskEdit</a></li><li><a href="global.html#saveModalTask">saveModalTask</a></li><li><a href="global.html#saveModalTaskRemote">saveModalTaskRemote</a></li><li><a href="global.html#savePasswordReset">savePasswordReset</a></li><li><a href="global.html#saveProfile">saveProfile</a></li><li><a href="global.html#saveProfileToFirebase">saveProfileToFirebase</a></li><li><a href="global.html#saveRegistration">saveRegistration</a></li><li><a href="global.html#saveSubtaskEdit">saveSubtaskEdit</a></li><li><a href="global.html#saveSubtaskState">saveSubtaskState</a></li><li><a href="global.html#saveTask">saveTask</a></li><li><a href="global.html#saveTaskAssignees">saveTaskAssignees</a></li><li><a href="global.html#saveTaskUpdates">saveTaskUpdates</a></li><li><a href="global.html#saveUserSession">saveUserSession</a></li><li><a href="global.html#saveUserToFirebase">saveUserToFirebase</a></li><li><a href="global.html#scheduleAttach">scheduleAttach</a></li><li><a href="global.html#scheduleFitNames">scheduleFitNames</a></li><li><a href="global.html#scheduleRetry">scheduleRetry</a></li><li><a href="global.html#scrollProfileToTop">scrollProfileToTop</a></li><li><a href="global.html#selectCategory">selectCategory</a></li><li><a href="global.html#selectEditCategory">selectEditCategory</a></li><li><a href="global.html#selectEditPrio">selectEditPrio</a></li><li><a href="global.html#selectModalCategory">selectModalCategory</a></li><li><a href="global.html#sendContactRequest">sendContactRequest</a></li><li><a href="global.html#sendGuestRequest">sendGuestRequest</a></li><li><a href="global.html#sendJson">sendJson</a></li><li><a href="global.html#sendResetEmail">sendResetEmail</a></li><li><a href="global.html#sendResetForEmail">sendResetForEmail</a></li><li><a href="global.html#setActiveNavLink">setActiveNavLink</a></li><li><a href="global.html#setAttachmentBusy">setAttachmentBusy</a></li><li><a href="global.html#setAttachments">setAttachments</a></li><li><a href="global.html#setDeleteAccountBusy">setDeleteAccountBusy</a></li><li><a href="global.html#setEmailValidity">setEmailValidity</a></li><li><a href="global.html#setHeaderAvatar">setHeaderAvatar</a></li><li><a href="global.html#setMinDueDate">setMinDueDate</a></li><li><a href="global.html#setMinModalDueDate">setMinModalDueDate</a></li><li><a href="global.html#setModalPriority">setModalPriority</a></li><li><a href="global.html#setNumber">setNumber</a></li><li><a href="global.html#setPasswordValidity">setPasswordValidity</a></li><li><a href="global.html#setPriority">setPriority</a></li><li><a href="global.html#setProfileError">setProfileError</a></li><li><a href="global.html#setProfileFieldError">setProfileFieldError</a></li><li><a href="global.html#setProfileMode">setProfileMode</a></li><li><a href="global.html#setProfileSaving">setProfileSaving</a></li><li><a href="global.html#setResetBusy">setResetBusy</a></li><li><a href="global.html#setText">setText</a></li><li><a href="global.html#setTouchDragOffset">setTouchDragOffset</a></li><li><a href="global.html#setViewerZoom">setViewerZoom</a></li><li><a href="global.html#shortPersonName">shortPersonName</a></li><li><a href="global.html#showAttachmentToast">showAttachmentToast</a></li><li><a href="global.html#showContactDetails">showContactDetails</a></li><li><a href="global.html#showEmptyPlaceholders">showEmptyPlaceholders</a></li><li><a href="global.html#showFieldError">showFieldError</a></li><li><a href="global.html#showForm">showForm</a></li><li><a href="global.html#showGuestSessionEnded">showGuestSessionEnded</a></li><li><a href="global.html#showHeaderPhoto">showHeaderPhoto</a></li><li><a href="global.html#showHint">showHint</a></li><li><a href="global.html#showLoginError">showLoginError</a></li><li><a href="global.html#showModalOverlay">showModalOverlay</a></li><li><a href="global.html#showNextViewerImage">showNextViewerImage</a></li><li><a href="global.html#showNoResultsMessage">showNoResultsMessage</a></li><li><a href="global.html#showNotification">showNotification</a></li><li><a href="global.html#showPreviousViewerImage">showPreviousViewerImage</a></li><li><a href="global.html#showProfileToast">showProfileToast</a></li><li><a href="global.html#showProgressTooltip">showProgressTooltip</a></li><li><a href="global.html#showResetError">showResetError</a></li><li><a href="global.html#showTaskNotification">showTaskNotification</a></li><li><a href="global.html#showToastFeedback">showToastFeedback</a></li><li><a href="global.html#showUploadMeter">showUploadMeter</a></li><li><a href="global.html#startDragging">startDragging</a></li><li><a href="global.html#startEditSubtask">startEditSubtask</a></li><li><a href="global.html#startGuestSession">startGuestSession</a></li><li><a href="global.html#startObserverAndAttach">startObserverAndAttach</a></li><li><a href="global.html#startProfileEdit">startProfileEdit</a></li><li><a href="global.html#storeGuestProfile">storeGuestProfile</a></li><li><a href="global.html#storeNewPassword">storeNewPassword</a></li><li><a href="global.html#storeProfile">storeProfile</a></li><li><a href="global.html#storedEntries">storedEntries</a></li><li><a href="global.html#subtaskEditTemplate">subtaskEditTemplate</a></li><li><a href="global.html#subtaskItemTemplate">subtaskItemTemplate</a></li><li><a href="global.html#switchForm">switchForm</a></li><li><a href="global.html#syncOwnAccount">syncOwnAccount</a></li><li><a href="global.html#taskCardTemplate">taskCardTemplate</a></li><li><a href="global.html#taskDetailTemplate">taskDetailTemplate</a></li><li><a href="global.html#toDisplayDate">toDisplayDate</a></li><li><a href="global.html#toEntryList">toEntryList</a></li><li><a href="global.html#toFormPhone">toFormPhone</a></li><li><a href="global.html#toggleAssignDropdown">toggleAssignDropdown</a></li><li><a href="global.html#toggleAvatarMenu">toggleAvatarMenu</a></li><li><a href="global.html#toggleCategoryDropdown">toggleCategoryDropdown</a></li><li><a href="global.html#toggleEditAssignDropdown">toggleEditAssignDropdown</a></li><li><a href="global.html#toggleEditCategoryDropdown">toggleEditCategoryDropdown</a></li><li><a href="global.html#toggleEditPerson">toggleEditPerson</a></li><li><a href="global.html#toggleError">toggleError</a></li><li><a href="global.html#toggleMobileContactView">toggleMobileContactView</a></li><li><a href="global.html#toggleMobileOptions">toggleMobileOptions</a></li><li><a href="global.html#toggleModalAssignDropdown">toggleModalAssignDropdown</a></li><li><a href="global.html#toggleModalCategoryDropdown">toggleModalCategoryDropdown</a></li><li><a href="global.html#toggleModalPerson">toggleModalPerson</a></li><li><a href="global.html#togglePerson">togglePerson</a></li><li><a href="global.html#toggleProgressDetails">toggleProgressDetails</a></li><li><a href="global.html#toggleSubtask">toggleSubtask</a></li><li><a href="global.html#toggleViewerNavigation">toggleViewerNavigation</a></li><li><a href="global.html#touchDragEnd">touchDragEnd</a></li><li><a href="global.html#touchDragMove">touchDragMove</a></li><li><a href="global.html#touchDragStart">touchDragStart</a></li><li><a href="global.html#touchPress">touchPress</a></li><li><a href="global.html#trackGuestPresence">trackGuestPresence</a></li><li><a href="global.html#truncate">truncate</a></li><li><a href="global.html#trySaveModalTask">trySaveModalTask</a></li><li><a href="global.html#updateColumnHighlights">updateColumnHighlights</a></li><li><a href="global.html#updateContact">updateContact</a></li><li><a href="global.html#updateCreateButton">updateCreateButton</a></li><li><a href="global.html#updateModalCreateButton">updateModalCreateButton</a></li><li><a href="global.html#updateModalSubtaskActions">updateModalSubtaskActions</a></li><li><a href="global.html#updatePageScrollLock">updatePageScrollLock</a></li><li><a href="global.html#updatePasswordHint">updatePasswordHint</a></li><li><a href="global.html#updateProfileSession">updateProfileSession</a></li><li><a href="global.html#updateSignupButton">updateSignupButton</a></li><li><a href="global.html#updateSubmitState">updateSubmitState</a></li><li><a href="global.html#updateSubtaskActions">updateSubtaskActions</a></li><li><a href="global.html#updateSubtasksRemote">updateSubtasksRemote</a></li><li><a href="global.html#updateTaskRemote">updateTaskRemote</a></li><li><a href="global.html#updateTaskStatusRemote">updateTaskStatusRemote</a></li><li><a href="global.html#validateAttachmentFile">validateAttachmentFile</a></li><li><a href="global.html#validateContactForm">validateContactForm</a></li><li><a href="global.html#validateDueDateOnBlur">validateDueDateOnBlur</a></li><li><a href="global.html#validateEmailFormat">validateEmailFormat</a></li><li><a href="global.html#validateField">validateField</a></li><li><a href="global.html#validateImageFile">validateImageFile</a></li><li><a href="global.html#validateModalDueDate">validateModalDueDate</a></li><li><a href="global.html#validateModalField">validateModalField</a></li><li><a href="global.html#validateModalTask">validateModalTask</a></li><li><a href="global.html#validatePasswordFormat">validatePasswordFormat</a></li><li><a href="global.html#validateRegisterInput">validateRegisterInput</a></li><li><a href="global.html#validateRegistrationForm">validateRegistrationForm</a></li><li><a href="global.html#validateTask">validateTask</a></li><li><a href="global.html#validateTitleOnBlur">validateTitleOnBlur</a></li><li><a href="global.html#viewerBaseWidth">viewerBaseWidth</a></li><li><a href="global.html#viewerImages">viewerImages</a></li><li><a href="global.html#viewerIndex">viewerIndex</a></li><li><a href="global.html#viewerZoom">viewerZoom</a></li><li><a href="global.html#waitForFlatpickrAndInit">waitForFlatpickrAndInit</a></li><li><a href="global.html#watchDialogsForScrollLock">watchDialogsForScrollLock</a></li><li><a href="global.html#watchFitNames">watchFitNames</a></li><li><a href="global.html#watchGuestSession">watchGuestSession</a></li><li><a href="global.html#withContactPhoto">withContactPhoto</a></li><li><a href="global.html#zoomViewerImage">zoomViewerImage</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Oct 02 2026 10:36:18 GMT+0200 (Mitteleuropäische Sommerzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

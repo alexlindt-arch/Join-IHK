@@ -185,7 +185,7 @@ Join-IHK/
 ├── js/
 │   ├── attachments/               ⭐ Dateiupload & Bildbetrachter (Prüfungsfeature)
 │   ├── board/                     Board, Drag & Drop, Detail, Bearbeiten
-│   ├── task/                      Add-Task-Seite
+│   ├── task/                      Add-Task-Seite und gemeinsame Task-Funktionen
 │   ├── contacts/                  Kontakte
 │   ├── profile/                   Account-Dialog, Gast-Konto
 │   ├── login/                     Login, Registrierung, Passwort-Reset
@@ -195,6 +195,7 @@ Join-IHK/
 ├── assets/
 │   ├── css/  templates/  icons/  img/  fonts/
 │   └── readme/                    Screenshots dieser README
+├── docs/                          JSDoc-Dokumentation (npx jsdoc -r js assets/templates script.js -d docs)
 ├── firebase-seed.json             Startdaten: 20 Kontakte, 6 Tasks
 └── database.rules.json            Datenbankregeln
 ```
