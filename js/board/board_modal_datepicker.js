@@ -22,7 +22,8 @@ function getModalDatepickerOptions() {
         position: 'above',
         appendTo: document.querySelector('.add-task-modal') || document.body,
         onReady: raiseDatepickerLayer,
-        onChange: updateModalCreateButton
+        onChange: updateModalCreateButton,
+        onClose: (selectedDates, dateString) => validateModalDueDate(dateString)
     };
 }
 

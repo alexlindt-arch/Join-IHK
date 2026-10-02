@@ -188,5 +188,6 @@ function updateModalCreateButton() {
     const title = document.getElementById('modal-task-title').value.trim();
     const due = document.getElementById('modal-task-due').value;
     const btn = document.getElementById('modal-btn-create');
+    if (title) document.getElementById('modal-error-title').classList.add('d-none');
     btn.disabled = !(title && due && modalSelectedCategory);
 }

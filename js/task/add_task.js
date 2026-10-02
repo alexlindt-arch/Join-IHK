@@ -36,8 +36,29 @@ function initDatePicker() {
         minDate: 'today',
         allowInput: false,
         disableMobile: true,
-        onChange: updateCreateButton
+        onChange: updateCreateButton,
+        onClose: validateDueDateOnBlur
     });
+}
+
+
+/**
+ * Shows the title error as soon as the title field is left empty (on blur).
+ * @returns {void}
+ */
+function validateTitleOnBlur() {
+    toggleError('error-title', !document.getElementById('task-title').value.trim());
+}
+
+
+/**
+ * Shows the due date error when the date picker is closed without a valid date.
+ * @returns {void}
+ */
+function validateDueDateOnBlur() {
+    const dueDateError = getDueDateError(document.getElementById('task-due').value);
+    document.getElementById('error-due').textContent = dueDateError || 'This field is required';
+    toggleError('error-due', Boolean(dueDateError));
 }
 
 
@@ -59,7 +80,9 @@ function setPriority(button) {
  */
 function toggleCategoryDropdown() {
     closeAssignDropdown();
-    document.getElementById('category-options').classList.toggle('d-none');
+    const options = document.getElementById('category-options');
+    if (options.classList.contains('d-none')) options.classList.remove('d-none');
+    else closeCategoryDropdown();
 }
 
 
@@ -87,16 +110,20 @@ function updateCreateButton() {
     const title = document.getElementById('task-title').value.trim();
     const due = document.getElementById('task-due').value;
     const btn = document.getElementById('btn-create');
+    if (title) hideError('error-title');
     btn.disabled = !(title && due && selectedCategory);
 }
 
 
 /**
- * Closes the category dropdown.
+ * Closes the category dropdown. If it was open and no category was chosen, the field error is shown (like on blur).
  * @returns {void}
  */
 function closeCategoryDropdown() {
-    document.getElementById('category-options').classList.add('d-none');
+    const options = document.getElementById('category-options');
+    const wasOpen = !options.classList.contains('d-none');
+    options.classList.add('d-none');
+    if (wasOpen && !selectedCategory) toggleError('error-category', true);
 }
 
 

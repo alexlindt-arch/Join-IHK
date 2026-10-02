@@ -61,17 +61,21 @@ function setModalPriority(button) {
 function toggleModalCategoryDropdown() {
     closeModalAssignDropdown();
     const options = document.getElementById('modal-category-options');
-    const isOpen = options.classList.toggle('d-none') === false;
-    if (isOpen) options.scrollIntoView({ block: 'nearest' });
+    if (!options.classList.contains('d-none')) return closeModalCategoryDropdown();
+    options.classList.remove('d-none');
+    options.scrollIntoView({ block: 'nearest' });
 }
 
 
 /**
- * Closes the category dropdown.
+ * Closes the category dropdown. If it was open and no category was chosen, the field error is shown (like on blur).
  * @returns {void}
  */
 function closeModalCategoryDropdown() {
-    document.getElementById('modal-category-options').classList.add('d-none');
+    const options = document.getElementById('modal-category-options');
+    const wasOpen = !options.classList.contains('d-none');
+    options.classList.add('d-none');
+    if (wasOpen && !modalSelectedCategory) document.getElementById('modal-error-category').classList.remove('d-none');
 }
 
 
