@@ -82,7 +82,7 @@ function taskCardTemplate(task) {
         <article class="task-card" data-task-id="${task.id}" draggable="true" tabindex="0"
             aria-label="Open task: ${escapeHtml(task.title || '')}" ondragstart="startDragging(${task.id})"
             onclick="openTaskDetail(${task.id})" onkeydown="handleTaskCardKey(event, ${task.id})">
-            <span class="task-card-category ${categoryColorClass(task.category)}">${escapeHtml(task.category || '')}</span>
+            <span class="task-card-category ${categoryColorClass(task.category)}">${escapeHtml(task.category || '')}</span>${moveButtonTemplate(task.id)}
             <div class="task-card-title">${escapeHtml(task.title || '')}</div>
             ${task.description ? `<div class="task-card-desc">${escapeHtml(truncate(task.description, 60))}</div>` : ''}
             ${progress}

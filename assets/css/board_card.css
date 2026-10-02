@@ -123,3 +123,80 @@
   outline: 2px solid #29ABE2;
   outline-offset: 2px;
 }
+
+/* ---------- "Move to" button and menu (touch screens, tablets and phones; desktop uses drag & drop) ---------- */
+.task-card {
+  position: relative;
+}
+
+.card-move-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #2A3647;
+  transition: background-color 100ms, color 100ms;
+}
+
+.card-move-btn:hover,
+.card-move-btn:focus-visible {
+  background: #EEEEEE;
+  color: var(--secondaryColor);
+  outline: none;
+}
+
+@media (max-width: 1024px), (hover: none) {
+  .card-move-btn {
+    display: flex;
+  }
+
+  .task-card > .task-card-category {
+    margin-right: 40px;
+  }
+}
+
+.move-menu {
+  position: fixed;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  min-width: 190px;
+  padding: 10px 0;
+  border-radius: 20px 0 20px 20px;
+  background: #2A3647;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.move-menu-title {
+  padding: 4px 20px 8px;
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.move-menu-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 20px;
+  background: transparent;
+  color: #CDCDCD;
+  font-size: 16px;
+  text-align: left;
+  transition: background-color 100ms, color 100ms;
+}
+
+.move-menu-option:hover,
+.move-menu-option:focus-visible {
+  background: #091931;
+  color: #FFFFFF;
+  outline: none;
+}

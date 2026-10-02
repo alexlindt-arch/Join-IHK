@@ -128,7 +128,7 @@ Der Code des Features liegt gebündelt in [`js/attachments/`](js/attachments/):
 - **Login & Registrierung** mit eigener Formularvalidierung (keine Browser-Standardmeldungen)
 - **Passwort vergessen:** Reset-Link per E-Mail ([EmailJS](https://www.emailjs.com)), 30 Minuten gültig, nur einmal verwendbar
 - **Summary** mit Kennzahlen, dringenden Aufgaben, nächster Deadline und tageszeitabhängiger Begrüßung
-- **Board** mit vier Spalten, Drag & Drop (auch per Touch), Suche in Titel und Beschreibung, Subtask-Fortschritt
+- **Board** mit vier Spalten, Drag & Drop, auf Touch-Geräten zusätzlich ein „Move to“-Menü an jeder Karte, Suche in Titel und Beschreibung, Subtask-Fortschritt
 - **Task-Detail & Bearbeiten** im zweispaltigen Layout – alle Felder inklusive Kategorie und Anhängen änderbar
 - **Kontakte** alphabetisch gruppiert, mit Profilfoto, Validierung und Bearbeiten/Löschen
 - **Account-Dialog** („My account“ / „Edit account“) mit Profilfoto und *Delete my account* inklusive Sicherheitsabfrage
